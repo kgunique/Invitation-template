@@ -4,6 +4,8 @@ import { m, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
 import { DURATION, EASE } from '@/styles/motion';
 
+const DOOR_EASE: [number, number, number, number] = [0.3, 0.8, 0.2, 1];
+
 /**
  * THE HYBRID, IN ONE FILE.
  *
@@ -28,12 +30,12 @@ const camera = {
 
 const doorLeft = {
   closed: { scaleX: 1 },
-  open: { scaleX: 0.03, transition: { duration: 1.25, ease: [0.3, 0.8, 0.2, 1] } },
+  open: { scaleX: 0.03, transition: { duration: 1.25, ease: DOOR_EASE } },
 };
 
 const doorRight = {
   closed: { scaleX: 1 },
-  open: { scaleX: 0.03, transition: { duration: 1.25, ease: [0.3, 0.8, 0.2, 1] } },
+  open: { scaleX: 0.03, transition: { duration: 1.25, ease: DOOR_EASE } },
 };
 
 const monogram = {

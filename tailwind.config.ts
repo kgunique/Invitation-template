@@ -22,7 +22,7 @@ const config: Config = {
     boxShadow: tokens.boxShadow,
     zIndex: tokens.zIndex,
     fontFamily: tokens.fontFamily,
-    fontSize: tokens.fontSize as unknown as Config['theme']['fontSize'],
+    fontSize: tokens.fontSize as unknown as NonNullable<Config['theme']>['fontSize'],
     extend: {},
   },
   plugins: [],
