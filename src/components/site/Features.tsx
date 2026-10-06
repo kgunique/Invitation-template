@@ -30,7 +30,18 @@ const FEATURES = [
   { icon: <ShareIcon />, title: 'Easy ordering', desc: 'Simple four-step process. No technical knowledge required whatsoever.' },
 ] as const;
 
-export function Features() {
+export function Features({
+  eyebrow = 'Why Get Invites',
+  title = 'Everything you need',
+  subtitle,
+  as,
+}: {
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  /** The heading level, h1 when the section opens a page of its own. */
+  as?: 'h1' | 'h2';
+}) {
   return (
     <div className="relative overflow-hidden">
       <FloralCorners corner="both" />
@@ -40,10 +51,12 @@ export function Features() {
           <SectionHeading
             eyebrow={
               <>
-                <SparkleIcon /> Why Marry Me
+                <SparkleIcon /> {eyebrow}
               </>
             }
-            title="Everything you need"
+            title={title}
+            subtitle={subtitle}
+            as={as}
           />
 
           <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

@@ -2,6 +2,7 @@ import tokens from '@/styles/tokens.json';
 import { Button } from '@/components/ui/Button';
 import { TierBadge } from '@/components/ui/TierBadge';
 import { Field } from '@/components/ui/Field';
+import { WhatsAppIcon } from '@/components/site/icons';
 import { TIERS, TRADITIONS } from '@/content/traditions';
 
 export const metadata = { title: 'Kitchen sink' };
@@ -53,7 +54,9 @@ export default function KitchenSink() {
         <Button variant="primary">Explore templates</Button>
         <Button variant="accent">Order this design</Button>
         <Button variant="ghost">Preview</Button>
-        <Button variant="order">Order on WhatsApp</Button>
+        <Button variant="order">
+          <WhatsAppIcon /> Order on WhatsApp
+        </Button>
         <Button variant="ghost" disabled>
           Disabled
         </Button>

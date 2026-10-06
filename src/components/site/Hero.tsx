@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { buttonClasses } from '@/components/ui/Button';
 import { FloralAtmosphere } from './FloralAtmosphere';
 import { HERO_SLIDES, slideSlug } from './heroSlides';
 import { PhoneShowcase } from './PhoneShowcase';
@@ -51,7 +51,9 @@ export function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button variant="primary">Explore templates</Button>
+            <Link href="/templates" className={buttonClasses('primary')}>
+              Explore templates
+            </Link>
             {/* Hardcoded route for now — synced to whichever slide is active in PhoneShowcase. */}
             <a
               href={`/${activeSlug}`}

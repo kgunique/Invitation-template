@@ -5,7 +5,7 @@ import { m } from 'motion/react';
 import { Button } from '@/components/ui/Button';
 import { whatsappOrderUrl } from '@/content/site';
 import { DURATION, EASE } from '@/styles/motion';
-import { ChatIcon, MusicIcon } from './icons';
+import { MusicIcon, WhatsAppIcon } from './icons';
 import { useBackgroundMusic, type BackgroundMusic } from './useBackgroundMusic';
 
 /**
@@ -20,7 +20,7 @@ export function OrderButton({ templateName, className = '' }: { templateName: st
       className={className}
       onClick={() => window.open(whatsappOrderUrl(templateName, window.location.href), '_blank', 'noopener,noreferrer')}
     >
-      <ChatIcon /> Order Now
+      <WhatsAppIcon className="h-[18px] w-[18px]" /> Order Now
     </Button>
   );
 }

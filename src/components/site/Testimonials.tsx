@@ -57,7 +57,7 @@ export function Testimonials() {
             </>
           }
           title="What our happy couples say"
-          subtitle="Memorable moments shared by couples who celebrated with Marry Me."
+          subtitle="Memorable moments shared by couples who celebrated with Get Invites."
         />
 
         <div

@@ -4,7 +4,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { m } from 'motion/react';
 import { DURATION, EASE } from '@/styles/motion';
 import { BananaTree } from './BananaTree';
-import { MarryMeCredit } from './MarryMeCredit';
+import { BrandCredit } from './BrandCredit';
 import { Petals } from './Petals';
 import { RevealLine, fadeUp, lineGroup } from './RevealLines';
 import { sectionVars, type SectionColors } from './sectionTheme';
@@ -133,7 +133,7 @@ const DEFAULT_BACKGROUND = [
  * a soft watercolour wash of marigold yellow, a kalash that pops into place, a
  * tracked "with gratitude", the heading and a gold rule, the note to the
  * guests, the couple's names in gold italic between two swaying potted banana
- * plants, a wish, the "Designed with love by Marry Me" credit, marigold petals
+ * plants, a wish, the "Designed with love by Get Invites" credit, marigold petals
  * drifting down the whole section, and a scene along its foot. Reveals line by
  * line as it scrolls into view. The art, the wash, the note and the palette are
  * all props.
@@ -203,7 +203,7 @@ export function ThankYouSection({
           {wish}
         </m.p>
         <div className="mt-8 flex flex-col items-center">
-          <MarryMeCredit heart={false} compact />
+          <BrandCredit heart={false} compact />
         </div>
       </m.div>
 

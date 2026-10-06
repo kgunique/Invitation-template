@@ -3,13 +3,13 @@
 import type { FormEvent, ReactNode } from 'react';
 import { useRef, useState } from 'react';
 import { AnimatePresence, m } from 'motion/react';
-import { Button } from '@/components/ui/Button';
+import { Button, buttonClasses } from '@/components/ui/Button';
 import { Field } from '@/components/ui/Field';
 import type { InviteEvent, InviteRsvp } from '@/content/invites';
 import { DURATION, EASE } from '@/styles/motion';
 import { formatDay } from './dates';
 import { GoldDivider } from './GoldDivider';
-import { ChatIcon } from './icons';
+import { WhatsAppIcon } from './icons';
 import { Petals } from './Petals';
 import { RevealLine, fadeUp, lineGroup } from './RevealLines';
 import { sectionVars, type SectionColors } from './sectionTheme';
@@ -383,9 +383,9 @@ export function RsvpSection({
                     href={sent.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="action inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill bg-mehendi-500 px-5 py-3 text-[#fffaf4]"
+                    className={`${buttonClasses('order')} no-underline`}
                   >
-                    <ChatIcon /> Open WhatsApp again
+                    <WhatsAppIcon className="h-[18px] w-[18px]" /> Open WhatsApp again
                   </a>
                   <Button type="button" variant="ghost" onClick={() => setSent(null)}>
                     Edit my reply
@@ -564,7 +564,7 @@ export function RsvpSection({
                 </div>
 
                 <Button type="submit" variant="order" className="mt-8 w-full">
-                  Submit RSVP
+                  <WhatsAppIcon className="h-[18px] w-[18px]" /> Submit RSVP
                 </Button>
                 <p className="caption mt-3 text-center text-ink-muted">
                   This opens WhatsApp with your reply written out, ready for you to send.

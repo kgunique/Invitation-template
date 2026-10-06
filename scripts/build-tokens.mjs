@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Single source of truth: src/styles/tokens.json, exported from the Marry Me
+ * Single source of truth: src/styles/tokens.json, exported from the Get Invites
  * design system. This emits two artefacts and nothing else edits them:
  *
  *   src/styles/tokens.css   CSS custom properties + type-style classes

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { m } from 'motion/react';
 import { EASE } from '@/styles/motion';
 import { formatDay } from './dates';
-import { MarryMeCredit } from './MarryMeCredit';
+import { BrandCredit } from './BrandCredit';
 import { Petals } from './Petals';
 import { RevealLine, fadeUp, lineGroup } from './RevealLines';
 import { sectionVars, type SectionColors } from './sectionTheme';
@@ -106,7 +106,7 @@ export interface ArchClosingProps {
 /**
  * The last thing on a night page: an arched frame under a field of twinkling
  * stars, planets and a crescent moon drawn around it — a tagline, the couple's
- * names, the date and the shared <MarryMeCredit /> set inside it, and at its
+ * names, the date and the shared <BrandCredit /> set inside it, and at its
  * foot a small arched cameo of the couple's picture (`portrait`; a silhouette
  * if none is given). Red hearts rain down the whole section, each popping into
  * being as it starts to fall and bursting like a bubble at the end (`Petals`
@@ -159,7 +159,7 @@ export function ArchClosing({
             </m.p>
           )}
           <div className="mt-5">
-            <MarryMeCredit heart={false} compact />
+            <BrandCredit heart={false} compact />
           </div>
         </div>
 

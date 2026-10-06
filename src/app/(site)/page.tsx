@@ -7,6 +7,7 @@ import { Reviews } from '@/components/site/Reviews';
 import { Templates } from '@/components/site/Templates';
 import { Testimonials } from '@/components/site/Testimonials';
 import { Traditions } from '@/components/site/Traditions';
+import { featuredTemplates } from '@/content/templateCatalog';
 
 /**
  * Structure only borrows from the reference: eyebrow/heading pattern, dual
@@ -21,7 +22,7 @@ export default function HomePage() {
       <Header />
       <Hero />
       {/* <Traditions /> */}
-      <Templates />
+      <Templates templates={featuredTemplates()} />
       <Testimonials />
       <Reviews />
       <Features />

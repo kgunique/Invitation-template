@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { m } from 'motion/react';
 import { EASE } from '@/styles/motion';
 import { GoldDivider } from '../GoldDivider';
-import { MarryMeCredit } from '../MarryMeCredit';
+import { BrandCredit } from '../BrandCredit';
 import { lineGroup } from '../RevealLines';
 
 // Warm cream whatever the visitor's OS theme, so its ink is pinned (same
@@ -25,8 +25,8 @@ const bloom = (x: number) => ({
 });
 
 /**
- * The last thing on the page: the shared <MarryMeCredit /> (a beating heart,
- * "Designed with Love by Marry Me"), and a bouquet in each bottom corner that
+ * The last thing on the page: the shared <BrandCredit /> (a beating heart,
+ * "Designed with Love by Get Invites"), and a bouquet in each bottom corner that
  * rises in and then sways. The
  * bottom padding is the clearance for the floating Order Now bar, so the credit
  * is never left sitting under it.
@@ -46,7 +46,7 @@ export function KankotriClosing() {
       >
         <GoldDivider />
 
-        <MarryMeCredit />
+        <BrandCredit />
 
         <m.div variants={bloom(-32)} aria-hidden className="pointer-events-none absolute bottom-[0] -left-5">
           <div className="amb-sway" style={{ animationDuration: '8s' }}>

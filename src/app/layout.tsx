@@ -5,8 +5,8 @@ import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Marry Me',
-    template: '%s | Marry Me',
+    default: 'Get Invites',
+    template: '%s | Get Invites',
   },
   description: 'Interactive digital wedding invitations for Indian weddings.',
 };

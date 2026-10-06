@@ -46,11 +46,11 @@ export function AppLoader({ children }: { children: ReactNode }) {
             <span
               className={`${cursive.className} flex h-24 w-24 items-center justify-center rounded-pill border-[1.5px] border-invite-metal bg-surface-raised text-[28px] text-ink-strong shadow-md`}
             >
-              MM
+              GI
             </span>
           </div>
           <div className="text-center">
-            <p className="display-lg text-ink-strong">Marry Me</p>
+            <p className="display-lg text-ink-strong">Get Invites</p>
             <p className="loader-fade-in label mt-2 uppercase text-ink-muted">Interactive wedding invitations</p>
           </div>
         </div>

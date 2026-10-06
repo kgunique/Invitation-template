@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Marry Me — interactive digital wedding invitations for Indian weddings, built on Next.js App Router (React 19, Next 15). Weddings only: no engagement/baby-shower/birthday/housewarming categories. Templates vary by *tradition* (Gujarati, South Indian, Punjabi, Marwari, Bengali, Contemporary), never by occasion. This is Phase 0 (scaffold) — see the "Next up" section in [README.md](README.md) for what Phase 1 adds (invite config schema, template registry, theme token contract).
+Get Invites — interactive digital wedding invitations for Indian weddings, built on Next.js App Router (React 19, Next 15). Weddings only: the only templates are wedding templates. The occasion tabs on `/templates` (Engagement, Baby Shower, Other ▸ Birthday Party, …) are "coming soon" placeholders, not categories being built. Templates vary by *tradition* (Gujarati, South Indian, Punjabi, Marwari, Bengali, Contemporary), never by occasion. This is Phase 0 (scaffold) — see the "Next up" section in [README.md](README.md) for what Phase 1 adds (invite config schema, template registry, theme token contract).
 
 ## Commands
 
@@ -20,12 +20,16 @@ No test suite exists yet. There is no `start`-without-`build` workflow worth rel
 
 ## Design token pipeline
 
-`src/styles/tokens.json` is exported from the Marry Me design system and is the single source of truth for color, spacing, radius, shadow, z-index, and type styles. `scripts/build-tokens.mjs` compiles it into two generated, gitignored files:
+`src/styles/tokens.json` is exported from the Get Invites design system and is the single source of truth for color, spacing, radius, shadow, z-index, and type styles. `scripts/build-tokens.mjs` compiles it into two generated, gitignored files:
 
 - `src/styles/tokens.css` — CSS custom properties for each theme, plus a class per type style
 - `tailwind.tokens.json` — the same scale reshaped for `tailwind.config.ts`
 
 Both regenerate on `predev`/`prebuild`. **Never hand-edit either generated file, and never put a raw hex value or magic number in a component** — add the value to `tokens.json` and run `npm run tokens`. `tailwind.config.ts` pulls every scale from `tailwind.tokens.json`; it only keeps Tailwind's `transparent`/`current`/`inherit` keywords hardcoded (dropped otherwise, and `bg-transparent` is load-bearing on the ghost button variant).
+
+## Gallery
+
+`/templates` (`src/app/(site)/templates/`) lists every template that is built, and the home page shows only the few flagged `featured`. Both read `allTemplates()`/`featuredTemplates()` in `src/content/templateCatalog.ts`; a new template registered in `registry.ts` must get a `LISTINGS` entry there (typecheck enforces it) and then appears on its own. The category tabs live in the header there (`Header`'s `center` slot, `CategoryTabs`), so the page opens straight onto the cards. Its "Other" menu links to `/services` (what an invitation includes, plus the add-ons in `src/content/services.ts`) and `/contact` (a form that opens a prefilled WhatsApp message — there is no backend). Contact details live in `CONTACT` in `src/content/site.ts`; the email and phone there are placeholders.
 
 ## Layer split: (site) vs (invite)
 

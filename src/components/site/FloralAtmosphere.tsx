@@ -22,18 +22,21 @@ type Corner = 'left' | 'right' | 'both';
 const CORNER_ART = '/art/floral/hero-floral-left.webp';
 
 /** Lightweight corner flourish, reused across secondary sections (no loose
- * petals — that denser "atmosphere" treatment stays hero-only). */
-export function FloralCorners({ corner = 'both' }: { corner?: Corner }) {
+ * petals — that denser "atmosphere" treatment stays hero-only). `size="sm"` is for a
+ * band that has text right down to its edges (the footer): the flowers are smaller, so the
+ * band can leave room for them (its top padding must clear 72px, or 96px from sm). */
+export function FloralCorners({ corner = 'both', size = 'md' }: { corner?: Corner; size?: 'md' | 'sm' }) {
+  const h = size === 'sm' ? 'h-[96px] sm:h-[120px]' : 'h-[140px] sm:h-[200px]';
   return (
     <div aria-hidden="true" className="absolute inset-[0] z-base overflow-hidden pointer-events-none">
       {corner !== 'right' && (
         <div className="amb-sway absolute -left-6 -top-6" style={{ animationDuration: '11s' }}>
-          <Image src={CORNER_ART} alt="" width={700} height={700} className="h-[140px] w-auto sm:h-[200px]" />
+          <Image src={CORNER_ART} alt="" width={700} height={700} className={`${h} w-auto`} />
         </div>
       )}
       {corner !== 'left' && (
         <div className="amb-sway absolute -right-6 -top-6" style={{ animationDuration: '12s', animationDelay: '-4s' }}>
-          <Image src={CORNER_ART} alt="" width={700} height={700} className="h-[140px] w-auto -scale-x-100 sm:h-[200px]" />
+          <Image src={CORNER_ART} alt="" width={700} height={700} className={`${h} w-auto -scale-x-100`} />
         </div>
       )}
     </div>

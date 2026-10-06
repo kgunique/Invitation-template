@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { CrownIcon } from './icons';
 
-const STORAGE_KEY = 'marryme-theme';
+const STORAGE_KEY = 'getinvites-theme';
 
 /** Visitor-facing switch between the default theme and "Regal Sapphire &
  * Gold" — same tokens.json pipeline as the light/dark system, just a third
@@ -37,10 +37,13 @@ export function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-pressed={isRegal}
-      className="label flex h-10 items-center gap-2 rounded-pill border border-line-firm px-4 text-ink-strong transition-colors hover:bg-surface-sunken"
+      title={isRegal ? 'Regal theme' : 'Try Regal theme'}
+      aria-label={isRegal ? 'Regal theme' : 'Try Regal theme'}
+      className={`label flex h-10 items-center gap-2 rounded-pill border border-line-firm text-ink-strong px-[11px] sm:px-4 lg:px-[11px] transition-colors hover:bg-surface-sunken`}
     >
       <CrownIcon className={isRegal ? 'text-marigold-500' : 'text-ink-muted'} />
-      {isRegal ? 'Regal theme' : 'Try Regal theme'}
+      {/* The label gives way to just the crown where the header is short of room: on a phone, and from a laptop up (where the header is a single row). */}
+      <span className="hidden sm:inline lg:hidden">{isRegal ? 'Regal theme' : 'Try Regal theme'}</span>
     </button>
   );
 }

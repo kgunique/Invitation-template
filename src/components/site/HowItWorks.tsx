@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { FloralCorners } from './FloralAtmosphere';
 import { SectionHeading } from './SectionHeading';
 import { ArrowRightIcon, SparkleIcon } from './icons';
@@ -33,9 +34,9 @@ export function HowItWorks() {
           </div>
 
           <div className="mt-10 text-center">
-            <span className="action group inline-flex items-center gap-2 rounded-pill px-5 py-3 text-marigold-700 transition-colors hover:bg-surface-sunken">
+            <Link href="/templates" className="action group inline-flex items-center gap-2 rounded-pill px-5 py-3 text-marigold-700 no-underline transition-colors hover:bg-surface-sunken">
               Browse all templates <ArrowRightIcon className="transition-transform group-hover:translate-x-1" />
-            </span>
+            </Link>
           </div>
         </div>
       </section>

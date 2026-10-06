@@ -8,8 +8,8 @@ const VARIANTS: Record<Variant, string> = {
   primary: 'bg-surface-brand text-ink-on-brand shadow-sm hover:shadow-glow',
   accent: 'bg-surface-accent text-ink-on-accent',
   ghost: 'bg-transparent text-ink-strong shadow-[inset_0_0_0_1.5px_var(--line-firm)]',
-  // Not WhatsApp's brand green — mehendi reads as the same affordance and is ours.
-  order: 'bg-mehendi-500 text-[#fffaf4]',
+  // Every button that opens WhatsApp: WhatsApp's own green, white capitals, and the WhatsApp glyph (the caller adds the icon).
+  order: 'bg-whatsapp-500 text-[13px] text-ink-on-whatsapp uppercase tracking-[0.04em] shadow-sm hover:shadow-md',
 };
 
 // md keeps the 44px accessible tap-target minimum; sm is for tighter spots
@@ -25,12 +25,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
 }
 
+/** The button's look, for a link that has to be styled the same (a link is never nested in a button). */
+export function buttonClasses(variant: Variant = 'primary', size: Size = 'md', className = '') {
+  return `action inline-flex items-center justify-center gap-2 rounded-pill transition-shadow disabled:cursor-not-allowed disabled:opacity-45 ${SIZES[size]} ${VARIANTS[variant]} ${className}`;
+}
+
 export function Button({ variant = 'primary', size = 'md', className = '', children, ...rest }: ButtonProps) {
   return (
-    <button
-      className={`action inline-flex items-center justify-center gap-2 rounded-pill transition-shadow disabled:cursor-not-allowed disabled:opacity-45 ${SIZES[size]} ${VARIANTS[variant]} ${className}`}
-      {...rest}
-    >
+    <button className={buttonClasses(variant, size, className)} {...rest}>
       {children}
     </button>
   );

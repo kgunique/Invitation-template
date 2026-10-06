@@ -35,9 +35,9 @@ function calendarHref(event: InviteEvent) {
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Marry Me//Invitation//EN',
+    'PRODID:-//Get Invites//Invitation//EN',
     'BEGIN:VEVENT',
-    `UID:${stamp(start)}-${event.title.replace(/\W+/g, '-').toLowerCase()}@marryme`,
+    `UID:${stamp(start)}-${event.title.replace(/\W+/g, '-').toLowerCase()}@getinvites`,
     `DTSTAMP:${stamp(start)}`,
     `DTSTART:${stamp(start)}`,
     `DTEND:${stamp(end)}`,

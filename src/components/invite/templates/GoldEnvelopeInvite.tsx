@@ -100,7 +100,7 @@ export interface GoldEnvelopeInviteProps {
   /** The "Wedding details" section. On by default (given details or a registry). */
   showDetails?: boolean;
   /** The arched closing with the couple's names, their picture (`coupleImage`) in a small cameo,
-   * falling red hearts and the Marry Me credit. On by default. */
+   * falling red hearts and the Get Invites credit. On by default. */
   showClosing?: boolean;
   /** Where replies go. The RSVP section needs it; without it the section doesn't render. */
   rsvp?: InviteRsvp;

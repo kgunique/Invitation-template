@@ -1,10 +1,10 @@
-# Marry Me
+# Get Invites
 
-Interactive digital wedding invitations for Indian weddings. Next.js App Router, built on the Marry Me design system.
+Interactive digital wedding invitations for Indian weddings. Next.js App Router, built on the Get Invites design system.
 
 ## Scope
 
-**Weddings only.** No engagement, baby shower, birthday or housewarming categories. Templates vary by *tradition* (Gujarati, South Indian, Punjabi, Marwari, Bengali, Contemporary), never by occasion.
+**Weddings only.** Engagement, baby shower, birthday and the other tabs on `/templates` are "coming soon" placeholders — nothing is built for them. Templates vary by *tradition* (Gujarati, South Indian, Punjabi, Marwari, Bengali, Contemporary), never by occasion.
 
 ## Getting started
 
@@ -17,7 +17,7 @@ Open `/` for the scaffold and `/kitchen-sink` for every token and component on o
 
 ## Design tokens
 
-`src/styles/tokens.json` is exported from the Marry Me design system and is the single source of truth. `scripts/build-tokens.mjs` turns it into:
+`src/styles/tokens.json` is exported from the Get Invites design system and is the single source of truth. `scripts/build-tokens.mjs` turns it into:
 
 - `src/styles/tokens.css` — custom properties for light and dark, plus a class per type style
 - `tailwind.tokens.json` — the same scale shaped for `tailwind.config.ts`

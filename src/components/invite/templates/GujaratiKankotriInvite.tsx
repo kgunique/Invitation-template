@@ -66,7 +66,7 @@ export interface GujaratiKankotriInviteProps {
   waitingImage?: string;
   /** The "We will wait for you" section before the closing credit. On by default. */
   showWaiting?: boolean;
-  /** The closing artwork and "Designed with Love by Marry Me" credit. On by default. */
+  /** The closing artwork and "Designed with Love by Get Invites" credit. On by default. */
   showClosing?: boolean;
 }
 

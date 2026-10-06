@@ -80,9 +80,9 @@ function ReviewsSummary() {
   return (
     <div className="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-sunken p-6 text-center">
       <span className="display-md flex h-[44px] w-[44px] items-center justify-center rounded-pill border-[1.5px] border-invite-metal bg-surface-raised italic text-ink-strong">
-        M
+        G
       </span>
-      <p className="body-sm mt-1 text-ink-strong">Marry Me</p>
+      <p className="body-sm mt-1 text-ink-strong">Get Invites</p>
       <p className="display-lg tabular text-ink-strong">5.0</p>
       <StarRow />
       <p className="caption text-ink-muted">Based on 120+ guest reviews</p>
