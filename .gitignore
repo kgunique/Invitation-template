@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+.env*.local
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+
+# generated from tokens.json by scripts/build-tokens.mjs
+src/styles/tokens.css
+tailwind.tokens.json

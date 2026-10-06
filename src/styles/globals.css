@@ -1,0 +1,85 @@
+@import './tokens.css';
+@import './motion.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    /* The viewer paints its own ground behind the page, so this must be explicit. */
+    background: var(--surface-page);
+    color: var(--ink-body);
+    font-family: var(--font-sans);
+    margin: 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+    color: var(--ink-strong);
+    margin: 0;
+  }
+
+  /* Countdown digits and price columns must not jitter. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* One-shot entrance, not an ambient loop, so it lives here rather than
+   motion.css. animation-fill-mode: forwards holds the end state. */
+@keyframes loader-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.loader-fade-in {
+  opacity: 0;
+  animation: loader-fade-in 1.2s 0.3s ease-out forwards;
+}
+
+/* Replays on every slide change via a `key` remount in PhoneShowcase. */
+@keyframes slide-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide-fade-in {
+  animation: slide-fade-in 0.5s ease-out;
+}
+
+/* Direction-aware slide, driven by which arrow was clicked (Testimonials). */
+@keyframes slide-in-from-right {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slide-in-from-left {
+  from { opacity: 0; transform: translateX(-28px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.slide-in-from-right {
+  animation: slide-in-from-right 0.4s ease-out;
+}
+.slide-in-from-left {
+  animation: slide-in-from-left 0.4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .loader-fade-in {
+    animation-delay: 0s !important;
+  }
+}

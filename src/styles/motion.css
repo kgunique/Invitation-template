@@ -1,0 +1,195 @@
+/**
+ * AMBIENT MOTION ONLY.
+ *
+ * Everything here loops forever and never responds to input, so it must not
+ * touch JavaScript. These run on the compositor: no main-thread cost, no
+ * bundle cost, and they keep working if the JS bundle fails.
+ *
+ * Anything that reacts to a tap, a drag or the scroll position belongs in
+ * Framer Motion instead. See src/components/motion/.
+ *
+ * Mirrors the values in motion.ts.
+ */
+
+:root {
+  --mo-quick: 220ms;
+  --mo-base: 400ms;
+  --mo-slow: 700ms;
+  --mo-gate: 1500ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-entrance: cubic-bezier(0, 0, 0.2, 1);
+  --ease-gate: cubic-bezier(0.4, 0.02, 0.18, 1);
+}
+
+/* Leaves, fronds, hanging garlands. Give siblings different durations and
+   negative delays, or they sway in lockstep and read as one flat object. */
+.amb-sway {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: amb-sway 6s ease-in-out infinite;
+}
+.amb-sway--hang { transform-origin: top center; }
+@keyframes amb-sway {
+  0%, 100% { transform: rotate(-2.2deg); }
+  50%      { transform: rotate(2.2deg); }
+}
+
+/* Diya and candle flames. */
+.amb-flicker {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: amb-flicker 1.7s ease-in-out infinite;
+}
+@keyframes amb-flicker {
+  0%, 100% { transform: scale(1); opacity: 0.94; }
+  50%      { transform: scaleY(1.18) scaleX(0.9); opacity: 1; }
+}
+
+/* Falling petals. --drift and the duration are set per element. */
+.amb-fall { animation: amb-fall linear infinite; opacity: 0; }
+@keyframes amb-fall {
+  0%   { opacity: 0; transform: translateY(-20px) rotate(0deg); }
+  14%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(var(--fall-to, 600px)) translateX(var(--drift, 16px)) rotate(320deg); }
+}
+
+/* Petals that can travel in any direction (see components/invite/Petals.tsx).
+   Each petal sets --dx/--dy/--spin plus its own duration, delay and iteration
+   count inline, so speed, direction and loop-vs-once are all props. */
+.amb-petal {
+  animation: amb-petal var(--petal-dur, 7s) linear var(--petal-delay, 0s) var(--petal-iter, infinite) both;
+  opacity: 0;
+}
+@keyframes amb-petal {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+  10%  { opacity: 0.9; }
+  90%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), var(--dy, 100vh)) rotate(var(--spin, 360deg)); }
+}
+
+/* The popping variant (Petals `pop`): the petal bursts into being, swelling
+   past its size and settling as it starts to fall, then swells and vanishes
+   like a bubble at the end. The in-between stops sit on the same straight
+   line (a fixed fraction of --dx / --dy), so the fall itself stays even. */
+.amb-petal--pop { animation-name: amb-petal-pop; }
+@keyframes amb-petal-pop {
+  0%   { opacity: 0;    transform: translate(0, 0) rotate(0deg) scale(0); }
+  6%   { opacity: 1;    transform: translate(calc(var(--dx, 0px) * 0.06), calc(var(--dy, 100vh) * 0.06)) rotate(calc(var(--spin, 360deg) * 0.06)) scale(1.6); }
+  12%  { opacity: 0.95; transform: translate(calc(var(--dx, 0px) * 0.12), calc(var(--dy, 100vh) * 0.12)) rotate(calc(var(--spin, 360deg) * 0.12)) scale(1); }
+  88%  { opacity: 0.95; transform: translate(calc(var(--dx, 0px) * 0.88), calc(var(--dy, 100vh) * 0.88)) rotate(calc(var(--spin, 360deg) * 0.88)) scale(1); }
+  96%  { opacity: 0.8;  transform: translate(calc(var(--dx, 0px) * 0.96), calc(var(--dy, 100vh) * 0.96)) rotate(calc(var(--spin, 360deg) * 0.96)) scale(1.4); }
+  100% { opacity: 0;    transform: translate(var(--dx, 0px), var(--dy, 100vh)) rotate(var(--spin, 360deg)) scale(2); }
+}
+
+/* Slow rotation for mandalas and rosettes. */
+.amb-turn { animation: amb-turn 90s linear infinite; }
+@keyframes amb-turn { to { transform: rotate(360deg); } }
+
+/* Spinner ring on the boot loader. Faster and directional, unlike the ambient
+   loops above, so it gets its own timing rather than reusing amb-turn. */
+.amb-spin { animation: amb-spin 1.1s linear infinite; }
+@keyframes amb-spin { to { transform: rotate(360deg); } }
+
+/* Slower spin for a decorative badge icon — same keyframes, gentler pace so
+   it reads as ambient rather than a loading indicator. */
+.amb-spin-slow { animation: amb-spin 3.2s linear infinite; }
+
+/* A dashed ring that turns slowly (it has to be dashed, or a circle turning is
+   invisible). --ring-dur sets the pace; --rev flips it so a nested pair
+   counter-rotates. Reuses the amb-spin keyframes. */
+.amb-ring { animation: amb-spin var(--ring-dur, 20s) linear infinite; }
+.amb-ring--rev { animation-direction: reverse; }
+
+/* A sparkle born under a medallion: drifts out to (--sx, --sy), swells and
+   pops. --spark-dur and a (negative) --spark-delay stagger a set of them. */
+.amb-spark {
+  animation: amb-spark var(--spark-dur, 3.2s) ease-out var(--spark-delay, 0s) infinite both;
+  opacity: 0;
+}
+@keyframes amb-spark {
+  0%   { opacity: 0; transform: translate(0, 0) scale(0.2); }
+  15%  { opacity: 1; }
+  70%  { opacity: 1; transform: translate(var(--sx, 0px), var(--sy, -40px)) scale(1); }
+  82%  { opacity: 1; transform: translate(var(--sx, 0px), var(--sy, -40px)) scale(1.9); }
+  100% { opacity: 0; transform: translate(var(--sx, 0px), var(--sy, -40px)) scale(0); }
+}
+
+/* A swing: the whole picture hangs from a pivot near its top edge and rocks
+   toward and away from the viewer like a pendulum. The parent must set a
+   `perspective` (that is what makes the lower half grow as it comes forward and
+   shrink as it goes back; see components/invite/SwingArt.tsx, which does it).
+   Sine easing (slow at each end, quickest at the bottom of the arc) is what
+   reads as weight. --swing-angle, --swing-dur (one way across) and
+   --swing-pivot are set per use. */
+.amb-swing-depth {
+  transform-origin: var(--swing-pivot, 50% 4%);
+  animation: amb-swing-depth var(--swing-dur, 2.8s) cubic-bezier(0.37, 0, 0.63, 1) infinite alternate;
+}
+@keyframes amb-swing-depth {
+  from { transform: rotateX(calc(var(--swing-angle, 9deg) * -1)); }
+  to   { transform: rotateX(var(--swing-angle, 9deg)); }
+}
+
+/* A star that twinkles between a third of its brightness and all of it.
+   --tw-base is its brightness (also set as its resting opacity inline, so with
+   the animation off it just sits there); --tw-dur and a negative --tw-delay
+   keep a whole field from pulsing in step. */
+.amb-twinkle { animation: amb-twinkle var(--tw-dur, 4s) ease-in-out var(--tw-delay, 0s) infinite; }
+@keyframes amb-twinkle {
+  0%, 100% { opacity: calc(var(--tw-base, 0.8) * 0.35); transform: scale(0.8); }
+  50%      { opacity: var(--tw-base, 0.8); transform: scale(1.15); }
+}
+
+/* A light that travels around an SVG outline like a snake. Put a few of these
+   (long and faint to short and bright) on a shape with pathLength="100" and a
+   dasharray of "<len> <100 - len>". --snake-dur is one lap. To keep their heads
+   level with the tail trailing behind, give each a negative animation-delay of
+   (longest len - its len) / 100 * lap (see components/invite/EnvelopeLock.tsx).
+   Plain numbers 0 -> -100 on purpose: keyframes that mix a unitless value with
+   a calc() don't interpolate in Chrome, and the snake sits still. */
+.amb-snake { animation: amb-snake var(--snake-dur, 6s) linear infinite; }
+@keyframes amb-snake {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -100; }
+}
+
+/* A heart that beats: two quick pulses, then a rest. */
+.amb-beat { animation: amb-beat 1.8s ease-in-out infinite; }
+@keyframes amb-beat {
+  0%, 40%, 100% { transform: scale(1); }
+  10%           { transform: scale(1.22); }
+  20%           { transform: scale(1); }
+  30%           { transform: scale(1.22); }
+}
+
+/* Gentle vertical bob for a floating badge. */
+.amb-bounce { animation: amb-bounce 2.4s ease-in-out infinite; }
+@keyframes amb-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+/* One switch for every ambient loop. Framer Motion is handled separately by
+   MotionConfig reducedMotion="user" — both layers need covering. */
+@media (prefers-reduced-motion: reduce) {
+  .amb-sway,
+  .amb-flicker,
+  .amb-fall,
+  .amb-petal,
+  .amb-turn,
+  .amb-spin,
+  .amb-spin-slow,
+  .amb-ring,
+  .amb-spark,
+  .amb-swing-depth,
+  .amb-twinkle,
+  .amb-snake,
+  .amb-beat,
+  .amb-bounce {
+    animation: none !important;
+  }
+  .amb-fall,
+  .amb-petal { opacity: 0; }
+  /* Sparkles rest where they would have landed, as plain decoration. */
+  .amb-spark { opacity: 0.8; transform: translate(var(--sx, 0px), var(--sy, -40px)); }
+}
