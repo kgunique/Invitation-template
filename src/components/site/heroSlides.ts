@@ -1,7 +1,8 @@
 import type { TierId, TraditionId } from '@/content/traditions';
 
-/** Hardcoded stand-ins for the hero's live-preview slider. Swap for real
- * template data once the invite config schema and registry land (Phase 1). */
+/** The hero's live-preview slider: one slide per tier, each a screenshot of its
+ * real invite (see `screen`). Still hand-listed here; swap for data from
+ * content/invites.ts if the slides should ever follow the registry. */
 export interface HeroSlide {
   bride: string;
   groom: string;
@@ -30,7 +31,14 @@ export const HERO_SLIDES: HeroSlide[] = [
     tradition: 'gujarati',
     screen: '/templates/ishani-advait-gate.webp',
   },
-  { bride: 'Meera', groom: 'Karthik', venue: 'Chennai Muhurtham Mandapam', tier: 'platinum', tradition: 'south-indian' },
+  {
+    bride: 'Aarthi',
+    groom: 'Prashanth',
+    venue: 'Sri Meenakshi Kalyana Mandapam, Madurai',
+    tier: 'platinum',
+    tradition: 'south-indian',
+    screen: '/templates/aarthi-prashanth-gate.webp',
+  },
 ];
 
 /** e.g. "lily-weds-ethan" — the invite route for this slide (bride, then groom). */

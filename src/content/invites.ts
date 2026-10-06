@@ -14,8 +14,15 @@ export interface InviteEvent {
   description: string;
   /** ISO timestamp WITH its UTC offset, e.g. "2027-02-19T17:00:00+05:30". */
   startsAt: string;
-  /** Where it happens; also the Google Maps search text for the location link. */
+  /** Where it happens: the venue's name. Also the start of the Google Maps search for the location link. */
   place: string;
+  /** The venue's address, as one line under its name, e.g. "Chanakyapuri, New Delhi, India". Also in the Maps search. */
+  address?: string;
+  /** A Google Maps link. Omit and a search link is built from `place` and `address`. */
+  mapsUrl?: string;
+  /** Which artwork dresses this event's card. A template maps these keys to scenes (the Platinum template knows
+   * "canopy", "toran", "floral-arch" and "vivah"); omit and the template picks one by the event's position. */
+  art?: string;
   /** One emoji for the timeline medallion. */
   icon: string;
 }
@@ -62,6 +69,48 @@ export interface InviteLocation {
   mapsUrl?: string;
 }
 
+/** One half of the couple, for the "Meet the couple" section. */
+export interface InvitePerson {
+  /** The full name, e.g. "Akshar Patel". Omit and the short name on the record is used. */
+  name?: string;
+  /** A portrait: ideally a cut-out or a soft watercolour on a pale ground, about 4:5. Omit and a monogram is drawn. */
+  image?: string;
+  /** The italic line under the name, e.g. "With Divine Blessings…". Omit and the template's own is used. */
+  blessing?: string;
+  /** The family line, e.g. "Son of Mr. Kirit Patel & Mrs. Savita Patel". Omit and there isn't one. */
+  family?: string;
+}
+
+export interface InviteCouple {
+  groom: InvitePerson;
+  bride: InvitePerson;
+}
+
+/** One card of the "How we met" story. */
+export interface InviteMilestone {
+  /** The year (or any short date) shown in gold italic, e.g. "2021". */
+  year: string;
+  /** The bold heading, e.g. "First Met". */
+  title: string;
+  /** A sentence or two. */
+  text: string;
+}
+
+/** The "How we met" section: the couple's illustration and their milestones. */
+export interface InviteStory {
+  /** An illustration of the pair standing side by side (transparent PNG/WebP). Omit and a labelled placeholder is drawn. */
+  image?: string;
+  milestones: InviteMilestone[];
+}
+
+/** One picture in "Our love gallery". */
+export interface InviteGalleryItem {
+  /** The picture: a photograph or an illustration, any shape (it is cropped to a tall frame). */
+  src: string;
+  /** What it shows, for screen readers and the lightbox. */
+  alt: string;
+}
+
 export interface InviteRecord {
   slug: string;
   bride: string;
@@ -88,6 +137,14 @@ export interface InviteRecord {
   location?: InviteLocation;
   /** The gift registry, under the wedding details. Omit and there isn't one. */
   registry?: InviteRegistry;
+  /** The portraits, full names and families for "Meet the couple". Omit and there isn't one. */
+  couple?: InviteCouple;
+  /** "Our love gallery": the pictures, in order. Omit and there isn't one. */
+  gallery?: InviteGalleryItem[];
+  /** The note in the closing "Thank you". Omit and the template's own is used. */
+  thankYou?: string;
+  /** "How we met": the couple's illustration and their milestones. Omit and there isn't one. */
+  story?: InviteStory;
 }
 
 export const INVITES: InviteRecord[] = [
@@ -219,6 +276,45 @@ export const INVITES: InviteRecord[] = [
         { label: 'A/C No.', value: '0123 4567 8901' },
         { label: 'IFSC', value: 'SAMP0001234' },
         { label: 'UPI', value: 'ethan.lily@upi' },
+      ],
+    },
+  },
+  {
+    // The Platinum-tier sample: Divine Temple Cinematic.
+    slug: 'aarthi-weds-prashanth',
+    bride: 'Aarthi',
+    groom: 'Prashanth',
+    venue: 'Sri Meenakshi Kalyana Mandapam, Madurai',
+    tier: 'platinum',
+    tradition: 'south-indian',
+    templateId: 'platinum-temple',
+    greeting: 'With the blessings of our elders,\nwe invite you to the wedding of our children.',
+    weddingDate: '2027-04-18T06:30:00+05:30',
+    couple: {
+      groom: { name: 'Prashanth Raman', image: '/art/platinum/groom-portrait.webp', family: 'Son of Mr. Raman Iyer & Mrs. Lakshmi Raman' },
+      bride: { name: 'Aarthi Subramanian', image: '/art/platinum/bride-portrait.webp', family: 'Daughter of Mr. Subramanian & Mrs. Meenakshi Subramanian' },
+    },
+    events: [
+      { title: 'Nichayathartham', description: 'The families exchange vows and betel leaves, and the date is made official.', startsAt: '2027-04-16T18:00:00+05:30', place: 'Sri Meenakshi Kalyana Mandapam', address: 'West Masi Street, Madurai, Tamil Nadu', icon: '🪔', art: 'canopy' },
+      { title: 'Nalangu & Haldi', description: 'Turmeric, laughter and playful rituals with the whole family.', startsAt: '2027-04-17T10:00:00+05:30', place: 'Sri Meenakshi Kalyana Mandapam', address: 'West Masi Street, Madurai, Tamil Nadu', icon: '🌼', art: 'toran' },
+      { title: 'Grand Reception', description: 'An evening of music, blessings and a feast to welcome the couple.', startsAt: '2027-04-17T19:00:00+05:30', place: 'The Gateway Banquet Hall', address: 'Alagar Koil Road, Madurai, Tamil Nadu', icon: '🎶', art: 'floral-arch' },
+      { title: 'Muhurtham', description: 'The sacred hour: the thali is tied and the saptapadi taken.', startsAt: '2027-04-18T06:30:00+05:30', place: 'Sri Meenakshi Kalyana Mandapam', address: 'West Masi Street, Madurai, Tamil Nadu', icon: '🔔', art: 'vivah' },
+    ],
+    rsvp: { whatsapp: '919876543210', replyBy: '2027-04-04T23:59:00+05:30', maxPlusMembers: 5 },
+    gallery: [
+      { src: '/art/platinum/groom-portrait.webp', alt: 'Prashanth in his wedding sherwani' },
+      { src: '/art/platinum/bride-portrait.webp', alt: 'Aarthi in her bridal saree' },
+      { src: '/art/platinum/indian-temple-with-lotus-pond-people.webp', alt: 'The temple courtyard where the families will gather' },
+      { src: '/art/platinum/temple-lanterns.webp', alt: 'A temple hung with lanterns' },
+      { src: '/art/couple/ishani-advait.webp', alt: 'A couple in celebration' },
+    ],
+    story: {
+      image: '/art/platinum/couple-vector.webp',
+      milestones: [
+        { year: '2021', title: 'First Met', text: 'Our families met at a cousin’s wedding in Chennai — a shared plate of idlis and filter coffee turned into hours of easy conversation.' },
+        { year: '2023', title: 'Shared Dreams', text: 'Weekend trips to temple towns, Sunday cooking, long drives and a quiet certainty that we were meant to be.' },
+        { year: '2025', title: 'The Proposal', text: 'With the Meenakshi temple glowing at dusk, Prashanth asked, and Aarthi said Yes!' },
+        { year: '2027', title: 'Forever Begins', text: 'Now we invite you to share our joy as we pledge a lifetime of always to one another.' },
       ],
     },
   },

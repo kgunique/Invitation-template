@@ -50,6 +50,8 @@ export interface ArchTimelineProps {
   title?: string;
   /** The tracked line under the title. */
   subtitle?: string;
+  /** Leave the heading block out, when the page puts its own above the timeline. */
+  heading?: boolean;
   /** The section's own background: any CSS background. Leave it transparent on a page that has its own sky. */
   background?: string;
   /** Palette. Defaults to the Silver cream/plum; a night page passes its own. */
@@ -70,31 +72,37 @@ export function ArchTimeline({
   timeZone = 'Asia/Kolkata',
   title = 'Schedule of Events',
   subtitle = 'An unforgettable celebration awaits',
+  heading = true,
   background = 'transparent',
   colors,
 }: ArchTimelineProps) {
   return (
-    <section style={{ ...sectionVars(colors), background }} className="relative overflow-hidden px-5 pb-20 pt-16">
-      <m.div
-        variants={group}
-        initial="hidden"
-        whileInView="shown"
-        viewport={{ once: true, amount: 0.3 }}
-        className="mx-auto w-full max-w-[420px] text-center"
-      >
-        <m.p variants={fadeUp} className="label uppercase text-invite-metal">
-          {formatDay(weddingDate ?? events[0].startsAt, timeZone)}
-        </m.p>
-        <div className="mt-3">
-          <RevealLine className="display-lg text-invite-ink">{title}</RevealLine>
-        </div>
-        <m.p variants={fadeUp} className="caption mt-3 uppercase tracking-[0.2em] text-ink-muted">
-          {subtitle}
-        </m.p>
-        <GoldDivider className="mt-6" />
-      </m.div>
+    <section
+      style={{ ...sectionVars(colors), background }}
+      className={`relative overflow-hidden px-5 pb-20 ${heading ? 'pt-16' : 'pt-8'}`}
+    >
+      {heading && (
+        <m.div
+          variants={group}
+          initial="hidden"
+          whileInView="shown"
+          viewport={{ once: true, amount: 0.3 }}
+          className="mx-auto w-full max-w-[420px] text-center"
+        >
+          <m.p variants={fadeUp} className="label uppercase text-invite-metal">
+            {formatDay(weddingDate ?? events[0].startsAt, timeZone)}
+          </m.p>
+          <div className="mt-3">
+            <RevealLine className="display-lg text-invite-ink">{title}</RevealLine>
+          </div>
+          <m.p variants={fadeUp} className="caption mt-3 uppercase tracking-[0.2em] text-ink-muted">
+            {subtitle}
+          </m.p>
+          <GoldDivider className="mt-6" />
+        </m.div>
+      )}
 
-      <ol className="relative mx-auto mt-10 w-full max-w-[420px]">
+      <ol className={`relative mx-auto w-full max-w-[420px] ${heading ? 'mt-10' : 'mt-2'}`}>
         {/* The line behind every node, from the first to the last. */}
         <m.span
           aria-hidden

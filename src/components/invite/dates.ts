@@ -31,3 +31,16 @@ export function formatTime(iso: string, timeZone: string, hour12 = false) {
       );
   return text.replace(/\s/g, ' ');
 }
+
+/** "Sunday, 18 October 2026" — the weekday and the full date, in the wedding's own zone. */
+export function formatWeekdayDate(iso: string, timeZone: string) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).formatToParts(new Date(iso));
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+  return `${get('weekday')}, ${get('day')} ${get('month')} ${get('year')}`;
+}

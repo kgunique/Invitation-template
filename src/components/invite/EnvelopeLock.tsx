@@ -1,13 +1,11 @@
 'use client';
 
 import type { CSSProperties, ReactNode } from 'react';
-import { useEffect, useRef, useState } from 'react';
 import { m } from 'motion/react';
 import { EASE } from '@/styles/motion';
 import { EnvelopeIcon } from './icons';
-import { scrollToTop } from './scrollToTop';
-
-type Stage = 'closed' | 'opening' | 'open' | 'revealed';
+import { SnakePaths } from './SnakePaths';
+import { useOpenSequence } from './useOpenSequence';
 
 export interface EnvelopeLockColors {
   /** The eyebrow, the envelope's outline and X lines, the snake and the tap button. */
@@ -77,16 +75,6 @@ const DEFAULT_COLORS: EnvelopeLockColors = {
   letterInk: '#4a3410',
 };
 
-// A snake: long and faint at the tail, short and bright at the head. Each lap
-// the shorter ones are started a little further along (a negative animation
-// delay, see .amb-snake in motion.css), so all the heads stay level.
-const SNAKE = [
-  { len: 24, width: 1.4, opacity: 0.25 },
-  { len: 14, width: 2, opacity: 0.55 },
-  { len: 6, width: 2.8, opacity: 1 },
-];
-const SNAKE_LONGEST = Math.max(...SNAKE.map((s) => s.len));
-
 /**
  * A full-screen envelope gate: a sealed envelope with a title above it and a
  * "tap to open" pill below, and a light running round its edge like a snake.
@@ -117,45 +105,12 @@ export function EnvelopeLock({
   onOpen,
   onOpened,
 }: EnvelopeLockProps) {
-  const [stage, setStage] = useState<Stage>('closed');
   const c = { ...DEFAULT_COLORS, ...colors };
-
-  const onOpenRef = useRef(onOpen);
-  const onOpenedRef = useRef(onOpened);
-  useEffect(() => {
-    onOpenRef.current = onOpen;
-    onOpenedRef.current = onOpened;
-  });
-
-  // Timer-driven, like SimpleLock: the cover is full screen, so it must never
-  // depend on an animation callback that might not fire (hidden tab, reduced motion).
-  useEffect(() => {
-    if (stage === 'opening') {
-      const id = setTimeout(() => {
-        onOpenRef.current?.();
-        setStage('open');
-      }, openMs);
-      return () => clearTimeout(id);
-    }
-    if (stage === 'open') {
-      const id = setTimeout(() => {
-        setStage('revealed');
-        onOpenedRef.current?.();
-      }, fadeMs);
-      return () => clearTimeout(id);
-    }
-  }, [stage, openMs, fadeMs]);
+  const { stage, opening, fading, open } = useOpenSequence({ openMs, fadeMs, onOpen, onOpened });
 
   if (stage === 'revealed') return null;
 
-  const opening = stage !== 'closed';
   const lap = snake ? snake.duration ?? 6 : 6;
-
-  function open() {
-    if (stage !== 'closed') return;
-    scrollToTop();
-    setStage('opening');
-  }
 
   const vars = { '--invite-metal': c.accent, '--invite-ink': c.ink } as CSSProperties;
 
@@ -163,7 +118,7 @@ export function EnvelopeLock({
     <m.div
       style={{ ...vars, pointerEvents: stage === 'closed' ? 'auto' : 'none' }}
       className="fixed inset-[0] z-content flex flex-col items-center justify-center px-3 text-center"
-      animate={{ opacity: stage === 'open' ? 0 : 1 }}
+      animate={{ opacity: fading ? 0 : 1 }}
       transition={{ duration: fadeMs / 1000 }}
     >
       <div className="flex w-full flex-col items-center" style={{ maxWidth: width }}>
@@ -223,28 +178,7 @@ export function EnvelopeLock({
               animate={{ opacity: opening ? 0 : 1 }}
               transition={{ duration: 0.3 }}
             >
-              {SNAKE.map((s) => (
-                <rect
-                  key={s.len}
-                  className="amb-snake"
-                  x="0"
-                  y="0"
-                  width="300"
-                  height="200"
-                  pathLength={100}
-                  stroke={c.accent}
-                  strokeOpacity={s.opacity}
-                  strokeWidth={s.width}
-                  strokeLinecap="round"
-                  strokeDasharray={`${s.len} ${100 - s.len}`}
-                  style={
-                    {
-                      '--snake-dur': `${lap}s`,
-                      animationDelay: `${(-((SNAKE_LONGEST - s.len) / 100) * lap).toFixed(3)}s`,
-                    } as CSSProperties
-                  }
-                />
-              ))}
+              <SnakePaths d="M0 0H300V200H0Z" color={c.accent} duration={lap} />
             </m.svg>
           )}
 

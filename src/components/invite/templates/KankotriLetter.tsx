@@ -6,53 +6,9 @@ import { m } from 'motion/react';
 import { EASE } from '@/styles/motion';
 import { GoldDivider } from '../GoldDivider';
 import { RevealLine, fadeUp, lineGroup } from '../RevealLines';
+import { TornEdge } from '../TornEdge';
 
 const ARCH_IMAGE = '/art/couple/floral-archway-with-lilac-peach-blossoms.png';
-
-/** Deterministic 0..1 hash of an integer — integer ops only, so the server
- * and every browser engine produce byte-identical clip-paths (no Math.random,
- * and no Math.sin, whose last bits can differ between engines). */
-function hash(n: number) {
-  let x = Math.imul(n ^ 0x9e3779b9, 0x85ebca6b);
-  x ^= x >>> 13;
-  x = Math.imul(x, 0xc2b2ae35);
-  x ^= x >>> 16;
-  return (x >>> 0) / 4294967296;
-}
-
-/** Smooth 1-D value noise in -0.5..0.5: random lattice values, eased between. */
-function noise(t: number, freq: number, seed: number) {
-  const p = t * freq;
-  const i = Math.floor(p);
-  const f = p - i;
-  const u = f * f * (3 - 2 * f);
-  const a = hash(i + seed * 7919);
-  const b = hash(i + 1 + seed * 7919);
-  return a + (b - a) * u - 0.5;
-}
-
-/** A ragged BOTTOM edge as a clip-path polygon (flat top, torn bottom). Four
- * octaves of smooth noise — broad swells down to a fine fibre fray — so it
- * wanders like real torn paper rather than repeating like a saw. `base` is the
- * mean depth of the tear in px; `amp` is how far it strays either side. */
-function tornBottom(seed: number, base: number, amp: number, steps = 160) {
-  const points: string[] = [];
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps;
-    const wander =
-      noise(t, 6, seed) + 0.55 * noise(t, 17, seed + 1) + 0.3 * noise(t, 47, seed + 2) + 0.15 * noise(t, 130, seed + 3);
-    points.push(`${(t * 100).toFixed(2)}% ${(base + amp * wander).toFixed(1)}px`);
-  }
-  // Top corners first, then the ragged edge back from right to left.
-  return `polygon(0% 0px, 100% 0px, ${points.reverse().join(', ')})`;
-}
-
-// The hero's white page, torn: SHEET_EDGE is the white's own tear (about 4–44px
-// deep in a 48px band); RIM_EDGE is the paper's darker fibrous core, torn ~5px
-// lower with its own noise, so a thin uneven band of it shows under the white
-// along the whole edge.
-const SHEET_EDGE = tornBottom(1, 24, 20);
-const RIM_EDGE = tornBottom(5, 29, 20);
 
 // Same reasoning as the hero: this is a light paper sheet whatever the visitor's
 // OS theme, so its ink is pinned.
@@ -103,24 +59,9 @@ export function KankotriLetter({
       style={{ ...LETTER_COLORS, background: 'linear-gradient(to bottom, #fbf7ef calc(100% - 64px), #ffffff)' }}
       className="relative -mt-16 overflow-hidden"
     >
-      {/* The torn white sheet. The shadow filter is on this wrapper, not the
-          clipped layers: a filter on the same element as a clip-path would be
-          clipped away with it. The sheet's white is the hero's white, so it
-          merges upward with no seam and the shadow falls on the cream below. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-[0] top-[0] h-[56px]"
-        style={{ filter: 'drop-shadow(0 4px 5px rgba(74, 50, 30, 0.22))' }}
-      >
-        <div
-          className="absolute inset-x-[0] top-[0] h-[56px]"
-          style={{ clipPath: RIM_EDGE, background: '#efe5d3' }}
-        />
-        <div
-          className="absolute inset-x-[0] top-[0] h-[50px]"
-          style={{ clipPath: SHEET_EDGE, background: '#ffffff' }}
-        />
-      </div>
+      {/* The torn white sheet: the hero's white, so it merges upward with no seam,
+          and the shadow falls on the cream below. */}
+      <TornEdge sheet="#ffffff" rim="#efe5d3" />
 
       {/* pt-16: starts the arch below the deepest bite of the tear. pb-20 also
           leaves the divider clear of the floating bar if this is ever the last

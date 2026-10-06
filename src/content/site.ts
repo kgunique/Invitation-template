@@ -9,6 +9,7 @@ export const TEMPLATE_NAMES = {
   'gujarati-kankotri': 'Floral Swing Kankotri',
   'gujarati-kankotri-yellow': 'Floral Swing Kankotri (Yellow Gate)',
   'gold-envelope': 'Starlit Envelope',
+  'platinum-temple': 'Divine Temple Cinematic',
 } as const;
 
 /** Digits only, with the country code (91 = India), as wa.me wants it. */

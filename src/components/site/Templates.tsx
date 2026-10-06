@@ -10,11 +10,10 @@ import { FloralCorners } from './FloralAtmosphere';
 import { SectionHeading } from './SectionHeading';
 import { ArrowRightIcon, ChatIcon, EyeIcon, SparkleIcon } from './icons';
 
-// Silver and Gold are real templates: their screens are screenshots of the live
-// invites at /ishani-weds-advait and /lily-weds-ethan (the screen a guest taps,
-// then the invite it opens to), and Preview opens that page. Platinum is still
-// demo art, not the illustrated mock — it shows what a photo-based template
-// looks like. Unsplash License (free for commercial use).
+// Every card is a real template: its screens are screenshots of the live invite
+// (the screen a guest taps, then the invite it opens to), and Preview opens that
+// page. To refresh a card after its template changes, retake the two screenshots
+// at 375x812 into public/templates/ (see ai-doc/rule.md, "Gallery screenshots").
 const FEATURED = [
   {
     tier: 'silver',
@@ -39,10 +38,11 @@ const FEATURED = [
   {
     tier: 'platinum',
     tradition: 'south-indian',
-    couple: 'Priya & Akshar',
-    initials: 'P&A',
-    name: 'Divine Temple Cinematic',
-    screens: { cover: '/templates/priya-akshar-cover.webp', preview: '/templates/priya-akshar-preview.webp' },
+    couple: 'Aarthi & Prashanth',
+    initials: 'A&P',
+    name: TEMPLATE_NAMES['platinum-temple'],
+    slug: 'aarthi-weds-prashanth',
+    screens: { cover: '/templates/aarthi-prashanth-invite.webp', preview: '/templates/aarthi-prashanth-gate.webp' },
   },
 ] satisfies {
   tier: TierId;

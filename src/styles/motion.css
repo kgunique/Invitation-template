@@ -22,7 +22,8 @@
 }
 
 /* Leaves, fronds, hanging garlands. Give siblings different durations and
-   negative delays, or they sway in lockstep and read as one flat object. */
+   negative delays, or they sway in lockstep and read as one flat object.
+   --sway-angle is how far it leans either way (2.2deg; a big leaf wants more). */
 .amb-sway {
   transform-box: fill-box;
   transform-origin: bottom center;
@@ -30,8 +31,74 @@
 }
 .amb-sway--hang { transform-origin: top center; }
 @keyframes amb-sway {
-  0%, 100% { transform: rotate(-2.2deg); }
-  50%      { transform: rotate(2.2deg); }
+  0%, 100% { transform: rotate(calc(var(--sway-angle, 2.2deg) * -1)); }
+  50%      { transform: rotate(var(--sway-angle, 2.2deg)); }
+}
+
+/* A limb that swings to and fro from its top, like a leg taking a step or an
+   ear flapping: --limb-angle (8deg) either way, --limb-dur (one way across),
+   --limb-delay (a negative one of a whole --limb-dur puts a second limb in the
+   opposite phase) and --limb-origin (where it hangs from: top center). Put it on
+   an SVG group. */
+.amb-limb {
+  transform-box: fill-box;
+  transform-origin: var(--limb-origin, top center);
+  animation: amb-limb var(--limb-dur, 0.8s) ease-in-out var(--limb-delay, 0s) infinite alternate;
+}
+@keyframes amb-limb {
+  from { transform: rotate(calc(var(--limb-angle, 8deg) * -1)); }
+  to   { transform: rotate(var(--limb-angle, 8deg)); }
+}
+
+/* A body bobbing as it walks: up --bob-y and back every --bob-dur. Set --bob-dur
+   to half a --limb-dur and it bobs once for each step. */
+.amb-bob { animation: amb-bob var(--bob-dur, 0.4s) ease-in-out var(--bob-delay, 0s) infinite alternate; }
+@keyframes amb-bob {
+  from { transform: translateY(0); }
+  to   { transform: translateY(var(--bob-y, -1.4px)); }
+}
+
+/* A little hop: it lifts --hop-y (14px), comes down with a soft squash, gives a
+   second, smaller hop and rests, over --hop-dur. */
+.amb-hop { transform-origin: 50% 100%; animation: amb-hop var(--hop-dur, 2.2s) cubic-bezier(0.3, 0, 0.4, 1) infinite; }
+@keyframes amb-hop {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  10% { transform: translateY(0) scale(1.05, 0.93); }
+  38% { transform: translateY(calc(var(--hop-y, 14px) * -1)) scale(0.97, 1.05); }
+  60% { transform: translateY(0) scale(1.04, 0.95); }
+  72% { transform: translateY(calc(var(--hop-y, 14px) * -0.22)) scale(1, 1); }
+  84% { transform: translateY(0) scale(1, 1); }
+}
+
+/* The bars of an equaliser: each grows and shrinks from its foot. */
+.amb-eq { transform-origin: 50% 100%; animation: amb-eq var(--eq-dur, 0.9s) ease-in-out var(--eq-delay, 0s) infinite alternate; }
+@keyframes amb-eq {
+  from { transform: scaleY(0.25); }
+  to   { transform: scaleY(1); }
+}
+
+/* A very slow camera drift over a picture (a few percent of zoom, a few of
+   pan), back and forth. Put it on the picture inside a clipping frame. */
+.amb-drift { animation: amb-drift var(--drift-dur, 22s) ease-in-out infinite alternate; }
+@keyframes amb-drift {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.09) translate(-1.2%, -1.6%); }
+}
+
+/* A slanted band of light that crosses a picture now and then, then waits.
+   Give it a clipping parent and a width; --sheen-dur is the whole cycle. */
+.amb-sheen { animation: amb-sheen var(--sheen-dur, 8s) ease-in-out infinite; }
+@keyframes amb-sheen {
+  0%, 50% { transform: translateX(-160%) skewX(-18deg); }
+  100%    { transform: translateX(380%) skewX(-18deg); }
+}
+
+/* The wheel of a "scroll down" mouse: a notch that runs down and fades. */
+.amb-wheel { animation: amb-wheel 1.6s ease-in infinite; }
+@keyframes amb-wheel {
+  0%   { transform: translateY(0);    opacity: 1; }
+  70%  { transform: translateY(13px); opacity: 0; }
+  100% { transform: translateY(13px); opacity: 0; }
 }
 
 /* Diya and candle flames. */
@@ -81,8 +148,10 @@
   100% { opacity: 0;    transform: translate(var(--dx, 0px), var(--dy, 100vh)) rotate(var(--spin, 360deg)) scale(2); }
 }
 
-/* Slow rotation for mandalas and rosettes. */
-.amb-turn { animation: amb-turn 90s linear infinite; }
+/* Slow rotation for mandalas and rosettes. --turn-dur is one full turn;
+   --turn-dir is "reverse" for the other way round (a pair that mirror each
+   other turn opposite ways). */
+.amb-turn { animation: amb-turn var(--turn-dur, 90s) linear infinite; animation-direction: var(--turn-dir, normal); }
 @keyframes amb-turn { to { transform: rotate(360deg); } }
 
 /* Spinner ring on the boot loader. Faster and directional, unlike the ambient
@@ -153,6 +222,54 @@
   to   { stroke-dashoffset: -100; }
 }
 
+/* Glow, three ways. --glow is the colour and --glow-dur the breath (2.6s):
+   .amb-glow-ring  a ring whose box-shadow swells and settles,
+   .amb-halo       a copy of the ring that ripples outward and fades,
+   .amb-glow-text  text whose brightness and halo breathe together. */
+.amb-glow-ring { animation: amb-glow-ring var(--glow-dur, 2.6s) ease-in-out infinite; }
+@keyframes amb-glow-ring {
+  0%, 100% {
+    box-shadow: 0 0 10px 1px color-mix(in srgb, var(--glow, #e0b04a) 55%, transparent),
+      inset 0 0 8px color-mix(in srgb, var(--glow, #e0b04a) 35%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 26px 7px color-mix(in srgb, var(--glow, #e0b04a) 75%, transparent),
+      inset 0 0 16px color-mix(in srgb, var(--glow, #e0b04a) 55%, transparent);
+  }
+}
+
+.amb-halo { animation: amb-halo var(--glow-dur, 2.6s) ease-out infinite; }
+@keyframes amb-halo {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  100% { transform: scale(1.38); opacity: 0; }
+}
+
+/* A soft halo that breathes: its opacity swells and settles between
+   --breathe-from and --breathe-to over --breathe-dur. Put it on a copy of a line
+   drawn wider and blurred (or just wider and faint) under the line itself. */
+.amb-breathe { animation: amb-breathe var(--breathe-dur, 2.8s) ease-in-out infinite alternate; }
+@keyframes amb-breathe {
+  from { opacity: var(--breathe-from, 0.2); }
+  to   { opacity: var(--breathe-to, 0.65); }
+}
+
+.amb-glow-text { animation: amb-glow-text var(--glow-dur, 2.6s) ease-in-out infinite; }
+/* The colour breathes too (deep gold to bright gold), because a glow alone is
+   hard to see on a pale background. */
+@keyframes amb-glow-text {
+  0%, 100% {
+    color: color-mix(in srgb, var(--glow, #e0b04a) 82%, #3a2606);
+    text-shadow: 0 0 3px color-mix(in srgb, var(--glow, #e0b04a) 40%, transparent),
+      0 0 8px color-mix(in srgb, var(--glow, #e0b04a) 30%, transparent);
+  }
+  50% {
+    color: color-mix(in srgb, var(--glow, #e0b04a) 55%, #ffc83d);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--glow, #e0b04a) 95%, transparent),
+      0 0 16px color-mix(in srgb, var(--glow, #e0b04a) 80%, transparent),
+      0 0 30px color-mix(in srgb, #ffc83d 60%, transparent);
+  }
+}
+
 /* A heart that beats: two quick pulses, then a rest. */
 .amb-beat { animation: amb-beat 1.8s ease-in-out infinite; }
 @keyframes amb-beat {
@@ -184,11 +301,23 @@
   .amb-swing-depth,
   .amb-twinkle,
   .amb-snake,
+  .amb-glow-ring,
+  .amb-halo,
+  .amb-glow-text,
+  .amb-breathe,
+  .amb-wheel,
+  .amb-drift,
+  .amb-limb,
+  .amb-bob,
+  .amb-hop,
+  .amb-eq,
+  .amb-sheen,
   .amb-beat,
   .amb-bounce {
     animation: none !important;
   }
   .amb-fall,
+  .amb-sheen,
   .amb-petal { opacity: 0; }
   /* Sparkles rest where they would have landed, as plain decoration. */
   .amb-spark { opacity: 0.8; transform: translate(var(--sx, 0px), var(--sy, -40px)); }

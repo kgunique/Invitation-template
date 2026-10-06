@@ -29,6 +29,10 @@ export default async function InvitePage({ params }: { params: Promise<{ slug: s
       rsvp={invite.rsvp}
       location={invite.location}
       registry={invite.registry}
+      couple={invite.couple}
+      story={invite.story}
+      gallery={invite.gallery}
+      thankYou={invite.thankYou}
     />
   );
 }

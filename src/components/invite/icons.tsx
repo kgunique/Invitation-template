@@ -99,3 +99,91 @@ export function PauseIcon(p: IconProps) {
     </svg>
   );
 }
+
+export function ClockIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className={p.className}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </svg>
+  );
+}
+
+export function CalendarPlusIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={p.className}>
+      <rect x="3" y="5" width="18" height="16" rx="2.5" />
+      <path d="M3 10h18M8 3v4M16 3v4M12 13v5M9.5 15.5h5" />
+    </svg>
+  );
+}
+
+export function ChevronRightIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={p.className}>
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+export function CloseIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className={p.className}>
+      <path d="M6 6l12 12M18 6L6 18" />
+    </svg>
+  );
+}
+
+export function ExpandIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={p.className}>
+      <path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" />
+    </svg>
+  );
+}
+
+export function UserIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className={p.className}>
+      <circle cx="12" cy="8" r="3.6" />
+      <path d="M4.5 20c.8-4 3.7-6 7.5-6s6.7 2 7.5 6" />
+    </svg>
+  );
+}
+
+export function UsersIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className={p.className}>
+      <circle cx="9" cy="8.5" r="3.2" />
+      <path d="M2.8 19.5c.6-3.4 3-5.2 6.2-5.2s5.6 1.8 6.2 5.2M16 5.6a3.2 3.2 0 010 6M18 14.6c1.8.6 3 2.2 3.4 4.6" />
+    </svg>
+  );
+}
+
+export function SendIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={p.className}>
+      <path d="M21 3L10 14M21 3l-7 18-4-7-7-4 18-7z" />
+    </svg>
+  );
+}
+
+export function WhatsAppIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="currentColor" className={p.className}>
+      <path d="M12 2.2a9.8 9.8 0 00-8.4 14.8L2.3 21.8l4.9-1.3A9.8 9.8 0 1012 2.2zm0 1.8a8 8 0 11-4.2 14.8l-.3-.2-2.8.8.8-2.7-.2-.3A8 8 0 0112 4zm-3 3.6c-.2 0-.5.1-.7.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 2.4 1 2.9.8 3.4.7.6 0 1.7-.7 1.9-1.4.2-.6.2-1.2.2-1.4l-.5-.3-1.7-.8c-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1-.3-.1-1.1-.4-2.1-1.3-.8-.7-1.3-1.5-1.4-1.8-.2-.2 0-.4.1-.5l.4-.5.3-.4c.1-.2.1-.3 0-.5l-.8-2c-.2-.5-.4-.4-.6-.4z" />
+    </svg>
+  );
+}
+
+/** A musical note; with `off`, a slash through it. */
+export function MusicIcon({ className, off = false }: IconProps & { off?: boolean }) {
+  return (
+    <svg {...base} width={20} height={20} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M9 18V6l10-2v12" />
+      <circle cx="6.5" cy="18" r="2.6" />
+      <circle cx="16.5" cy="16" r="2.6" />
+      {off && <path d="M3 3l18 18" strokeWidth="2.2" />}
+    </svg>
+  );
+}

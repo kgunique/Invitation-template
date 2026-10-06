@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { m } from 'motion/react';
 import { formatDay } from './dates';
 import { Petals } from './Petals';
 import { RevealLine, fadeUp, lineGroup } from './RevealLines';
 import { ScratchCard } from './ScratchCard';
 import { sectionVars, type SectionColors } from './sectionTheme';
+import { useCountdown } from './useCountdown';
 
 // Gold -> coral -> rose -> lilac: the marigold, rani and lilac of the Silver
 // invite, as one foil.
@@ -22,26 +23,15 @@ const CORNERS = [
   'bottom-3 right-3 border-b-2 border-r-2 rounded-br-lg',
 ] as const;
 
-const pad = (n: number) => String(n).padStart(2, '0');
-
 /** The countdown card. Ticks on its own, so the scratch card around it never
- * re-renders each second. Until mounted it shows zeros — the real time can't
- * be known on the server, and a guess would mismatch on hydration. */
+ * re-renders each second. */
 function CountdownFace({ weddingDate, venue, timeZone }: { weddingDate: string; venue?: string; timeZone: string }) {
-  const [now, setNow] = useState<number | null>(null);
-
-  useEffect(() => {
-    setNow(Date.now());
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, []);
-
-  const left = now === null ? 0 : Math.max(0, new Date(weddingDate).getTime() - now);
+  const left = useCountdown(weddingDate);
   const units = [
-    { label: 'Days', value: String(Math.floor(left / 86_400_000)).padStart(2, '0') },
-    { label: 'Hours', value: pad(Math.floor(left / 3_600_000) % 24) },
-    { label: 'Minutes', value: pad(Math.floor(left / 60_000) % 60) },
-    { label: 'Seconds', value: pad(Math.floor(left / 1000) % 60) },
+    { label: 'Days', value: left.days },
+    { label: 'Hours', value: left.hours },
+    { label: 'Minutes', value: left.minutes },
+    { label: 'Seconds', value: left.seconds },
   ];
 
   return (

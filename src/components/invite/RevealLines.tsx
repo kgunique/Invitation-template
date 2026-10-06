@@ -36,7 +36,7 @@ export const fadeUp = {
  * would otherwise shave ascenders and descenders) without moving the layout. */
 export function RevealLine({ className, children }: { className: string; children: ReactNode }) {
   return (
-    <span className="-my-2 block overflow-hidden py-2">
+    <span className="-mx-3 -my-2 block overflow-hidden px-3 py-2">
       <m.span variants={lineRise} className={`block ${className}`}>
         {children}
       </m.span>

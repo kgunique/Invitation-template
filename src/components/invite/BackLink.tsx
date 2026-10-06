@@ -5,6 +5,10 @@ const TONES = {
   // On a dark overlay or night page: a gold outline on a darkened pill. It reads
   // --invite-metal and --invite-ground, so the screen around it decides the colours.
   gate: 'border border-[color-mix(in_srgb,var(--invite-metal)_50%,transparent)] bg-[color-mix(in_srgb,var(--invite-ground)_80%,transparent)] text-invite-metal',
+  // Over a photograph: a solid pill in --invite-ground (a deep maroon, say) with
+  // light text and a gold hairline, so it reads on sky or on shadow alike.
+  solid:
+    'border border-[color-mix(in_srgb,var(--invite-metal)_70%,transparent)] bg-[var(--invite-ground)] text-[#fff8ea] shadow-md',
   // On a light page: dark ink on a pale pill with a hairline. Reads --surface-page,
   // --ink-strong and --line-firm.
   page: 'bg-[color-mix(in_srgb,var(--surface-page)_80%,transparent)] text-ink-strong shadow-[inset_0_0_0_1.5px_var(--line-firm)]',
