@@ -12,6 +12,8 @@ export interface HeroSlide {
   /** A screenshot of the real invite, shown full-bleed in the phone. Omit and
    * the phone shows the placeholder card (initials, names, venue). */
   screen?: string;
+  /** The invite's route, when it is not `bride-weds-groom` (a template whose sample puts the groom first). */
+  slug?: string;
 }
 
 export const HERO_SLIDES: HeroSlide[] = [
@@ -39,11 +41,20 @@ export const HERO_SLIDES: HeroSlide[] = [
     tradition: 'south-indian',
     screen: '/templates/aarthi-prashanth-gate.webp',
   },
+  {
+    bride: 'Neha',
+    groom: 'Karan',
+    venue: 'Shri Kedareshwar Mandir Gardens, Rishikesh',
+    tier: 'platinum',
+    tradition: 'contemporary',
+    screen: '/templates/karan-neha-rudra-gate.webp',
+    slug: 'karan-weds-neha-rudra',
+  },
 ];
 
-/** e.g. "lily-weds-ethan" — the invite route for this slide (bride, then groom). */
+/** e.g. "lily-weds-ethan" — the invite route for this slide (bride, then groom, unless the slide names its own). */
 export function slideSlug(slide: HeroSlide): string {
-  return `${slide.bride.toLowerCase()}-weds-${slide.groom.toLowerCase()}`;
+  return slide.slug ?? `${slide.bride.toLowerCase()}-weds-${slide.groom.toLowerCase()}`;
 }
 
 export function slideInitials(slide: HeroSlide): string {

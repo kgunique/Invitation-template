@@ -23,6 +23,13 @@ export interface QuoteSectionProps {
   sides?: ReactNode;
   /** Artwork along the foot of the section, full width and flush with its bottom edge (a skyline, say). */
   scene?: ReactNode;
+  /** A small ornament above the words. */
+  icon?: ReactNode;
+  /** Replace the words' look (default: large italic display serif) and the label's (default: tracked small caps) with your own classes, e.g. a Devanagari face. */
+  quoteClassName?: string;
+  labelClassName?: string;
+  /** The language of the section (`"hi"`). */
+  lang?: string;
   /** What the card is filled with: any CSS background. Defaults to a translucent wash of `colors.raised`, so the page shows through. */
   cardBackground?: string;
   /** The section's own background: any CSS background. Leave it transparent on a page that has its own paper. */
@@ -43,12 +50,16 @@ export function QuoteSection({
   label = 'A Divine Promise',
   sides,
   scene,
+  icon,
+  quoteClassName,
+  labelClassName,
+  lang,
   cardBackground,
   background = 'transparent',
   colors,
 }: QuoteSectionProps) {
   return (
-    <section style={{ ...sectionVars(colors), background }} className="relative overflow-hidden px-5 pt-16">
+    <section lang={lang} style={{ ...sectionVars(colors), background }} className="relative overflow-hidden px-5 pt-16">
       <m.div
         variants={group}
         initial="hidden"
@@ -66,10 +77,18 @@ export function QuoteSection({
             borderColor: 'color-mix(in srgb, var(--invite-metal) 22%, transparent)',
           }}
         >
-          <blockquote className="body-lg italic text-invite-ink" style={{ fontFamily: 'var(--font-display)', fontWeight: 400 }}>
+          {icon && (
+            <span aria-hidden className="mb-3 flex justify-center text-invite-metal">
+              {icon}
+            </span>
+          )}
+          <blockquote
+            className={quoteClassName ?? 'body-lg italic text-invite-ink'}
+            style={quoteClassName ? undefined : { fontFamily: 'var(--font-display)', fontWeight: 400 }}
+          >
             “{quote}”
           </blockquote>
-          <figcaption className="invite-eyebrow mt-5 text-invite-metal">— {label}</figcaption>
+          <figcaption className={labelClassName ?? 'invite-eyebrow mt-5 text-invite-metal'}>— {label}</figcaption>
         </m.figure>
       </m.div>
 

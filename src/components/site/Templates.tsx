@@ -65,7 +65,7 @@ export function Templates({ templates }: { templates: TemplateListing[] }) {
               A sample across tiers and traditions. Every design is in the full collection.
             </p>
 
-            <div className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2 lg:grid lg:grid-cols-3 lg:overflow-visible lg:pb-[0]">
+            <div className="mt-8 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2 lg:grid lg:grid-cols-2 lg:overflow-visible xl:grid-cols-4 lg:pb-[0]">
               {templates.map((t) => (
                 <TemplateCard key={t.id} listing={t} className="w-[85%] shrink-0 snap-center sm:w-[60%] lg:w-auto" />
               ))}

@@ -85,6 +85,15 @@
   to   { transform: scale(1.09) translate(-1.2%, -1.6%); }
 }
 
+/* A cloud crossing the sky from left to right, over and over, at its own pace.
+   --cloud-from / --cloud-to are how far it starts and ends, as a share of its own width,
+   so the caller sets them from the cloud's width to carry it across the whole sky. */
+.amb-cloud { animation: amb-cloud var(--cloud-dur, 80s) linear var(--cloud-delay, 0s) infinite; }
+@keyframes amb-cloud {
+  from { transform: translateX(var(--cloud-from, -110%)); }
+  to   { transform: translateX(var(--cloud-to, 300%)); }
+}
+
 /* A slanted band of light that crosses a picture now and then, then waits.
    Give it a clipping parent and a width; --sheen-dur is the whole cycle. */
 .amb-sheen { animation: amb-sheen var(--sheen-dur, 8s) ease-in-out infinite; }
@@ -222,6 +231,28 @@
   to   { stroke-dashoffset: -100; }
 }
 
+/* Water running along a path: draw the path with a dashed stroke (--flow-by is the
+   length of one dash + gap, as a plain number, negative to run the way the path is
+   drawn) and the dashes slide along it, forever. --flow-dur is one cycle. */
+.amb-flow { animation: amb-flow var(--flow-dur, 0.8s) linear infinite; }
+@keyframes amb-flow {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: var(--flow-by, -40); }
+}
+
+/* A ripple ring on still water: swells from the middle of its box and fades.
+   --ripple-dur is the cycle; a (negative) --ripple-delay staggers a set of them. */
+.amb-ripple {
+  animation: amb-ripple var(--ripple-dur, 4s) ease-out var(--ripple-delay, 0s) infinite both;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes amb-ripple {
+  0%   { opacity: 0;   transform: scale(0.4); }
+  18%  { opacity: 0.7; }
+  100% { opacity: 0;   transform: scale(1); }
+}
+
 /* Glow, three ways. --glow is the colour and --glow-dur the breath (2.6s):
    .amb-glow-ring  a ring whose box-shadow swells and settles,
    .amb-halo       a copy of the ring that ripples outward and fades,
@@ -301,12 +332,15 @@
   .amb-swing-depth,
   .amb-twinkle,
   .amb-snake,
+  .amb-flow,
+  .amb-ripple,
   .amb-glow-ring,
   .amb-halo,
   .amb-glow-text,
   .amb-breathe,
   .amb-wheel,
   .amb-drift,
+  .amb-cloud,
   .amb-limb,
   .amb-bob,
   .amb-hop,

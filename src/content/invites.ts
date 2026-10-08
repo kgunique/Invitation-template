@@ -94,6 +94,11 @@ export interface InviteMilestone {
   title: string;
   /** A sentence or two. */
   text: string;
+  /** Optional extras for a timeline that shows them: the chapter label ("अध्याय १"), an italic line under the title, and a footer tag and note. */
+  label?: string;
+  subtitle?: string;
+  tag?: string;
+  note?: string;
 }
 
 /** The "How we met" section: the couple's illustration and their milestones. */
@@ -315,6 +320,47 @@ export const INVITES: InviteRecord[] = [
         { year: '2023', title: 'Shared Dreams', text: 'Weekend trips to temple towns, Sunday cooking, long drives and a quiet certainty that we were meant to be.' },
         { year: '2025', title: 'The Proposal', text: 'With the Meenakshi temple glowing at dusk, Prashanth asked, and Aarthi said Yes!' },
         { year: '2027', title: 'Forever Begins', text: 'Now we invite you to share our joy as we pledge a lifetime of always to one another.' },
+      ],
+    },
+  },
+  {
+    // The Rudra sample: a Shiva-themed invitation. (karan-weds-neha is the unfinished Yellow Gate sample.)
+    slug: 'karan-weds-neha-rudra',
+    bride: 'Neha',
+    groom: 'Karan',
+    venue: 'Shri Kedareshwar Mandir Gardens, Rishikesh',
+    tier: 'platinum',
+    tradition: 'contemporary',
+    templateId: 'rudra',
+    greeting: 'With the blessings of Lord Shiva,\nwe invite you to celebrate our wedding.',
+    weddingDate: '2027-02-21T19:00:00+05:30',
+    // Written in Hindi, as the printed card is.
+    couple: {
+      groom: {
+        name: 'करण कुमार',
+        blessing: 'आयुष्मान्',
+        image: '/art/rudra/groom-portrait.webp',
+        family: 'सुपौत्र: स्व० चाँदी देवी एवं स्व० गंगा विशुन साह\nप्रथम सुपुत्र: श्रीमती निलू देवी एवं श्री सुधीर कुमार\nबुजरा, पहलवान घाट, पटना',
+      },
+      bride: {
+        name: 'नेहा कुमारी',
+        blessing: 'आयुष्मती',
+        image: '/art/rudra/bride-portrait.webp',
+        family: 'सुपुत्री: श्रीमती सुनैना देवी एवं श्री सुनील कुमार साह\nग्राम + पो० – पभेर',
+      },
+    },
+    // The programme of the printed card (the times of the first two are placeholders: the card gives only the day).
+    events: [
+      { title: 'सत्यनारायण पूजा', description: 'मण्डपाच्छादन एवं हल्दी कलश', startsAt: '2027-02-19T10:00:00+05:30', place: 'वर निवास, दुजरा ', address: 'पहलवान घाट, पटना', art: 'haldi', icon: '🌼' },
+      { title: 'घृतधारी एवं देवपूजा', description: '', startsAt: '2027-02-20T09:00:00+05:30', place: 'वर निवास, दुजरा', address: 'पहलवान घाट, पटना', art: 'dev', icon: '🔱' },
+      { title: 'बारात प्रस्थान एवं शुभ विवाह', description: 'रात्रि में शुभ विवाह', startsAt: '2027-02-21T18:00:00+05:30', place: 'रूपा मैरेज हॉल', address: 'आलमगंज, गायघाट, पटना', art: 'vivah', icon: '🪔' },
+      { title: 'वर-वधू स्वागत समारोह', description: 'एवं प्रीतिभोज', startsAt: '2027-02-24T19:30:00+05:30', place: 'सदाकत आश्रम', address: 'बिहार विद्यापीठ, पटना-10', art: 'swagat', icon: '🎉' },
+    ],
+    story: {
+      milestones: [
+        { year: '2022', label: 'अध्याय १', title: 'नियति का मिलन', subtitle: 'ब्रह्मांडीय संयोग', text: 'पावन मंत्रों की शांत आभा के बीच हमारे रास्ते यूँ मिले, मानो ब्रह्मांड ने पहले से ही लिख रखा हो।', tag: 'पहली झलक', note: 'पावन पड़ाव' },
+        { year: '2023', label: 'अध्याय २', title: 'पावन वचन', subtitle: 'संध्या की घंटियाँ और एक अटूट “हाँ”', text: 'मंदिर की घंटियों और संध्या के दीपों के बीच करण ने पूछा और नेहा ने कहा — हाँ!', tag: 'प्रस्ताव', note: 'पावन पड़ाव' },
+        { year: '2024', label: 'अध्याय ३', title: 'कृपा का शाश्वत बंधन', subtitle: 'सात वचन, अनंत तक', text: 'महादेव और माता गौरी के दिव्य आशीर्वाद से, हम एक शाश्वत यात्रा में साथ-साथ कदम रख रहे हैं।', tag: 'विवाह', note: 'पावन पड़ाव' },
       ],
     },
   },

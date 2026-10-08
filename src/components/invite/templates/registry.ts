@@ -2,6 +2,7 @@ import { GoldEnvelopeInvite } from './GoldEnvelopeInvite';
 import { GujaratiKankotriInvite } from './GujaratiKankotriInvite';
 import { GujaratiKankotriYellowInvite } from './GujaratiKankotriYellowInvite';
 import { PlatinumTempleInvite } from './PlatinumTempleInvite';
+import { RudraInvite } from './RudraInvite';
 
 /**
  * templateId -> component. A new template (new design) is a code change —
@@ -13,6 +14,7 @@ export const TEMPLATES = {
   'gujarati-kankotri-yellow': GujaratiKankotriYellowInvite,
   'gold-envelope': GoldEnvelopeInvite,
   'platinum-temple': PlatinumTempleInvite,
+  rudra: RudraInvite,
 } as const;
 
 export type TemplateId = keyof typeof TEMPLATES;

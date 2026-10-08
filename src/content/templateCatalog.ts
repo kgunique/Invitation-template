@@ -42,10 +42,16 @@ const LISTINGS: Record<
     featured: true,
     screens: { cover: '/templates/aarthi-prashanth-invite.webp', preview: '/templates/aarthi-prashanth-gate.webp' },
   },
+  // Retake both screens once the template has more than its opening and landing.
+  rudra: {
+    tag: 'Shiva Blessings',
+    featured: true,
+    screens: { cover: '/templates/karan-neha-rudra-invite.webp', preview: '/templates/karan-neha-rudra-gate.webp' },
+  },
 };
 
 /**
- * Every template that is built, in the registry's order: its sample invite
+ * Every template that is built, in the order of `LISTINGS` above: its sample invite
  * (the first record in invites.ts that uses it) supplies the couple, tier,
  * tradition and preview route. A template with no sample invite yet, or flagged `hidden` (unfinished), is left
  * out.

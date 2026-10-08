@@ -176,6 +176,43 @@ export function WhatsAppIcon(p: IconProps) {
   );
 }
 
+/** A trishul (Shiva's trident), drawn in a line: for the ornament over a Shiva-themed monogram. */
+export function TridentIcon(p: IconProps) {
+  return (
+    <svg {...base} width={20} height={20} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={p.className}>
+      <path d="M12 22V8M12 3v5M5 4v6a7 7 0 0 0 14 0V4M5 4l-1.2 2.4M5 4l1.2 2.4M19 4l-1.2 2.4M19 4l1.2 2.4M12 3l-1.4 2.6M12 3l1.4 2.6M9.5 15.5h5" />
+    </svg>
+  );
+}
+
+/** A four-pointed sparkle. */
+export function SparkleIcon(p: IconProps) {
+  return (
+    <svg {...base} width={20} height={20} fill="currentColor" className={p.className}>
+      <path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+    </svg>
+  );
+}
+
+/** A lotus: five petals on a line of water. */
+export function LotusIcon(p: IconProps) {
+  return (
+    <svg {...base} width={20} height={20} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={p.className}>
+      <path d="M12 4c2.2 2.2 3 4.6 0 9-3-4.4-2.2-6.8 0-9zM12 13c-1-3-4-5-7.5-4.5C4.5 12 7 14 12 13zM12 13c1-3 4-5 7.5-4.5C19.5 12 17 14 12 13zM3 18c3 2 6 2 9 0 3 2 6 2 9 0" />
+    </svg>
+  );
+}
+
+/** A calendar page: two rings, a header line and a few days. */
+export function CalendarIcon(p: IconProps) {
+  return (
+    <svg {...base} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={p.className}>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+      <path d="M3.5 10h17M8 3v4M16 3v4M8 14h.01M12 14h.01M16 14h.01" />
+    </svg>
+  );
+}
+
 /** A musical note; with `off`, a slash through it. */
 export function MusicIcon({ className, off = false }: IconProps & { off?: boolean }) {
   return (

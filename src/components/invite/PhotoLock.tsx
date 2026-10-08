@@ -18,10 +18,13 @@ export interface PhotoLockColors {
 }
 
 export interface PhotoLockProps {
-  /** The photograph or painting that fills the screen. */
-  image: string;
+  /** The photograph or painting that fills the screen. Give this or `scene`. */
+  image?: string;
   /** What it shows, for screen readers. */
   imageAlt?: string;
+  /** Instead of a picture, anything that fills the screen (a painted sky with things in it, drifting clouds, falling petals): it is
+   * pushed into like the picture is, so lay it out in a box that fills the screen. */
+  scene?: ReactNode;
   /** CSS object-position: which part of the picture to keep when the screen is
    * narrower than it is. */
   focus?: string;
@@ -80,6 +83,7 @@ const DEFAULT_COLORS: PhotoLockColors = {
  */
 export function PhotoLock({
   image,
+  scene,
   imageAlt = '',
   focus = '50% 50%',
   zoomOrigin = '50% 45%',
@@ -120,15 +124,19 @@ export function PhotoLock({
         animate={{ scale: opening ? zoom : 1 }}
         transition={{ duration: 1.9, ease: EASE.gate }}
       >
-        <Image
-          src={image}
-          alt={imageAlt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-          style={{ objectPosition: focus }}
-        />
+        {scene ?? (
+          image && (
+            <Image
+              src={image}
+              alt={imageAlt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: focus }}
+            />
+          )
+        )}
       </m.div>
 
       {/* The light the camera walks into. */}

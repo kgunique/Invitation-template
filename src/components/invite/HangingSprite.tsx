@@ -7,8 +7,8 @@ export interface HangingSpriteProps {
   /** The picture's own size, so its shape is kept. */
   width: number;
   height: number;
-  /** How wide to draw it, in px (its height follows). */
-  size: number;
+  /** How wide to draw it: px, or any CSS length such as a share of the parent ("12%"). Its height follows. */
+  size: number | string;
   /** Where it hangs: CSS `left` / `right` / `top` of an absolutely placed box. Give `left` or `right`, and `top` (default 0). */
   left?: string | number;
   right?: string | number;
@@ -20,6 +20,8 @@ export interface HangingSpriteProps {
   delay?: number;
   /** Mirror it. */
   flip?: boolean;
+  /** Fetch the picture at once instead of when it nears the screen: for a sprite in a scene that must be complete the moment it appears. */
+  eager?: boolean;
   className?: string;
 }
 
@@ -41,6 +43,7 @@ export function HangingSprite({
   duration = 5,
   delay = 0,
   flip = false,
+  eager = false,
   className = '',
 }: HangingSpriteProps) {
   return (
@@ -53,14 +56,14 @@ export function HangingSprite({
           right,
           top,
           width: size,
-          height: (size * height) / width,
+          aspectRatio: `${width} / ${height}`,
           animationDuration: `${duration}s`,
           animationDelay: `${delay}s`,
           '--sway-angle': `${angle}deg`,
         } as CSSProperties
       }
     >
-      <Image src={src} alt="" fill sizes={`${size * 2}px`} className={`object-contain ${flip ? '-scale-x-100' : ''}`} />
+      <Image src={src} alt="" fill loading={eager ? 'eager' : undefined} sizes={typeof size === 'number' ? `${size * 2}px` : '50vw'} className={`object-contain ${flip ? '-scale-x-100' : ''}`} />
     </span>
   );
 }
