@@ -115,7 +115,7 @@ export function ChapterTimeline({
   };
 
   return (
-    <section lang={lang} style={{ background }} className="relative overflow-hidden px-4 pb-24 pt-[56px]">
+    <section lang={lang} style={{ background }} className="relative overflow-hidden px-4 pb-4 pt-[56px]">
       <div className="mx-auto w-full max-w-[480px]">
         <m.div
           variants={group}

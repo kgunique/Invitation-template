@@ -94,6 +94,21 @@
   to   { transform: translateX(var(--cloud-to, 300%)); }
 }
 
+/* A seamless photo strip: the second set repeats the first so one set can
+   leave the frame exactly as its twin enters. */
+.amb-gallery-marquee {
+  animation: amb-gallery-marquee-scroll 34s linear infinite;
+  will-change: transform;
+}
+.rudra-gallery-window:hover .amb-gallery-marquee,
+.rudra-gallery-window:focus-within .amb-gallery-marquee,
+.rudra-gallery-window:active .amb-gallery-marquee {
+  animation-play-state: paused;
+}
+@keyframes amb-gallery-marquee-scroll {
+  to { transform: translateX(-50%); }
+}
+
 /* A slanted band of light that crosses a picture now and then, then waits.
    Give it a clipping parent and a width; --sheen-dur is the whole cycle. */
 .amb-sheen { animation: amb-sheen var(--sheen-dur, 8s) ease-in-out infinite; }
@@ -341,6 +356,7 @@
   .amb-wheel,
   .amb-drift,
   .amb-cloud,
+  .amb-gallery-marquee,
   .amb-limb,
   .amb-bob,
   .amb-hop,

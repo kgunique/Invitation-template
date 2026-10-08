@@ -6,13 +6,14 @@ interface FieldProps extends InputHTMLAttributes<HTMLInputElement> {
   help?: ReactNode;
   error?: string;
   required?: boolean;
+  requiredLabel?: string;
 }
 
 /**
  * A visible label, always. Placeholder-as-label disappears the moment someone
  * types, and this form is filled by guests of every age on every device.
  */
-export function Field({ id, label, help, error, required, className = '', ...rest }: FieldProps) {
+export function Field({ id, label, help, error, required, requiredLabel = 'Required', className = '', ...rest }: FieldProps) {
   const helpId = help ? `${id}-help` : undefined;
   const errorId = error ? `${id}-error` : undefined;
   const describedBy = [helpId, errorId].filter(Boolean).join(' ') || undefined;
@@ -21,7 +22,7 @@ export function Field({ id, label, help, error, required, className = '', ...res
     <div className="flex flex-col gap-2">
       <label htmlFor={id} className="label uppercase text-ink-strong">
         {label}
-        {required && <span className="caption ml-2 font-normal normal-case text-ink-muted">Required</span>}
+        {required && <span className="caption ml-2 font-normal normal-case text-ink-muted">{requiredLabel}</span>}
       </label>
       <input
         id={id}

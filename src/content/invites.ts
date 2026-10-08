@@ -356,6 +356,15 @@ export const INVITES: InviteRecord[] = [
       { title: 'बारात प्रस्थान एवं शुभ विवाह', description: 'रात्रि में शुभ विवाह', startsAt: '2027-02-21T18:00:00+05:30', place: 'रूपा मैरेज हॉल', address: 'आलमगंज, गायघाट, पटना', art: 'vivah', icon: '🪔' },
       { title: 'वर-वधू स्वागत समारोह', description: 'एवं प्रीतिभोज', startsAt: '2027-02-24T19:30:00+05:30', place: 'सदाकत आश्रम', address: 'बिहार विद्यापीठ, पटना-10', art: 'swagat', icon: '🎉' },
     ],
+    rsvp: { whatsapp: '919876543210', replyBy: '2027-02-10T23:59:00+05:30', maxPlusMembers: 5 },
+    thankYou: 'इस मांगलिक परिणयोत्सव में पधारकर अपना स्नेह एवं शुभाशीष देने के लिए आपका हार्दिक आभार।',
+    gallery: [
+      { src: '/art/platinum/rudra%20theme/IMG20240906180406.jpg', alt: 'Wedding portrait with marigold backdrop' },
+      { src: '/art/platinum/rudra%20theme/IMG20240906200342.jpg', alt: 'Couple in ornate venue décor and staircase' },
+      { src: '/art/platinum/rudra%20theme/IMG20241222152026.jpg', alt: 'Wedding portrait in festive traditional styling' },
+      { src: '/art/platinum/rudra%20theme/WhatsApp%20Image%202026-10-09%20at%2012.19.53%20AM.jpeg', alt: 'Couple photo in a framed portrait' },
+      { src: '/art/platinum/rudra%20theme/DSC_0559.JPG', alt: 'Close-up of the couple in the wedding setup' },
+    ],
     story: {
       milestones: [
         { year: '2022', label: 'अध्याय १', title: 'नियति का मिलन', subtitle: 'ब्रह्मांडीय संयोग', text: 'पावन मंत्रों की शांत आभा के बीच हमारे रास्ते यूँ मिले, मानो ब्रह्मांड ने पहले से ही लिख रखा हो।', tag: 'पहली झलक', note: 'पावन पड़ाव' },

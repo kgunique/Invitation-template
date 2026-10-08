@@ -17,6 +17,9 @@ export interface BrandCreditProps {
   heart?: boolean;
   /** A smaller brand name (for a credit tucked inside a frame). */
   compact?: boolean;
+  /** Override the credit wording for another language. */
+  designedWithLoveLabel?: string;
+  byLabel?: string;
 }
 
 /**
@@ -30,7 +33,12 @@ export interface BrandCreditProps {
  * tracked text is `--ink-muted`, the brand `--invite-metal`, the heart rani —
  * the section around it decides the first two.
  */
-export function BrandCredit({ heart = true, compact = false }: BrandCreditProps) {
+export function BrandCredit({
+  heart = true,
+  compact = false,
+  designedWithLoveLabel = 'Designed with Love',
+  byLabel = 'by',
+}: BrandCreditProps) {
   return (
     <>
       {heart && (
@@ -44,11 +52,11 @@ export function BrandCredit({ heart = true, compact = false }: BrandCreditProps)
 
       <div className={heart ? 'mt-4' : ''}>
         <RevealLine className="body-sm font-bold uppercase tracking-[0.2em] text-ink-muted">
-          Designed with Love
+          {designedWithLoveLabel}
         </RevealLine>
       </div>
       <m.p variants={fadeUp} className="mt-1">
-        <span className="caption mr-2 uppercase tracking-[0.2em] text-ink-muted">by</span>
+        <span className="caption mr-2 uppercase tracking-[0.2em] text-ink-muted">{byLabel}</span>
         <Link href="/" target="_blank" className={`${compact ? 'festive-md' : 'festive-xl'} text-invite-metal`}>
           {BRAND_NAME}
         </Link>

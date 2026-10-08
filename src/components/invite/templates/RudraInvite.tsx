@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Great_Vibes } from 'next/font/google';
 import { m } from 'motion/react';
-import type { InviteCouple, InviteEvent, InviteStory } from '@/content/invites';
+import type { InviteCouple, InviteEvent, InviteGalleryItem, InviteRsvp, InviteStory } from '@/content/invites';
 import { TEMPLATE_NAMES } from '@/content/site';
 import { EASE } from '@/styles/motion';
 import { BackLink } from '../BackLink';
@@ -14,7 +14,6 @@ import { ChapterTimeline } from '../ChapterTimeline';
 import { CountdownTiles } from '../CountdownTiles';
 import { formatTimeHi, formatWeekdayDate } from '../dates';
 import { EventPoster } from '../EventPoster';
-import { ConvergingPieces } from '../ConvergingPieces';
 import { CouplePortraits } from '../CouplePortraits';
 import { hindiBody, hindiDisplay } from '../hindiFonts';
 import { LotusIcon, SparkleIcon, TridentIcon } from '../icons';
@@ -24,12 +23,16 @@ import { PhotoLock, type PhotoLockProps } from '../PhotoLock';
 import { PillHeading } from '../PillHeading';
 import { QuoteSection } from '../QuoteSection';
 import { RevealLine, lineGroup } from '../RevealLines';
+import { RsvpSection } from '../RsvpSection';
 import { ScrollHint } from '../ScrollHint';
 import { SlideInFigure } from '../SlideInFigure';
+import { SwingArt } from '../SwingArt';
 import { TouchReveal } from '../TouchReveal';
 import { TornEdge } from '../TornEdge';
+import { ThankYouSection } from '../ThankYouSection';
 import { useBackgroundMusic } from '../useBackgroundMusic';
 import { rudraEventScenes } from './rudraEventScenes';
+import { RudraGallerySection } from './RudraGallerySection';
 import { AbhishekWater, RudraGateScene, TEMPLE_GROUND, TEMPLE_SKY, TempleDressing } from './rudraScene';
 
 /**
@@ -55,6 +58,7 @@ import { AbhishekWater, RudraGateScene, TEMPLE_GROUND, TEMPLE_SKY, TempleDressin
 const script = Great_Vibes({ subsets: ['latin'], weight: '400' });
 
 const R = '/art/rudra/';
+const RT = '/art/platinum/rudra%20theme/';
 // Behind the phone-width column on a wide screen: the sky running down into the ground, as it does in the column.
 const PAGE = `linear-gradient(to bottom, #174f7c 0, #2f7aa6 200px, ${TEMPLE_SKY} 420px, ${TEMPLE_SKY} 520px, ${TEMPLE_GROUND} 700px, #231a21 1100px) ${TEMPLE_GROUND}`;
 const FADE = 'linear-gradient(to bottom, transparent 0%, #000 5%, #000 84%, transparent 100%)';
@@ -94,6 +98,14 @@ const DEFAULT_THEME: RudraTheme = {
   blue: '#0f77b5',
   navy: '#1c2540',
 };
+
+const DEFAULT_GALLERY: InviteGalleryItem[] = [
+  { src: '/art/platinum/rudra%20theme/IMG20240906180406.jpg', alt: 'Wedding portrait collage with marigold backdrop' },
+  { src: '/art/platinum/rudra%20theme/IMG20240906200342.jpg', alt: 'Couple in the venue decor and staircase' },
+  { src: '/art/platinum/rudra%20theme/IMG20241222152026.jpg', alt: 'Couple portraits in festive hues' },
+  { src: '/art/platinum/rudra%20theme/WhatsApp%20Image%202026-10-09%20at%2012.19.53%20AM.jpeg', alt: 'Couple photo in a framed wedding portrait' },
+  { src: '/art/platinum/rudra%20theme/DSC_0559.JPG', alt: 'Wedding portrait with family and floral styling' },
+];
 
 // The words of the sections after the landing, in Hindi. A variation (another language, other wording) passes `copy`.
 const DEFAULT_COPY = {
@@ -153,6 +165,12 @@ export interface RudraInviteProps {
   story?: InviteStory;
   /** The programme for "वैवाहिक कार्यक्रम": one poster card each, in order. An event's `art` picks its scene ("haldi", "dev", "vivah", "swagat"; omit and they are taken in turn). Omit and that section is left out. */
   events?: InviteEvent[];
+  /** The photo gallery in the middle of the invite. Omit and the default Rudra gallery is used. */
+  gallery?: InviteGalleryItem[];
+  /** The guest RSVP form. Omit and it is left out. */
+  rsvp?: InviteRsvp;
+  /** Optional note for the closing thank-you section. */
+  thankYou?: string;
   /** The wording of the sections after the landing (Hindi by default). */
   copy?: { couple?: Partial<RudraCopy['couple']>; quote?: string; handsAlt?: string; story?: Partial<RudraCopy['story']>; countdown?: Partial<RudraCopy['countdown']>; events?: Partial<RudraCopy['events']> };
   /** Re-colour the scene and text. A variation passes this. */
@@ -163,7 +181,7 @@ export interface RudraInviteProps {
   templateName?: string;
 }
 
-export function RudraInvite({ bride, groom, weddingDate, couple, story, events, copy, theme, lock, templateName = TEMPLATE_NAMES.rudra }: RudraInviteProps) {
+export function RudraInvite({ bride, groom, weddingDate, couple, story, events, gallery = DEFAULT_GALLERY, rsvp, thankYou, copy, theme, lock, templateName = TEMPLATE_NAMES.rudra }: RudraInviteProps) {
   const [revealed, setRevealed] = useState(false);
   // The landing is mounted from the first moment (behind the gate's cover), so its pictures load while the visitor is
   // still looking at the gate. Its sequence (the `AT` timings) starts only once the gate has opened AND all of them
@@ -409,29 +427,6 @@ export function RudraInvite({ bride, groom, weddingDate, couple, story, events, 
               labelClassName={`${hindiBody.className} mt-5 text-[13px] font-semibold tracking-[0.12em] text-invite-metal`}
               background={t.paper}
               colors={{ ink: t.navy, body: t.navy, accent: t.blue, raised: '#ffffff', line: '#bfe3f6' }}
-              scene={
-                // Just the two hands, no frame and no ground: they come in from the page's own edges.
-                <div className="relative mx-auto w-full max-w-[480px] pb-6" style={{ aspectRatio: '900 / 1010' }}>
-                  <ConvergingPieces
-                    alt={words.handsAlt}
-                    pieces={[
-                      { src: `${R}hands-shiva.webp`, from: 'right', delay: 0.2 },
-                      { src: `${R}hands-shakti.webp`, from: 'left', delay: 1.9 },
-                      // his thumb lies in front of her fingers, so it is a layer of its own that travels with his hand
-                      { src: `${R}hands-thumb.webp`, from: 'right', delay: 0.2 },
-                    ]}
-                    meetAt={3.4}
-                    sizes="(min-width: 480px) 480px, 100vw"
-                    behind={
-                      // A golden aura round the clasp, behind the hands so it never washes them out.
-                      <span
-                        className="amb-breathe absolute left-[52%] top-[26%] h-[56%] w-[96%] -translate-x-1/2 -translate-y-1/2 rounded-pill"
-                        style={{ background: 'radial-gradient(closest-side, rgba(255,205,110,0.55), transparent)' }}
-                      />
-                    }
-                  />
-                </div>
-              }
             />
           )}
 
@@ -544,6 +539,72 @@ export function RudraInvite({ bride, groom, weddingDate, couple, story, events, 
               </div>
             </section>
           )}
+
+          {gallery.length > 0 && (
+            <RudraGallerySection
+              items={gallery}
+              background={t.paper}
+              colors={{ ink: t.navy, body: t.navy, accent: t.blue, raised: '#fffaf3', line: t.blue }}
+            />
+          )}
+
+          {rsvp && (
+            <RsvpSection
+              rsvp={rsvp}
+              bride={couple?.bride.name ?? bride}
+              groom={couple?.groom.name ?? groom}
+              events={events}
+              locale="hi"
+              heading={['आपकी', 'उपस्थिति']}
+              intro="कृपया अपनी उपस्थिति और साथ आने वाले अतिथियों की जानकारी दें।"
+              background={t.paper}
+              colors={{ ink: t.navy, body: t.navy, muted: '#61728f', accent: t.blue, raised: '#ffffff', line: '#c8e7f8', danger: '#c0392b' }}
+              confetti={t.petals}
+            />
+          )}
+
+          <ThankYouSection
+            lang="hi"
+            displayClassName={hindiDisplay.className}
+            bodyClassName={hindiBody.className}
+            bride={couple?.bride.name ?? bride}
+            groom={couple?.groom.name ?? groom}
+            eyebrow="स्नेह एवं आभार"
+            title="धन्यवाद"
+            message={thankYou ?? 'हमारे शुभ अवसर पर आपका स्नेह और आशीर्वाद पाकर हम धन्य हुए।'}
+            wish="महादेव एवं माता गौरी आप सभी पर अपनी कृपा बनाए रखें।"
+            backgroundScene={
+              <div className="absolute inset-[0]">
+                <SwingArt>
+                  <div className="absolute -inset-[10%]">
+                    <Image
+                      src={`${RT}simple-illustration-lord-shiva-parvati-swing_1102-15286.jpg`}
+                      alt=""
+                      fill
+                      sizes="(min-width: 480px) 480px, 100vw"
+                      className="object-cover object-[50%_58%] opacity-[0.58]"
+                      style={{ '--swing-angle': '3deg', '--swing-dur': '3.8s', '--swing-pivot': '50% 4%' } as CSSProperties}
+                    />
+                  </div>
+                </SwingArt>
+                <div
+                  className="absolute inset-[0]"
+                  style={{
+                    background:
+                      'linear-gradient(to bottom, rgba(244,249,253,0.96) 0%, rgba(244,249,253,0.88) 42%, rgba(244,249,253,0.35) 74%, rgba(244,249,253,0.08) 100%)',
+                  }}
+                />
+              </div>
+            }
+            creditLabel="प्रेमपूर्वक बनाया"
+            creditByLabel="द्वारा"
+            showKalash={false}
+            plants={false}
+            compact
+            petals={t.petals}
+            background={t.paper}
+            colors={{ ink: t.navy, body: t.navy, muted: '#61728f', accent: t.blue, raised: '#ffffff', line: '#c8e7f8', danger: '#c0392b' }}
+          />
           </>
           )}
         </div>

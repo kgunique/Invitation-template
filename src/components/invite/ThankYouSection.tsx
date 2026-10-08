@@ -51,6 +51,8 @@ export interface ThankYouSectionProps {
   wish?: string;
   /** Art that hangs from the top of the section (garlands, a toran), absolutely placed children of the section, which is `relative`. */
   top?: ReactNode;
+  /** Decorative scene filling the section behind its content. */
+  backgroundScene?: ReactNode;
   /** Art along the foot of the section, full width. */
   scene?: ReactNode;
   /** Potted banana plants on either side of the names. */
@@ -63,6 +65,16 @@ export interface ThankYouSectionProps {
   background?: string;
   /** Palette. */
   colors?: Partial<SectionColors>;
+  /** Localize text and type for the Hindi invitation. */
+  lang?: string;
+  displayClassName?: string;
+  bodyClassName?: string;
+  creditLabel?: string;
+  creditByLabel?: string;
+  /** Hide the kalash and use regular section spacing when no top artwork is supplied. */
+  showKalash?: boolean;
+  /** Keep the closing copy compact near the top when the background has a focal illustration. */
+  compact?: boolean;
 }
 
 // A few gold sparkles round the kalash, each twinkling on its own beat.
@@ -101,15 +113,36 @@ export function ThankYouSection({
   title = 'Thank You',
   wish = 'Wishing you a lifetime of love and happiness.',
   top,
+  backgroundScene,
   scene,
   plants = true,
   petals = DEFAULT_PETALS,
   base = 'transparent',
   background = DEFAULT_BACKGROUND,
   colors,
+  lang,
+  displayClassName = '',
+  bodyClassName = '',
+  creditLabel,
+  creditByLabel,
+  showKalash = true,
+  compact = false,
 }: ThankYouSectionProps) {
   return (
-    <section style={{ ...sectionVars(colors), background }} className="relative overflow-hidden pt-[236px]">
+    <section
+      lang={lang}
+      style={{ ...sectionVars(colors), background }}
+      className={`relative overflow-hidden ${compact ? 'min-h-[620px] pt-4' : showKalash ? 'pt-[236px]' : 'pt-16'} ${bodyClassName}`}
+    >
+      {backgroundScene && (
+        <div
+          aria-hidden
+          className="pointer-events-none z-0 overflow-hidden"
+          style={{ position: 'absolute', inset: 0 }}
+        >
+          {backgroundScene}
+        </div>
+      )}
       {petals && <Petals color={petals} count={9} size={[8, 13]} speed={0.45} />}
       {top}
 
@@ -118,47 +151,61 @@ export function ThankYouSection({
         initial="hidden"
         whileInView="shown"
         viewport={{ once: true, amount: 0.25 }}
-        className="relative mx-auto flex w-full max-w-[400px] flex-col items-center px-8 text-center"
+        className={`relative z-10 mx-auto flex w-full flex-col items-center text-center ${compact ? 'max-w-[420px] px-6' : 'max-w-[400px] px-8'}`}
       >
-        <m.span variants={pop} aria-hidden className="block">
-          {/* It hops now and then: up a little, down with a soft squash, a small second hop. */}
-          <span className="amb-hop block">
-            <Kalash className="h-[150px] w-[104px] drop-shadow-[0_8px_12px_rgba(120,60,10,0.28)]" />
-          </span>
-        </m.span>
+        {showKalash && (
+          <m.span variants={pop} aria-hidden className="block">
+            <span className="amb-hop block">
+              <Kalash className="h-[150px] w-[104px] drop-shadow-[0_8px_12px_rgba(120,60,10,0.28)]" />
+            </span>
+          </m.span>
+        )}
 
-        <m.p variants={fadeUp} className="invite-eyebrow mt-5 text-invite-metal">
+        <m.p variants={fadeUp} className={`invite-eyebrow text-invite-metal ${compact ? 'mt-0' : 'mt-5'}`}>
           {eyebrow}
         </m.p>
-        <div className="mt-3">
-          <RevealLine className="display-xl italic text-invite-ink">{title}</RevealLine>
+        <div className={compact ? 'mt-0' : 'mt-3'}>
+          <RevealLine className={`${compact ? 'display-md' : 'display-xl'} italic text-invite-ink ${displayClassName}`}>{title}</RevealLine>
         </div>
         <m.span
           variants={fadeUp}
           aria-hidden
-          className="mt-4 block h-[1px] w-[88px]"
+          className={`block h-[1px] w-[88px] ${compact ? 'mt-1' : 'mt-4'}`}
           style={{ background: 'linear-gradient(to right, transparent, var(--invite-metal), transparent)' }}
         />
-        <m.p variants={fadeUp} className="body-lg mt-5 max-w-[32ch] text-ink-body">
+        <m.p variants={fadeUp} className={`${compact ? 'body-sm' : 'body-lg'} max-w-[32ch] text-ink-body ${compact ? 'mt-1' : 'mt-5'} ${bodyClassName}`}>
           {message}
         </m.p>
 
         {/* The names between the plants. */}
-        <m.div variants={fadeUp} className="mt-6 flex w-full items-end justify-between">
-          {plants ? <PottedBanana phase={0.4} /> : <span className="w-[78px]" />}
-          <div className="pb-2">
-            <RevealLine className="display-lg italic text-invite-metal">{bride}</RevealLine>
-            <RevealLine className="display-md italic text-invite-metal">&amp;</RevealLine>
-            <RevealLine className="display-lg italic text-invite-metal">{groom}</RevealLine>
-          </div>
-          {plants ? <PottedBanana mirror phase={2.1} /> : <span className="w-[78px]" />}
+        <m.div
+          variants={fadeUp}
+          className={`flex w-full ${compact ? 'mt-1 flex-wrap items-center justify-center gap-x-2' : 'mt-6 items-end justify-between'}`}
+        >
+          {compact ? (
+            <>
+              <RevealLine className={`display-sm italic text-invite-metal ${displayClassName}`}>{bride}</RevealLine>
+              <RevealLine className={`body-sm italic text-invite-metal ${displayClassName}`}>&amp;</RevealLine>
+              <RevealLine className={`display-sm italic text-invite-metal ${displayClassName}`}>{groom}</RevealLine>
+            </>
+          ) : (
+            <>
+              {plants ? <PottedBanana phase={0.4} /> : <span className="w-[78px]" />}
+              <div className="pb-2">
+                <RevealLine className={`display-lg italic text-invite-metal ${displayClassName}`}>{bride}</RevealLine>
+                <RevealLine className={`display-md italic text-invite-metal ${displayClassName}`}>&amp;</RevealLine>
+                <RevealLine className={`display-lg italic text-invite-metal ${displayClassName}`}>{groom}</RevealLine>
+              </div>
+              {plants ? <PottedBanana mirror phase={2.1} /> : <span className="w-[78px]" />}
+            </>
+          )}
         </m.div>
 
-        <m.p variants={fadeUp} className="body-sm mt-4 max-w-[36ch] italic text-ink-muted">
+        <m.p variants={fadeUp} className={`body-sm max-w-[36ch] italic text-ink-muted ${compact ? 'mt-1' : 'mt-4'} ${bodyClassName}`}>
           {wish}
         </m.p>
-        <div className="mt-8 flex flex-col items-center">
-          <BrandCredit heart={false} compact />
+        <div className={`${compact ? 'mt-2' : 'mt-8'} flex flex-col items-center`}>
+          <BrandCredit heart={false} compact designedWithLoveLabel={creditLabel} byLabel={creditByLabel} />
         </div>
       </m.div>
 

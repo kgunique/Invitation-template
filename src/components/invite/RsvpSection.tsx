@@ -9,6 +9,7 @@ import type { InviteEvent, InviteRsvp } from '@/content/invites';
 import { DURATION, EASE } from '@/styles/motion';
 import { formatDay } from './dates';
 import { GoldDivider } from './GoldDivider';
+import { hindiBody, hindiDisplay } from './hindiFonts';
 import { WhatsAppIcon } from './icons';
 import { Petals } from './Petals';
 import { RevealLine, fadeUp, lineGroup } from './RevealLines';
@@ -41,7 +42,7 @@ interface Sent {
   note: string;
 }
 
-const guestsLabel = (n: number) => `${n} ${n === 1 ? 'guest' : 'guests'}`;
+const guestsLabel = (n: number, hindi = false) => hindi ? `${n} अतिथि` : `${n} ${n === 1 ? 'guest' : 'guests'}`;
 
 const CORNERS = [
   'left-3 top-3 border-l-2 border-t-2 rounded-tl-lg',
@@ -58,15 +59,21 @@ const group = lineGroup(0.2);
 const eventKey = (e: InviteEvent) => `${e.startsAt}|${e.title}`;
 
 /** The reply, written out as the WhatsApp message the guest will send. */
-function buildMessage(s: Omit<Sent, 'url'>, couple: string) {
-  const reply = { yes: 'Joyfully attending', maybe: 'Maybe, will confirm', no: 'Unable to attend' }[s.answer];
-  const lines = [`RSVP for ${couple}'s wedding 💌`, '', `Name: ${s.name}`, `Reply: ${reply}`];
+function buildMessage(s: Omit<Sent, 'url'>, couple: string, hindi: boolean) {
+  const reply = hindi
+    ? { yes: 'सहर्ष उपस्थित रहेंगे', maybe: 'बाद में पुष्टि करेंगे', no: 'उपस्थित नहीं हो पाएँगे' }[s.answer]
+    : { yes: 'Joyfully attending', maybe: 'Maybe, will confirm', no: 'Unable to attend' }[s.answer];
+  const lines = hindi
+    ? [`${couple} के विवाह का उत्तर 💌`, '', `नाम: ${s.name}`, `उत्तर: ${reply}`]
+    : [`RSVP for ${couple}'s wedding 💌`, '', `Name: ${s.name}`, `Reply: ${reply}`];
   if (s.answer !== 'no') {
-    lines.push(`Attending: ${s.guests + 1} (${s.name}${s.guests ? ` + ${guestsLabel(s.guests)}` : ''})`);
-    if (s.events.length) lines.push(`Celebrations: ${s.events.join(', ')}`);
-    lines.push(`Meal: ${s.meal}`);
+    lines.push(hindi
+      ? `कुल अतिथि: ${s.guests + 1} (${s.name}${s.guests ? ` + ${guestsLabel(s.guests, true)}` : ''})`
+      : `Attending: ${s.guests + 1} (${s.name}${s.guests ? ` + ${guestsLabel(s.guests)}` : ''})`);
+    if (s.events.length) lines.push(`${hindi ? 'समारोह' : 'Celebrations'}: ${s.events.join(', ')}`);
+    lines.push(`${hindi ? 'भोजन' : 'Meal'}: ${s.meal}`);
   }
-  if (s.note) lines.push(`Note: ${s.note}`);
+  if (s.note) lines.push(`${hindi ? 'संदेश' : 'Note'}: ${s.note}`);
   return lines.join('\n');
 }
 
@@ -180,6 +187,8 @@ export interface RsvpSectionProps {
   colors?: Partial<SectionColors>;
   /** The petals that shower on a "yes". */
   confetti?: string[];
+  /** Localize the form and WhatsApp message. */
+  locale?: 'en' | 'hi';
 }
 
 /**
@@ -200,13 +209,30 @@ export function RsvpSection({
   groom,
   events = [],
   timeZone = 'Asia/Kolkata',
-  heading = ['Will You', 'Join Us?'],
-  intro = 'Tell us who is coming, so we can set a place for everyone.',
+  heading,
+  intro,
   ctaLabel,
   background = 'transparent',
   colors,
   confetti = DEFAULT_CONFETTI,
+  locale = 'en',
 }: RsvpSectionProps) {
+  const hindi = locale === 'hi';
+  const headingLines = heading ?? (hindi ? ['आपकी', 'उपस्थिति'] : ['Will You', 'Join Us?']);
+  const introText = intro ?? (hindi ? 'कृपया बताएं कि आप हमारे साथ शामिल होंगे या नहीं।' : 'Tell us who is coming, so we can set a place for everyone.');
+  const answerOptions = ANSWERS.map((option) => ({
+    ...option,
+    title: hindi
+      ? { yes: 'सहर्ष उपस्थित रहेंगे', maybe: 'शायद', no: 'उपस्थित नहीं हो पाएँगे' }[option.id]
+      : option.title,
+    hint: hindi
+      ? { yes: 'हमें आपकी प्रतीक्षा रहेगी', maybe: 'बाद में पुष्टि करें', no: 'स्नेह और शुभकामनाओं के लिए धन्यवाद' }[option.id]
+      : option.hint,
+  }));
+  const mealOptions = MEALS.map((option) => ({
+    ...option,
+    label: hindi ? { veg: 'शाकाहारी', jain: 'जैन', vegan: 'वीगन' }[option.id] : option.label,
+  }));
   const max = rsvp.maxPlusMembers ?? 5;
   const formRef = useRef<HTMLFormElement>(null);
   const [open, setOpen] = useState(!ctaLabel);
@@ -226,9 +252,11 @@ export function RsvpSection({
   function submit(e: FormEvent) {
     e.preventDefault();
     const next: Record<string, string> = {};
-    if (!name.trim()) next.name = 'Please tell us your name.';
-    if (!answer) next.answer = 'Please choose one, so we know what to plan.';
-    if (answer === 'yes' && events.length && !picked.length) next.events = 'Pick at least one celebration.';
+    if (!name.trim()) next.name = hindi ? 'कृपया अपना नाम लिखें।' : 'Please tell us your name.';
+    if (!answer) next.answer = hindi ? 'कृपया उपस्थिति का विकल्प चुनें।' : 'Please choose one, so we know what to plan.';
+    if (answer === 'yes' && events.length && !picked.length) {
+      next.events = hindi ? 'कृपया कम से कम एक समारोह चुनें।' : 'Pick at least one celebration.';
+    }
     setErrors(next);
 
     if (Object.keys(next).length || !answer) {
@@ -249,7 +277,7 @@ export function RsvpSection({
       meal: MEALS.find((o) => o.id === meal)!.label,
       note: note.trim(),
     };
-    const text = buildMessage(reply, `${bride} & ${groom}`);
+    const text = buildMessage(reply, `${bride} & ${groom}`, hindi);
     const url = `https://wa.me/${rsvp.whatsapp}?text=${encodeURIComponent(text)}`;
     setSent({ ...reply, url });
     // Straight from the tap, so it isn't treated as a pop-up. If it is blocked
@@ -260,7 +288,11 @@ export function RsvpSection({
   const first = sent?.name.split(' ')[0];
 
   return (
-    <section style={{ ...sectionVars(colors), background }} className="relative overflow-hidden px-5 pb-16 pt-16">
+    <section
+      lang={hindi ? 'hi' : undefined}
+      style={{ ...sectionVars(colors), background }}
+      className={`relative overflow-hidden px-5 pb-16 pt-16 ${hindi ? hindiBody.className : ''}`}
+    >
       <m.div
         variants={group}
         initial="hidden"
@@ -271,18 +303,18 @@ export function RsvpSection({
         <div className="text-center">
           {rsvp.replyBy && (
             <m.p variants={fadeUp} className="label uppercase text-invite-metal">
-              Kindly reply by {formatDay(rsvp.replyBy, timeZone)}
+              {hindi ? 'कृपया इस तारीख तक जवाब दें:' : 'Kindly reply by'} {formatDay(rsvp.replyBy, timeZone, 'long', hindi ? 'hi-IN' : 'en-US')}
             </m.p>
           )}
           <div className="mt-3">
-            {heading.map((line) => (
-              <RevealLine key={line} className="display-xl text-invite-ink">
+            {headingLines.map((line) => (
+              <RevealLine key={line} className={`display-xl text-invite-ink ${hindi ? hindiDisplay.className : ''}`}>
                 {line}
               </RevealLine>
             ))}
           </div>
           <m.p variants={fadeUp} className="body-sm mx-auto mt-3 max-w-[30ch] text-ink-body">
-            {intro}
+            {introText}
           </m.p>
           <GoldDivider className="mt-6" />
         </div>
@@ -356,26 +388,31 @@ export function RsvpSection({
                   />
                 </m.svg>
 
-                <p className="display-lg mt-5 text-invite-ink">
-                  {sent.answer === 'no' ? `We'll miss you, ${first}` : `Thank you, ${first}!`}
+                <p className={`display-lg mt-5 text-invite-ink ${hindi ? hindiDisplay.className : ''}`}>
+                  {hindi
+                    ? sent.answer === 'no' ? `हमें आपकी कमी खलेगी, ${first}।` : `धन्यवाद, ${first}!`
+                    : sent.answer === 'no' ? `We'll miss you, ${first}` : `Thank you, ${first}!`}
                 </p>
                 <p className="body-sm mx-auto mt-2 max-w-[32ch] text-ink-body">
-                  Your reply reaches {bride} &amp; {groom}&apos;s family once you press send in WhatsApp.
+                  {hindi
+                    ? 'व्हाट्सऐप पर भेजने के बाद आपका जवाब परिवार तक पहुँच जाएगा।'
+                    : <>Your reply reaches {bride} &amp; {groom}&apos;s family once you press send in WhatsApp.</>}
                 </p>
 
                 <dl className="mt-6 space-y-3 border-t pt-5 text-left" style={{ borderColor: mix(GOLD, 30) }}>
-                  <SummaryRow label="Reply">
-                    {ANSWERS.find((a) => a.id === sent.answer)!.title}
+                  <SummaryRow label={hindi ? 'उत्तर' : 'Reply'}>
+                    {answerOptions.find((a) => a.id === sent.answer)!.title}
                   </SummaryRow>
                   {sent.answer !== 'no' && (
-                    <SummaryRow label="Party">
-                      {sent.guests + 1} attending ({sent.name}
-                      {sent.guests > 0 && ` + ${guestsLabel(sent.guests)}`})
+                    <SummaryRow label={hindi ? 'अतिथि' : 'Party'}>
+                      {hindi
+                        ? `${sent.guests + 1} उपस्थित (${sent.name}${sent.guests > 0 ? ` + ${guestsLabel(sent.guests, true)}` : ''})`
+                        : <>{sent.guests + 1} attending ({sent.name}{sent.guests > 0 && ` + ${guestsLabel(sent.guests)}`})</>}
                     </SummaryRow>
                   )}
-                  {sent.events.length > 0 && <SummaryRow label="Events">{sent.events.join(', ')}</SummaryRow>}
-                  {sent.answer !== 'no' && <SummaryRow label="Meal">{sent.meal}</SummaryRow>}
-                  {sent.note && <SummaryRow label="Note">{sent.note}</SummaryRow>}
+                  {sent.events.length > 0 && <SummaryRow label={hindi ? 'समारोह' : 'Events'}>{sent.events.join(', ')}</SummaryRow>}
+                  {sent.answer !== 'no' && <SummaryRow label={hindi ? 'भोजन' : 'Meal'}>{sent.meal}</SummaryRow>}
+                  {sent.note && <SummaryRow label={hindi ? 'संदेश' : 'Note'}>{sent.note}</SummaryRow>}
                 </dl>
 
                 <div className="mt-6 flex flex-col gap-3">
@@ -385,10 +422,10 @@ export function RsvpSection({
                     rel="noopener noreferrer"
                     className={`${buttonClasses('order')} no-underline`}
                   >
-                    <WhatsAppIcon className="h-[18px] w-[18px]" /> Open WhatsApp again
+                    <WhatsAppIcon className="h-[18px] w-[18px]" /> {hindi ? 'व्हाट्सऐप फिर से खोलें' : 'Open WhatsApp again'}
                   </a>
                   <Button type="button" variant="ghost" onClick={() => setSent(null)}>
-                    Edit my reply
+                    {hindi ? 'अपना जवाब बदलें' : 'Edit my reply'}
                   </Button>
                 </div>
               </m.div>
@@ -406,11 +443,12 @@ export function RsvpSection({
               >
                 <Field
                   id="rsvp-name"
-                  label="Your name"
+                  label={hindi ? 'आपका नाम' : 'Your name'}
                   required
+                  requiredLabel={hindi ? 'आवश्यक' : 'Required'}
                   autoComplete="name"
                   maxLength={60}
-                  placeholder="e.g. Rohan Mehta"
+                  placeholder={hindi ? 'पूरा नाम' : 'e.g. Rohan Mehta'}
                   value={name}
                   error={errors.name}
                   onChange={(e) => {
@@ -420,9 +458,11 @@ export function RsvpSection({
                 />
 
                 <fieldset className="mt-8 min-w-0">
-                  <legend className="label mb-3 uppercase text-ink-strong">Will you celebrate with us?</legend>
+                  <legend className="label mb-3 uppercase text-ink-strong">
+                    {hindi ? 'क्या आप समारोह में शामिल होंगे?' : 'Will you celebrate with us?'}
+                  </legend>
                   <div className="space-y-3">
-                    {ANSWERS.map((a) => (
+                    {answerOptions.map((a) => (
                       <Choice
                         key={a.id}
                         type="radio"
@@ -466,9 +506,9 @@ export function RsvpSection({
                 <Collapse show={attending}>
                   <div className="space-y-8 pt-8">
                     <div>
-                      <p className="label uppercase text-ink-strong">Plus members</p>
+                      <p className="label uppercase text-ink-strong">{hindi ? 'अतिरिक्त अतिथि' : 'Plus members'}</p>
                       <p className="body-sm mt-1 text-ink-body">
-                        Bringing family or friends? Add them here, up to {max} more.
+                        {hindi ? `परिवार या मित्रों को साथ ला रहे हैं? अधिकतम ${max} अतिथि जोड़ें।` : `Bringing family or friends? Add them here, up to ${max} more.`}
                       </p>
 
                       <div
@@ -477,16 +517,18 @@ export function RsvpSection({
                       >
                         <div aria-live="polite">
                           <p className="body font-bold text-invite-ink">
-                            {guests ? `Me + ${guestsLabel(guests)}` : 'Just me'}
+                            {guests ? (hindi ? `मैं + ${guestsLabel(guests, true)}` : `Me + ${guestsLabel(guests)}`) : (hindi ? 'केवल मैं' : 'Just me')}
                           </p>
-                          <p className="caption text-ink-muted">{guests + 1} attending in total</p>
+                          <p className="caption text-ink-muted">
+                            {hindi ? `कुल ${guests + 1} उपस्थित होंगे` : `${guests + 1} attending in total`}
+                          </p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <StepButton label="Remove a plus member" disabled={!guests} onClick={() => setGuests((n) => n - 1)}>
+                          <StepButton label={hindi ? 'एक अतिथि हटाएँ' : 'Remove a plus member'} disabled={!guests} onClick={() => setGuests((n) => n - 1)}>
                             −
                           </StepButton>
                           <span className="display-md tabular w-[24px] text-center text-invite-ink">{guests}</span>
-                          <StepButton label="Add a plus member" disabled={guests >= max} onClick={() => setGuests((n) => n + 1)}>
+                          <StepButton label={hindi ? 'एक अतिथि जोड़ें' : 'Add a plus member'} disabled={guests >= max} onClick={() => setGuests((n) => n + 1)}>
                             +
                           </StepButton>
                         </div>
@@ -495,8 +537,12 @@ export function RsvpSection({
 
                     {events.length > 0 && (
                       <fieldset className="min-w-0">
-                        <legend className="label mb-1 uppercase text-ink-strong">Which celebrations?</legend>
-                        <p className="body-sm mb-3 text-ink-body">Tick every one your party will join.</p>
+                        <legend className="label mb-1 uppercase text-ink-strong">
+                          {hindi ? 'आप किन समारोहों में शामिल होंगे?' : 'Which celebrations?'}
+                        </legend>
+                        <p className="body-sm mb-3 text-ink-body">
+                          {hindi ? 'जिन समारोहों में शामिल होंगे, उन्हें चुनें।' : 'Tick every one your party will join.'}
+                        </p>
                         <div className="flex flex-wrap gap-2">
                           {events.map((ev) => (
                             <Choice
@@ -514,7 +560,7 @@ export function RsvpSection({
                             >
                               {ev.title}
                               <span className="caption ml-1 text-ink-muted">
-                                · {formatDay(ev.startsAt, timeZone, 'short').replace(/,\s*\d{4}$/, '')}
+                                · {formatDay(ev.startsAt, timeZone, 'short', hindi ? 'hi-IN' : 'en-US').replace(/,\s*\d{4}$/, '')}
                               </span>
                             </Choice>
                           ))}
@@ -528,9 +574,11 @@ export function RsvpSection({
                     )}
 
                     <fieldset className="min-w-0">
-                      <legend className="label mb-3 uppercase text-ink-strong">Meal preference</legend>
+                      <legend className="label mb-3 uppercase text-ink-strong">
+                        {hindi ? 'भोजन की पसंद' : 'Meal preference'}
+                      </legend>
                       <div className="flex flex-wrap gap-2">
-                        {MEALS.map((o) => (
+                        {mealOptions.map((o) => (
                           <Choice
                             key={o.id}
                             type="radio"
@@ -549,14 +597,16 @@ export function RsvpSection({
 
                 <div className="mt-8 flex flex-col gap-2">
                   <label htmlFor="rsvp-note" className="label uppercase text-ink-strong">
-                    A note for the couple
-                    <span className="caption ml-2 font-normal normal-case text-ink-muted">Optional</span>
+                    {hindi ? 'परिवार के लिए संदेश' : 'A note for the couple'}
+                    <span className="caption ml-2 font-normal normal-case text-ink-muted">
+                      {hindi ? 'वैकल्पिक' : 'Optional'}
+                    </span>
                   </label>
                   <textarea
                     id="rsvp-note"
                     rows={3}
                     maxLength={280}
-                    placeholder="Blessings, dietary needs, anything we should know"
+                    placeholder={hindi ? 'आशीर्वाद या कोई ज़रूरी जानकारी लिखें' : 'Blessings, dietary needs, anything we should know'}
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     className="body w-full resize-none rounded-sm border-[1.5px] border-line-firm bg-surface-raised px-3 py-3 text-ink-strong"
@@ -564,10 +614,12 @@ export function RsvpSection({
                 </div>
 
                 <Button type="submit" variant="order" className="mt-8 w-full">
-                  <WhatsAppIcon className="h-[18px] w-[18px]" /> Submit RSVP
+                  <WhatsAppIcon className="h-[18px] w-[18px]" /> {hindi ? 'जवाब भेजें' : 'Submit RSVP'}
                 </Button>
                 <p className="caption mt-3 text-center text-ink-muted">
-                  This opens WhatsApp with your reply written out, ready for you to send.
+                  {hindi
+                    ? 'आपका जवाब व्हाट्सऐप में खुलेगा। भेजने के लिए वहाँ पुष्टि करें।'
+                    : 'This opens WhatsApp with your reply written out, ready for you to send.'}
                 </p>
               </m.form>
             )}

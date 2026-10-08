@@ -17,6 +17,7 @@ import { AbhishekWater, Diya } from './rudraScene';
  */
 const R = '/art/rudra/';
 const EV = '/art/platinum/events/';
+const RT = '/art/platinum/rudra%20theme/';
 
 /** Marigold strands hanging from the top corners of a card, and (with `bells`) a pair of bells between them and the title. */
 function Garlands({ bells = false }: { bells?: boolean }) {
@@ -115,13 +116,12 @@ export function rudraEventScenes(petals: { haldi: string[]; dev: string[]; vivah
         <>
           <Starfield color="#fdf6e3" count={64} constellations={false} />
           <span aria-hidden className="absolute left-[50%] top-[72%] h-[56%] w-[130%] -translate-x-1/2 -translate-y-1/2" style={{ background: 'radial-gradient(closest-side, rgba(255,214,130,0.62), transparent)' }} />
-          <div className="pointer-events-none absolute -bottom-[10%] left-[-6%] w-[112%]" style={{ aspectRatio: '900 / 1010' }}>
+          <div className="pointer-events-none absolute -bottom-[12%] left-[-5%] w-[110%]" style={{ aspectRatio: '900 / 1010' }}>
             <ConvergingPieces
-              alt="शिव और शक्ति के हाथ एक-दूसरे को थामे हुए"
+              alt="शिव और पार्वती के हाथ एक-दूसरे को थामे हुए"
               pieces={[
-                { src: `${R}hands-shiva.webp`, from: 'right', delay: 0.3 },
-                { src: `${R}hands-shakti.webp`, from: 'left', delay: 1.6 },
-                { src: `${R}hands-thumb.webp`, from: 'right', delay: 0.3 },
+                { src: `${RT}Blue%20Striped%20Hand%20with%20Rudraksha%20Bracelets.png`, from: 'right', delay: 0.3 },
+                { src: `${RT}shiva-parvati-hands.png`, from: 'left', delay: 1.6 },
               ]}
               duration={1.4}
               meetAt={2.6}

@@ -7,12 +7,11 @@
 const SUFFIXES = ['th', 'st', 'nd', 'rd'];
 
 /** "February 21st, 2027" (or "Feb 21st, 2027" with month: 'short'). */
-export function formatDay(iso: string, timeZone: string, month: 'long' | 'short' = 'long') {
-  const parts = new Intl.DateTimeFormat('en-US', { timeZone, month, day: 'numeric', year: 'numeric' }).formatToParts(
-    new Date(iso),
-  );
+export function formatDay(iso: string, timeZone: string, month: 'long' | 'short' = 'long', locale = 'en-US') {
+  const parts = new Intl.DateTimeFormat(locale, { timeZone, month, day: 'numeric', year: 'numeric' }).formatToParts(new Date(iso));
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
   const day = Number(get('day'));
+  if (locale.startsWith('hi')) return `${day} ${get('month')} ${get('year')}`;
   const v = day % 100;
   return `${get('month')} ${day}${SUFFIXES[(v - 20) % 10] || SUFFIXES[v] || SUFFIXES[0]}, ${get('year')}`;
 }
