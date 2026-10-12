@@ -77,6 +77,29 @@
   to   { transform: scaleY(1); }
 }
 
+/* Flying in towards a picture, for ever: it grows from its own size to about
+   1.9 times over a long lap (in steps that keep the pace even: each quarter is
+   the same ratio), fading in at the start of the lap and out at the end. Put two
+   copies of the picture on top of one another, the second `--approach-delay`
+   half a lap (a negative time) behind, inside a clipping frame: there is always
+   one fully visible, so the crossfades never show a seam and the camera seems to
+   go on towards what is in the middle (`--approach-origin`). */
+.amb-approach {
+  animation: amb-approach var(--approach-dur, 40s) linear infinite;
+  animation-delay: var(--approach-delay, 0s);
+  transform-origin: var(--approach-origin, 50% 40%);
+  will-change: transform, opacity;
+}
+@keyframes amb-approach {
+  0%   { transform: scale(1);    opacity: 0; }
+  14%  { opacity: 1; }
+  25%  { transform: scale(1.17); }
+  50%  { transform: scale(1.38); }
+  75%  { transform: scale(1.63); }
+  86%  { opacity: 1; }
+  100% { transform: scale(1.9);  opacity: 0; }
+}
+
 /* A very slow camera drift over a picture (a few percent of zoom, a few of
    pan), back and forth. Put it on the picture inside a clipping frame. */
 .amb-drift { animation: amb-drift var(--drift-dur, 22s) ease-in-out infinite alternate; }
@@ -169,6 +192,15 @@
 @keyframes amb-flicker {
   0%, 100% { transform: scale(1); opacity: 0.94; }
   50%      { transform: scaleY(1.18) scaleX(0.9); opacity: 1; }
+}
+
+/* A wisp of smoke from a lamp: it rises from where it is, spreads and thins, and begins again. --smoke-dur (5s),
+   --smoke-delay (negative, to stagger), --smoke-rise (70px) and --smoke-drift (10px, sideways). Put it on a soft blurred blob. */
+.amb-smoke { animation: amb-smoke var(--smoke-dur, 5s) ease-out var(--smoke-delay, 0s) infinite; opacity: 0; }
+@keyframes amb-smoke {
+  0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
+  18%  { opacity: 0.5; }
+  100% { transform: translate(var(--smoke-drift, 10px), calc(var(--smoke-rise, 70px) * -1)) scale(1.7); opacity: 0; }
 }
 
 /* Falling petals. --drift and the duration are set per element. */
@@ -375,6 +407,7 @@
 @media (prefers-reduced-motion: reduce) {
   .amb-sway,
   .amb-flicker,
+  .amb-smoke,
   .amb-fall,
   .amb-petal,
   .amb-turn,
@@ -394,6 +427,7 @@
   .amb-breathe,
   .amb-wheel,
   .amb-drift,
+  .amb-approach,
   .amb-cloud,
   .amb-orbit,
   .amb-stream,

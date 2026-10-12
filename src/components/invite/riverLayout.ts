@@ -8,14 +8,14 @@ import type { RiverPoint } from './river';
  * is irregular without ever touching a card. Pure functions: the same slots always give the same river, so the server and
  * the browser draw the same one.
  */
-export type SlotSide = 'left' | 'right' | 'wide' | 'end';
+export type SlotSide = 'left' | 'right' | 'wide' | 'both' | 'end';
 
 export interface RiverSlot {
   /**
    * Which side of the river this slot's content is on (the river keeps to the other bank); `wide` content fills the width
    * and the river widens into a lake under it; `end` content fills the width too, and is where the river ends: it comes
-   * to the middle, narrows and stops just inside the slot, so the slot can carry on from it (a waterfall, a shrine).
-   * Only the last slot can be `end`.
+   * to the middle and opens into a pool that fills the rest of the slot and runs on a little past its foot, so whatever cuts the page off there (a torn edge) cuts the water too.
+   * `both` content fills the width with the river down the middle (narrow): something on each side of it. Only the last slot can be `end`.
    */
   side: SlotSide;
   /** How tall the slot is, px. */
@@ -47,13 +47,13 @@ export interface RiverLayoutOptions {
   gap?: number;
   /** How far the river runs on after the last slot, px (not after an `end` slot, which is where it stops). */
   tail?: number;
-  /** How far down into an `end` slot the river runs before it stops, px. */
-  endRun?: number;
 }
 
 /** The free space the flow leaves between two slots, px: what a layout built of real elements must use as margins too. */
 export function spacing(prev: SlotSide | undefined, next: SlotSide, { crossing = 200, gap = 30 }: Pick<RiverLayoutOptions, 'crossing' | 'gap'>) {
   if (!prev) return 0;
+  if (prev === 'wide' && next === 'both') return Math.round(crossing * 0.7); // the lake narrows into the river between two things
+  if (prev === 'both' || next === 'both') return Math.round(crossing * 0.6);
   if (prev === 'wide') return Math.round(crossing * 1.6); // the lake narrows slowly into what follows
   return prev === next && (next === 'left' || next === 'right') ? gap : crossing;
 }
@@ -78,7 +78,7 @@ const MARGIN = 10;
 const STEP = 80;
 
 /** The river's waypoints for slots that are already placed (their tops may be measured from the page). */
-export function riverPoints(slots: PlacedSlot[], { lead, near, width, lake = { x: 0.5, w: 0.82 }, tail = 150, endRun = 60 }: RiverLayoutOptions): RiverPoint[] {
+export function riverPoints(slots: PlacedSlot[], { lead, near, width, lake = { x: 0.5, w: 0.82 }, tail = 150 }: RiverLayoutOptions): RiverPoint[] {
   const wAt = (y: number) => width.min + (width.max - width.min) * swell(y);
   // the river on the bank beside content on `side`, at y
   const beside = (side: 'left' | 'right', y: number): RiverPoint => {
@@ -99,10 +99,21 @@ export function riverPoints(slots: PlacedSlot[], { lead, near, width, lake = { x
       add({ y: bottom + MARGIN, x: lake.x, w: lake.w });
       return;
     }
+    if (s.side === 'both') {
+      // down the middle, narrow and a little irregular, with something either side
+      for (let y = s.top - MARGIN; y < bottom + MARGIN; y += STEP) add({ y, x: 0.5, w: Math.max(width.min * 0.85, wAt(y) * 0.7) });
+      add({ y: bottom + MARGIN, x: 0.5, w: Math.max(width.min * 0.85, wAt(bottom + MARGIN) * 0.7) });
+      return;
+    }
     if (s.side === 'end') {
-      // into the middle, narrowing: the last of the river
-      add({ y: s.top - MARGIN, x: 0.5, w: width.max * 0.9 });
-      add({ y: s.top + endRun, x: 0.5, w: width.min * 0.55 });
+      // into the middle, opening into a pool that fills the rest of the section: where the river ends. It runs on a little past the
+      // bottom, so whatever cuts the section off (a torn edge) cuts the water
+      const pool = lake.w * 0.95;
+      const neck = width.max * 0.9;
+      add({ y: s.top - MARGIN, x: 0.5, w: neck });
+      add({ y: s.top + 30, x: 0.5, w: neck * 1.05 });
+      add({ y: s.top + 130, x: 0.5, w: pool });
+      add({ y: bottom + 60, x: 0.5, w: pool });
       return;
     }
     // crossing over from the other bank (or out of a lake): a wide bend half way

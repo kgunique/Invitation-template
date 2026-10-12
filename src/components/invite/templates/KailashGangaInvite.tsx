@@ -1,7 +1,7 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { m } from 'motion/react';
 import { TEMPLATE_NAMES } from '@/content/site';
@@ -13,7 +13,9 @@ import { formatDayMonthYear } from '../dates';
 import { FloatingOrderBar } from '../OrderButton';
 import { NightHorizon } from '../NightHorizon';
 import { RevealLine, fadeUp, lineGroup } from '../RevealLines';
+import { ScrollHint } from '../ScrollHint';
 import { SlideLock, type SlideLockProps } from '../SlideLock';
+import { tornFooter } from '../TornEdge';
 import { Starfield } from '../Starfield';
 import { useBackgroundMusic } from '../useBackgroundMusic';
 import { gangaScript, gangaSerif } from './gangaFonts';
@@ -104,6 +106,14 @@ export function KailashGangaInvite({
   const [revealed, setRevealed] = useState(false);
   // The slider's moon has flown to the sky above Kailash and landed.
   const [landed, setLanded] = useState(false);
+  // Still at the top of the page: the scroll-down hint shows until the guest has begun to scroll.
+  const [atTop, setAtTop] = useState(true);
+  useEffect(() => {
+    const onScroll = () => setAtTop(window.scrollY < 60);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
   // Started by the slide that unlocks the gate (a browser only lets a gesture start sound); the button on the right pauses it.
   const music = useBackgroundMusic();
   const t = { ...DEFAULT_THEME, ...theme };
@@ -165,10 +175,16 @@ export function KailashGangaInvite({
       </div>
 
       {/* Scene 3: the Ganga is born at the mountain's foot and runs down the page between garlands. */}
-      <GangaStretch groom={groom} bride={bride} couple={couple} story={story} events={events} weddingDate={weddingDate} rsvp={rsvp} />
+      {/* The river's page ends in a tear: the sheet with the river on it is torn off across the pool, with a shadow on what is under it (the closing, which is pulled up behind the tear). */}
+      <div className="relative z-[3] mx-auto w-full max-w-[480px]">
+        <div aria-hidden className="pointer-events-none absolute inset-x-[0] bottom-[-5px] h-[70px]" style={{ background: 'rgba(8,6,28,0.55)', clipPath: tornFooter(7, 18) }} />
+        <div style={{ clipPath: tornFooter(7, 18, -420) }}>
+          <GangaStretch groom={groom} bride={bride} couple={couple} story={story} events={events} weddingDate={weddingDate} rsvp={rsvp} />
+        </div>
+      </div>
 
       {/* The last scene: the thank-you, back under the night the page began in. */}
-      <div className="mx-auto w-full max-w-[480px]">
+      <div className="relative z-[1] mx-auto w-full max-w-[480px]" style={{ marginTop: -40, paddingTop: 24, background: '#2c3569' }}>
         <GangaClosing groom={groom} bride={bride} couple={couple} thankYou={thankYou} />
       </div>
 
@@ -177,24 +193,27 @@ export function KailashGangaInvite({
         label="Slide the moon to open"
         colors={{ ground: t.ground, accent: t.accent, text: t.ink }}
         labelClassName=""
+        bottom="16%"
         handle={<Image src={`${R}moon.webp`} alt="" fill sizes="64px" priority className="object-cover" />}
         footer={<p className={`${gangaSerif.className} text-[17px] italic`} style={{ color: t.ink, opacity: 0.88 }}>with the blessings of Mahadev</p>}
         background={
           <>
-            {/* The Milky Way, drifting a very little, over the night. */}
-            <Image
-              src={`${R}stars.webp`}
-              alt=""
-              fill
-              priority
-              sizes="(min-width: 480px) 480px, 100vw"
-              className="amb-drift object-cover"
-              style={{ ['--drift-dur' as string]: '40s' }}
-            />
-            <Starfield color={t.ink} count={36} constellations={false} />
+            {/* The Milky Way, with its stars, that we are slowly flying in towards: two copies half a lap apart, one always fully there. */}
+            <div className="absolute inset-[0] overflow-hidden">
+              {[0, 1].map((i) => (
+                <div
+                  key={i}
+                  className="amb-approach absolute inset-[0]"
+                  style={{ ['--approach-dur' as string]: '46s', ['--approach-delay' as string]: i ? '-23s' : '0s', ['--approach-origin' as string]: '55% 34%' }}
+                >
+                  <Image src={`${R}stars.webp`} alt="" fill priority={i === 0} sizes="(min-width: 480px) 480px, 100vw" className="object-cover" />
+                  <Starfield color={t.ink} count={44} constellations={false} />
+                </div>
+              ))}
+            </div>
             <span aria-hidden className="absolute inset-x-[0] bottom-[0] h-[40%]" style={{ background: 'linear-gradient(to top, rgba(4,8,20,0.78), transparent)' }} />
             <div className="absolute inset-x-[0] bottom-[0] mx-auto h-full max-w-[480px]">
-              <NightHorizon className="h-[19%]" />
+              <NightHorizon className="h-[21%]" />
             </div>
           </>
         }
@@ -229,6 +248,19 @@ export function KailashGangaInvite({
       </SlideLock>
 
       {revealed && <FloatingOrderBar templateName={templateName} music={music} delay={1.2} />}
+
+      {/* "Scroll down": the mouse and its chevron, in the middle of the screen's foot, until the guest begins to scroll. */}
+      <m.div
+        aria-hidden={!(landed && atTop)}
+        className="pointer-events-none fixed inset-x-[0] bottom-[88px] z-[30] flex justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: landed && atTop ? 1 : 0 }}
+        transition={{ duration: 0.6, delay: landed && atTop ? 0.8 : 0 }}
+      >
+        <span className={landed && atTop ? 'pointer-events-auto' : ''}>
+          <ScrollHint label="नीचे स्क्रॉल करें" className="text-invite-ink" />
+        </span>
+      </m.div>
     </div>
   );
 }

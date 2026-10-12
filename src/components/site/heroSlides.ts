@@ -50,6 +50,15 @@ export const HERO_SLIDES: HeroSlide[] = [
     screen: '/templates/karan-neha-rudra-gate.webp',
     slug: 'karan-weds-neha-rudra',
   },
+  {
+    bride: 'Ganga',
+    groom: 'Kailash',
+    venue: 'On the banks of the Ganga, Rishikesh',
+    tier: 'platinum',
+    tradition: 'contemporary',
+    screen: '/templates/kailash-ganga-gate.webp',
+    slug: 'kailash-weds-ganga',
+  },
 ];
 
 /** e.g. "lily-weds-ethan" — the invite route for this slide (bride, then groom, unless the slide names its own). */

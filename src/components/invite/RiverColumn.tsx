@@ -38,6 +38,7 @@ const SIDE_CLASS: Record<SlotSide, string> = {
   left: 'ml-[8%] w-[50%]',
   right: 'ml-auto mr-[8%] w-[50%]',
   wide: 'mx-[8%]',
+  both: 'mx-[6%]',
   end: '',
 };
 
@@ -74,16 +75,16 @@ export function RiverColumn({ sections, floaters = [], fadeStart = 0, fadeEnd = 
     return () => ro.disconnect();
   }, [sections.length]);
 
-  const { lead, start, near, width, lake, crossing, gap, tail, endRun } = layout;
+  const { lead, start, near, width, lake, crossing, gap, tail } = layout;
   const { points, height } = useMemo(() => {
     const placed = measured
       ? sections.map((s, i) => ({ side: s.side, height: measured.heights[i], top: measured.tops[i] }))
       : placeSlots(sections.map((s) => ({ side: s.side, height: s.est })), { start, crossing, gap });
-    const pts = riverPoints(placed, { lead, start, near, width, lake, crossing, gap, tail, endRun });
+    const pts = riverPoints(placed, { lead, start, near, width, lake, crossing, gap, tail });
     // a river that ends inside its last section is only as tall as that; otherwise it runs to the foot of the column
     const ends = sections[sections.length - 1]?.side === 'end';
     return { points: pts, height: ends ? pts[pts.length - 1].y : Math.max(pts[pts.length - 1].y, measured?.total ?? 0) };
-  }, [measured, sections, lead, start, near, width, lake, crossing, gap, tail, endRun]);
+  }, [measured, sections, lead, start, near, width, lake, crossing, gap, tail]);
 
   const sets = Math.max(1, Math.round(height / 2300));
   const flowers = useMemo(

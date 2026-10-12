@@ -36,6 +36,24 @@ export function tornBottom(seed: number, base: number, amp: number, steps = 160)
   return `polygon(0% 0px, 100% 0px, ${points.reverse().join(', ')})`;
 }
 
+/** The same tear, but for the BOTTOM edge of a whole element of any height: a clip-path whose ragged lower edge is measured
+ * up from the element's own bottom (`calc(100% - …)`), so it works however tall the element turns out to be. The torn edge
+ * wanders between the bottom and `2 * amp` px above it. The top is `top` px (negative to let things hung above the element,
+ * like a river rising out of the scene before it, show; the sides reach 50% beyond it for the same reason). */
+export function tornFooter(seed: number, amp: number, top = 0, steps = 160) {
+  const points: string[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const wander =
+      noise(t, 6, seed) + 0.55 * noise(t, 17, seed + 1) + 0.3 * noise(t, 47, seed + 2) + 0.15 * noise(t, 130, seed + 3);
+    points.push(`${(t * 100).toFixed(2)}% calc(100% - ${(amp * (1 - wander)).toFixed(1)}px)`);
+  }
+  const edge = points[0].split(' ').slice(1).join(' ');
+  const last = points[points.length - 1].split(' ').slice(1).join(' ');
+  // Along the top, down the right to where the tear begins, back along the tear (right to left), up the left.
+  return `polygon(-50% ${top}px, 150% ${top}px, 150% ${last}, ${points.reverse().join(', ')}, -50% ${edge})`;
+}
+
 export interface TornEdgeProps {
   /** The paper that is torn: its colour (any CSS background, so it can carry grain too), which must match the page above it so the two join with no seam. */
   sheet: string;
