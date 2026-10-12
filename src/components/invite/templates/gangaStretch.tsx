@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { AbhishekShrine } from '../AbhishekShrine';
 import { ChapterCard, ChapterNode, type ChapterTimelineColors } from '../ChapterTimeline';
 import { CountdownTiles } from '../CountdownTiles';
+import { Damru } from '../Damru';
 import { PersonCard, type CouplePortraitsColors } from '../CouplePortraits';
 import { formatTimeHi, formatWeekdayDate } from '../dates';
 import { Diya } from '../Diya';
@@ -17,6 +18,7 @@ import type { RiverPoint } from '../river';
 import { RiverColumn, type ColumnSection } from '../RiverColumn';
 import type { SlotSide } from '../riverLayout';
 import { RsvpSection } from '../RsvpSection';
+import { SCENE_H } from '../shrine';
 import { TouchReveal } from '../TouchReveal';
 import type { InviteCouple, InviteEvent, InviteRsvp, InviteStory } from '@/content/invites';
 import { NIGHT_FOOT } from './kailashGangaScene';
@@ -73,7 +75,7 @@ const WORDS = {
   events: { eyebrow: 'शुभ आयोजन', title: 'वैवाहिक कार्यक्रम', labels: { event: 'कार्यक्रम', onwards: 'से', map: 'स्थान का मानचित्र देखें' } },
   countdown: { eyebrow: 'शुभ मुहूर्त', title: 'शुभ घड़ी की गिनती', prompt: 'त्रिशूल को छुएँ', button: 'छुएँ', labels: ['दिन', 'घंटे', 'मिनट', 'सेकंड'] as [string, string, string, string] },
   rsvp: { heading: ['आपकी', 'उपस्थिति'], intro: 'माँ गंगा की धारा की तरह आप भी हमारे उत्सव में आइए। कृपया बताइए कि आप पधारेंगे।', cta: 'उपस्थिति बताएँ' },
-  shrine: { pour: 'जल अर्पित करें', pouring: 'अभिषेक हो रहा है…', blessing: 'ॐ नमः शिवाय', nandiHint: 'नंदी को छुएँ और आशीर्वाद पाएँ' },
+  shrine: { blessing: 'ॐ नमः शिवाय' },
   hint: 'पानी को छुएँ, दीप बहाएँ',
 };
 
@@ -300,30 +302,54 @@ export function GangaStretch({ groom, bride, couple, story, events, weddingDate,
     });
   }
 
-  // Scene 9: the river's end. The Ganga falls on the lingam, with Nandi beside it.
+  // Between the lake and the pool the river runs narrow down the middle, with Shiva's two things either side of it: the damru, shaking from the wrist, and the trishul, standing and swaying, with a glint on its prongs.
+  sections.push({
+    side: 'both',
+    est: 270,
+    content: (
+      <div className="grid grid-cols-[1fr_27%_1fr] items-center py-4">
+        <div className="flex justify-center">
+          <Damru className="w-[88%] max-w-[112px] drop-shadow-[0_6px_6px_rgba(60,30,5,0.3)]" />
+        </div>
+        <span aria-hidden />
+        <div className="relative flex justify-center">
+          <span aria-hidden className="amb-breathe pointer-events-none absolute left-[50%] top-[2%] h-[110px] w-[110px] -translate-x-1/2 rounded-pill" style={{ background: 'radial-gradient(closest-side, rgba(255,214,140,0.7), rgba(255,190,100,0.14) 60%, transparent)', ['--breathe-dur' as string]: '4s' }} />
+          <span className="amb-limb relative block" style={{ ['--limb-origin' as string]: '50% 100%', ['--limb-angle' as string]: '2.6deg', ['--limb-dur' as string]: '3.2s' }}>
+            <Image src={`${R}trishul.webp`} alt="" width={248} height={663} sizes="100px" className="block h-[218px] w-auto max-w-none drop-shadow-[0_8px_6px_rgba(60,30,5,0.35)]" />
+          </span>
+          {[
+            { left: '24%', top: '2%', size: 13, dur: 2.6, delay: -0.4 },
+            { left: '70%', top: '12%', size: 10, dur: 3.2, delay: -1.5 },
+            { left: '46%', top: '-6%', size: 9, dur: 2.2, delay: -0.9 },
+          ].map((st, i) => (
+            <span key={i} aria-hidden className="amb-twinkle pointer-events-none absolute text-[#e9b23c]" style={{ left: st.left, top: st.top, fontSize: st.size, lineHeight: 1, ['--tw-dur' as string]: `${st.dur}s`, ['--tw-delay' as string]: `${st.delay}s`, ['--tw-base' as string]: 0.9 }}>
+              ✦
+            </span>
+          ))}
+        </div>
+      </div>
+    ),
+  });
+
+  // Scene 9: the river's end. It opens into a pool; Shiva stands in it and is bathed, with Nandi on a stone beside.
   sections.push({
     side: 'end',
-    est: 640,
+    est: SCENE_H,
     content: (
       <AbhishekShrine
         lang="hi"
         displayClassName={faces.displayClassName}
         bodyClassName={faces.bodyClassName}
         lingam={{ src: '/art/rudra/shiva-abhishek-lingam.webp', width: 900, height: 482, landing: { x: 0.428, y: 0.06 }, pool: { cx: 0.43, cy: 0.74, rx: 0.405, ry: 0.11 }, dome: { halfWidth: 0.097, foot: 0.44 } }}
-        hand={{ src: '/art/rudra/shiva-abhishek-hand.webp', width: 900, height: 322, spout: { x: 0.425, y: 0.93 } }}
         nandi={{ src: `${R}nandi.webp`, width: 640, height: 618 }}
         words={WORDS.shrine}
-        sky={
-          <>
-            <Image src={`${R}cloud-b.webp`} alt="" width={900} height={351} sizes="320px" className="pointer-events-none absolute -top-[2%] left-[16%] h-auto w-[68%] max-w-none opacity-90" style={{ filter: 'brightness(1.25) saturate(0.7)', maskImage: CLOUD_FADE, WebkitMaskImage: CLOUD_FADE }} />
-          </>
-        }
+        stone={`${R}pebbles.webp`}
       />
     ),
   });
 
   return (
-    <div className="relative mx-auto w-full max-w-[480px]" style={{ background: `linear-gradient(to bottom, ${NIGHT_FOOT} 0, #0c1736 90px, #27355f 190px, #7d86ab 300px, #cfc9c4 430px, ${PAPER} 560px)` }}>
+    <div className="relative mx-auto flow-root w-full max-w-[480px]" style={{ background: `linear-gradient(to bottom, ${NIGHT_FOOT} 0, #0c1736 90px, #27355f 190px, #7d86ab 300px, #cfc9c4 430px, ${PAPER} 560px)` }}>
       {/* Paper grain over the dawn and the paper, not over the night at the top. */}
       <div className="absolute inset-x-[0] bottom-[0] top-[200px]" style={{ maskImage: 'linear-gradient(to bottom, transparent, #000 220px)', WebkitMaskImage: 'linear-gradient(to bottom, transparent, #000 220px)' }}>
         <Grain opacity={0.22} />
@@ -343,8 +369,6 @@ export function GangaStretch({ groom, bride, couple, story, events, weddingDate,
         gap={GAP}
         tail={TAIL}
         fadeStart={70}
-        fadeEnd={70}
-        endRun={64}
         releasable
         hint={WORDS.hint}
         hintAt={500}
