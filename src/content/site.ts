@@ -11,6 +11,7 @@ export const TEMPLATE_NAMES = {
   'gold-envelope': 'Starlit Envelope',
   'platinum-temple': 'Divine Temple Cinematic',
   rudra: 'Rudra',
+  'kailash-ganga': 'Kailash Ganga',
 } as const;
 
 /** Digits only, with the country code (91 = India), as wa.me wants it. */

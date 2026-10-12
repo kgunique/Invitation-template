@@ -42,6 +42,8 @@ const LISTINGS: Record<
     featured: true,
     screens: { cover: '/templates/aarthi-prashanth-invite.webp', preview: '/templates/aarthi-prashanth-gate.webp' },
   },
+  // Being built scene by scene: kept out of the gallery until it is finished. Then drop `hidden`, add a tag and take its two screenshots.
+  'kailash-ganga': { hidden: true },
   // Retake both screens once the template has more than its opening and landing.
   rudra: {
     tag: 'Shiva Blessings',

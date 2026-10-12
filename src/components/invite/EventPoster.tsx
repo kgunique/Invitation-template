@@ -30,9 +30,11 @@ export interface EventPosterColors {
   body: string;
   /** The card's outline. */
   line: string;
+  /** The far end of the button's gradient (it runs from `accent` to this). */
+  buttonEnd: string;
 }
 
-const DEFAULT_COLORS: EventPosterColors = { accent: '#0f77b5', ink: '#1c2540', body: '#2a3550', line: '#cfe6f5' };
+const DEFAULT_COLORS: EventPosterColors = { accent: '#0f77b5', ink: '#1c2540', body: '#2a3550', line: '#cfe6f5', buttonEnd: '#0b5f94' };
 
 export interface EventPosterProps {
   event: InviteEvent;
@@ -53,6 +55,8 @@ export interface EventPosterProps {
   bodyClassName?: string;
   lang?: string;
   colors?: Partial<EventPosterColors>;
+  /** The narrow card (about 170px across, no minimum height): smaller type and padding, the day and the clock one under the other, a button that wraps. For a gap beside something else, such as a river. */
+  compact?: boolean;
 }
 
 const rise = {
@@ -70,6 +74,8 @@ const mapsUrl = (e: InviteEvent) =>
   e.mapsUrl ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where(e))}`;
 
 const PILL = 'inline-flex items-center gap-[6px] rounded-pill bg-[rgba(255,255,255,0.93)] px-3 py-[5px] text-[12.5px] font-semibold shadow-[0_2px_8px_rgba(20,50,90,0.12)]';
+// the compact card's: the same, but it may wrap to two lines
+const PILL_COMPACT = 'flex items-center justify-center gap-[6px] rounded-[14px] bg-[rgba(255,255,255,0.93)] px-2 py-[5px] text-center text-[12px] font-semibold leading-[1.4] shadow-[0_2px_8px_rgba(20,50,90,0.12)]';
 
 /**
  * One event as a poster: the artwork fills the card (`scene`), and the words stand over its upper part —
@@ -93,6 +99,7 @@ export function EventPoster({
   bodyClassName = '',
   lang,
   colors,
+  compact = false,
 }: EventPosterProps) {
   const c = { ...DEFAULT_COLORS, ...colors };
   const { background = '#eaf3fa', behind, wash, front, ink = c.ink, sub = c.body } = scene;
@@ -104,46 +111,46 @@ export function EventPoster({
       initial="hidden"
       whileInView="shown"
       viewport={{ once: true, amount: 0.2 }}
-      className="relative mx-auto min-h-[660px] w-full max-w-[380px] overflow-hidden rounded-[28px] border shadow-[0_14px_36px_rgba(30,70,120,0.22)]"
+      className={`relative mx-auto w-full overflow-hidden border ${compact ? 'rounded-[20px] shadow-[0_8px_24px_rgba(60,40,10,0.18)]' : 'min-h-[660px] max-w-[380px] rounded-[28px] shadow-[0_14px_36px_rgba(30,70,120,0.22)]'}`}
       style={{ background, borderColor: c.line }}
     >
       {behind}
       {wash && <span aria-hidden className="pointer-events-none absolute inset-x-[0] top-[0] h-[62%]" style={{ background: wash }} />}
 
-      <m.div variants={parts} className="relative z-[2] px-4 pt-4 text-center">
+      <m.div variants={parts} className={`relative z-[2] text-center ${compact ? 'px-3 pb-4 pt-3' : 'px-4 pt-4'}`}>
         <m.div variants={part} className="flex items-center justify-between">
           <span
-            className={`${bodyClassName} rounded-pill bg-[rgba(255,255,255,0.93)] px-3 py-[6px] text-[12px] font-bold tracking-[0.14em] shadow-[0_2px_8px_rgba(20,50,90,0.12)]`}
+            className={`${bodyClassName} rounded-pill bg-[rgba(255,255,255,0.93)] font-bold shadow-[0_2px_8px_rgba(20,50,90,0.12)] ${compact ? 'px-2 py-[4px] text-[11px]' : 'px-3 py-[6px] text-[12px] tracking-[0.14em]'}`}
             style={{ color: c.accent }}
           >
             {labels.event} {String(index + 1).padStart(2, '0')}
           </span>
           <span
             aria-hidden
-            className="flex h-[38px] w-[38px] items-center justify-center rounded-pill bg-[rgba(255,255,255,0.93)] text-[18px] shadow-[0_2px_8px_rgba(20,50,90,0.12)]"
+            className={`flex items-center justify-center rounded-pill bg-[rgba(255,255,255,0.93)] shadow-[0_2px_8px_rgba(20,50,90,0.12)] ${compact ? 'h-[30px] w-[30px] text-[15px]' : 'h-[38px] w-[38px] text-[18px]'}`}
           >
             {badge ?? event.icon}
           </span>
         </m.div>
 
-        <m.h3 variants={part} className={`${displayClassName} mt-4 text-[30px] font-semibold leading-[1.3]`} style={{ color: ink }}>
+        <m.h3 variants={part} className={`${displayClassName} font-semibold leading-[1.3] ${compact ? 'mt-3 text-[20px]' : 'mt-4 text-[30px]'}`} style={{ color: ink }}>
           {event.title}
         </m.h3>
         <m.span variants={part} aria-hidden className="mx-auto mt-2 block h-[2px] w-[64px] rounded-pill" style={{ background: `linear-gradient(to right, transparent, ${c.accent}, transparent)` }} />
         {event.description && (
-          <m.p variants={part} className={`${bodyClassName} mx-auto mt-1 max-w-[28ch] text-[14px] leading-[1.5]`} style={{ color: sub }}>
+          <m.p variants={part} className={`${bodyClassName} mx-auto mt-1 ${compact ? 'text-[12.5px] leading-[1.6]' : 'max-w-[28ch] text-[14px] leading-[1.5]'}`} style={{ color: sub }}>
             {event.description}
           </m.p>
         )}
 
-        <m.div variants={part} className="mt-3 flex flex-wrap items-center justify-center gap-2">
-          <span className={`${PILL} ${bodyClassName}`} style={{ color: c.body }}>
+        <m.div variants={part} className={`mt-3 flex items-stretch justify-center gap-2 ${compact ? 'flex-col' : 'flex-wrap items-center'}`}>
+          <span className={`${compact ? PILL_COMPACT : PILL} ${bodyClassName}`} style={{ color: c.body }}>
             <span style={{ color: c.accent }} className="flex">
               <CalendarIcon className="h-[15px] w-[15px]" />
             </span>
             {formatDate(event.startsAt, timeZone)}
           </span>
-          <span className={`${PILL} ${bodyClassName}`} style={{ color: c.body }}>
+          <span className={`${compact ? PILL_COMPACT : PILL} ${bodyClassName}`} style={{ color: c.body }}>
             <span style={{ color: c.accent }} className="flex">
               <ClockIcon className="h-[15px] w-[15px]" />
             </span>
@@ -153,14 +160,14 @@ export function EventPoster({
 
         <m.div
           variants={part}
-          className="mx-auto mt-3 w-full rounded-[16px] bg-[rgba(255,255,255,0.95)] px-4 py-[10px] shadow-[0_3px_12px_rgba(20,50,90,0.14)]"
+          className={`mx-auto mt-3 w-full bg-[rgba(255,255,255,0.95)] shadow-[0_3px_12px_rgba(20,50,90,0.14)] ${compact ? 'rounded-[14px] px-2 py-2' : 'rounded-[16px] px-4 py-[10px]'}`}
         >
-          <p className={`${bodyClassName} flex items-center justify-center gap-[6px] text-[15px] font-bold`} style={{ color: c.ink }}>
+          <p className={`${bodyClassName} flex items-center justify-center gap-[6px] font-bold ${compact ? 'text-[13.5px] leading-[1.4]' : 'text-[15px]'}`} style={{ color: c.ink }}>
             <PinIcon className="h-[16px] w-[16px] shrink-0 text-[#d9453d]" />
             {event.place}
           </p>
           {event.address && (
-            <p className={`${bodyClassName} mt-[2px] text-[12.5px] leading-[1.5]`} style={{ color: c.body, opacity: 0.8 }}>
+            <p className={`${bodyClassName} mt-[2px] leading-[1.5] ${compact ? 'text-[11.5px]' : 'text-[12.5px]'}`} style={{ color: c.body, opacity: 0.8 }}>
               {event.address}
             </p>
           )}
@@ -171,10 +178,10 @@ export function EventPoster({
           href={mapsUrl(event)}
           target="_blank"
           rel="noopener noreferrer"
-          className={`${bodyClassName} mx-auto mt-[10px] flex w-full items-center justify-center gap-2 rounded-pill px-5 py-[10px] text-[13px] font-bold uppercase tracking-[0.1em] no-underline shadow-[0_6px_16px_rgba(15,100,160,0.35)]`}
-          style={{ background: `linear-gradient(to right, ${c.accent}, #0b5f94)`, color: '#ffffff' }}
+          className={`${bodyClassName} mx-auto flex w-full items-center justify-center font-bold no-underline ${compact ? 'mt-3 gap-[6px] rounded-[14px] px-2 py-2 text-[12px] leading-[1.4] shadow-[0_5px_12px_rgba(60,40,10,0.28)]' : 'mt-[10px] gap-2 rounded-pill px-5 py-[10px] text-[13px] uppercase tracking-[0.1em] shadow-[0_6px_16px_rgba(15,100,160,0.35)]'}`}
+          style={{ background: `linear-gradient(to right, ${c.accent}, ${c.buttonEnd})`, color: '#ffffff' }}
         >
-          <NavigationIcon className="h-[14px] w-[14px]" />
+          <NavigationIcon className="h-[14px] w-[14px] shrink-0" />
           {labels.map}
         </m.a>
       </m.div>

@@ -109,6 +109,41 @@
   to { transform: translateX(-50%); }
 }
 
+/* A cloud orbiting a point: it travels round an ellipse (--orb-rx wide, --orb-ry tall, both lengths) with its
+   centre at its own `left`/`top`. Seen from a little above, the half of the loop nearer the viewer is lower on the
+   screen, bigger and brighter and passes in front of whatever the cloud circles; the far half is smaller, paler and
+   passes behind it (z-index 3 in front, 1 behind: put the thing it circles at z-index 2). Sixteen linear steps stand for
+   the ellipse. --orb-dur is a whole lap; give each cloud a negative --orb-delay so they don't bunch. */
+.amb-orbit { animation: amb-orbit var(--orb-dur, 80s) linear var(--orb-delay, 0s) infinite; will-change: transform; }
+@keyframes amb-orbit {
+  0% { transform: translate(calc(var(--orb-rx) * 1.000), calc(var(--orb-ry) * 0.000)) scale(0.890); opacity: 0.575; z-index: 1; }
+  6.25% { transform: translate(calc(var(--orb-rx) * 0.924), calc(var(--orb-ry) * 0.383)) scale(0.955); opacity: 0.681; z-index: 3; }
+  12.5% { transform: translate(calc(var(--orb-rx) * 0.707), calc(var(--orb-ry) * 0.707)) scale(1.010); opacity: 0.770; z-index: 3; }
+  18.75% { transform: translate(calc(var(--orb-rx) * 0.383), calc(var(--orb-ry) * 0.924)) scale(1.047); opacity: 0.829; z-index: 3; }
+  25% { transform: translate(calc(var(--orb-rx) * 0.000), calc(var(--orb-ry) * 1.000)) scale(1.060); opacity: 0.850; z-index: 3; }
+  31.25% { transform: translate(calc(var(--orb-rx) * -0.383), calc(var(--orb-ry) * 0.924)) scale(1.047); opacity: 0.829; z-index: 3; }
+  37.5% { transform: translate(calc(var(--orb-rx) * -0.707), calc(var(--orb-ry) * 0.707)) scale(1.010); opacity: 0.770; z-index: 3; }
+  43.75% { transform: translate(calc(var(--orb-rx) * -0.924), calc(var(--orb-ry) * 0.383)) scale(0.955); opacity: 0.681; z-index: 3; }
+  50% { transform: translate(calc(var(--orb-rx) * -1.000), calc(var(--orb-ry) * 0.000)) scale(0.890); opacity: 0.575; z-index: 1; }
+  56.25% { transform: translate(calc(var(--orb-rx) * -0.924), calc(var(--orb-ry) * -0.383)) scale(0.825); opacity: 0.469; z-index: 1; }
+  62.5% { transform: translate(calc(var(--orb-rx) * -0.707), calc(var(--orb-ry) * -0.707)) scale(0.770); opacity: 0.380; z-index: 1; }
+  68.75% { transform: translate(calc(var(--orb-rx) * -0.383), calc(var(--orb-ry) * -0.924)) scale(0.733); opacity: 0.321; z-index: 1; }
+  75% { transform: translate(calc(var(--orb-rx) * -0.000), calc(var(--orb-ry) * -1.000)) scale(0.720); opacity: 0.300; z-index: 1; }
+  81.25% { transform: translate(calc(var(--orb-rx) * 0.383), calc(var(--orb-ry) * -0.924)) scale(0.733); opacity: 0.321; z-index: 1; }
+  87.5% { transform: translate(calc(var(--orb-rx) * 0.707), calc(var(--orb-ry) * -0.707)) scale(0.770); opacity: 0.380; z-index: 1; }
+  93.75% { transform: translate(calc(var(--orb-rx) * 0.924), calc(var(--orb-ry) * -0.383)) scale(0.825); opacity: 0.469; z-index: 1; }
+  100% { transform: translate(calc(var(--orb-rx) * 1.000), calc(var(--orb-ry) * 0.000)) scale(0.890); opacity: 0.575; z-index: 1; }
+}
+
+/* A seamless texture sliding downstream: a tall box (its height + one tile) whose background is the tile, shifted up by
+   one tile (`top: -tile`) and slid down by one tile each lap, so the surface seems to flow without ever showing a seam. Put it inside
+   a clipping parent (a river's mask). --stream-tile is the tile's height in px, --stream-dur one lap. */
+.amb-stream { animation: amb-stream var(--stream-dur, 24s) linear infinite; will-change: transform; }
+@keyframes amb-stream {
+  from { transform: translateY(0); }
+  to   { transform: translateY(var(--stream-tile, 520px)); }
+}
+
 /* A slanted band of light that crosses a picture now and then, then waits.
    Give it a clipping parent and a width; --sheen-dur is the whole cycle. */
 .amb-sheen { animation: amb-sheen var(--sheen-dur, 8s) ease-in-out infinite; }
@@ -186,6 +221,9 @@
 /* Slower spin for a decorative badge icon — same keyframes, gentler pace so
    it reads as ambient rather than a loading indicator. */
 .amb-spin-slow { animation: amb-spin 3.2s linear infinite; }
+
+/* A picture that turns about its own centre, very slowly (--turn-slow-dur, one lap). Put it on the picture inside a round clip. */
+.amb-turn-slow { animation: amb-spin var(--turn-slow-dur, 160s) linear infinite; }
 
 /* A dashed ring that turns slowly (it has to be dashed, or a circle turning is
    invisible). --ring-dur sets the pace; --rev flips it so a nested pair
@@ -342,6 +380,7 @@
   .amb-turn,
   .amb-spin,
   .amb-spin-slow,
+  .amb-turn-slow,
   .amb-ring,
   .amb-spark,
   .amb-swing-depth,
@@ -356,6 +395,8 @@
   .amb-wheel,
   .amb-drift,
   .amb-cloud,
+  .amb-orbit,
+  .amb-stream,
   .amb-gallery-marquee,
   .amb-limb,
   .amb-bob,

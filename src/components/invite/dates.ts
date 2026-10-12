@@ -52,3 +52,10 @@ export function formatTimeHi(iso: string, timeZone: string) {
   const period = h >= 4 && h < 12 ? 'सुबह' : h >= 12 && h < 16 ? 'दोपहर' : h >= 16 && h < 20 ? 'शाम' : 'रात';
   return `${period} ${h % 12 || 12}:${m} बजे`;
 }
+
+/** "7 March 2027" — the day, the month in words and the year, in the wedding's own zone. `locale` writes it in another language ("hi-IN": "7 मार्च 2027"). */
+export function formatDayMonthYear(iso: string, timeZone: string, locale = 'en-GB') {
+  const parts = new Intl.DateTimeFormat(locale, { timeZone, day: 'numeric', month: 'long', year: 'numeric' }).formatToParts(new Date(iso));
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+  return `${get('day')} ${get('month')} ${get('year')}`;
+}

@@ -83,3 +83,9 @@
     animation-delay: 0s !important;
   }
 }
+
+/* Devanagari is never letter-spaced: tracking pulls the matras and conjuncts apart ("शुभ विवाह" turns to "शु भ वि वा ह"). Any tracked label that falls inside Hindi text keeps its normal spacing. */
+:lang(hi) .invite-eyebrow,
+:lang(hi) [class*='tracking-'] {
+  letter-spacing: normal !important;
+}

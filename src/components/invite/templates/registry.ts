@@ -1,6 +1,7 @@
 import { GoldEnvelopeInvite } from './GoldEnvelopeInvite';
 import { GujaratiKankotriInvite } from './GujaratiKankotriInvite';
 import { GujaratiKankotriYellowInvite } from './GujaratiKankotriYellowInvite';
+import { KailashGangaInvite } from './KailashGangaInvite';
 import { PlatinumTempleInvite } from './PlatinumTempleInvite';
 import { RudraInvite } from './RudraInvite';
 
@@ -15,6 +16,7 @@ export const TEMPLATES = {
   'gold-envelope': GoldEnvelopeInvite,
   'platinum-temple': PlatinumTempleInvite,
   rudra: RudraInvite,
+  'kailash-ganga': KailashGangaInvite,
 } as const;
 
 export type TemplateId = keyof typeof TEMPLATES;

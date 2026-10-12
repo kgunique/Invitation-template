@@ -76,15 +76,15 @@ const pop = {
 };
 
 /** The picture in the template's gold arch: the face lit from within, a glint that crosses it now and then. */
-function ArchFrame({ person, c, bodyClassName }: { person: PortraitPerson; c: CouplePortraitsColors; bodyClassName: string }) {
+function ArchFrame({ person, c, bodyClassName, compact }: { person: PortraitPerson; c: CouplePortraitsColors; bodyClassName: string; compact: boolean }) {
   return (
-    <GoldArch gold={c.gold} aspect="5 / 7" className="w-[68%] max-w-[240px]">
+    <GoldArch gold={c.gold} aspect="5 / 7" className={compact ? 'w-[82%]' : 'w-[68%] max-w-[240px]'}>
       {person.image ? (
         <Image
           src={person.image}
           alt={person.imageAlt ?? person.name}
           fill
-          sizes="(min-width: 480px) 240px, 68vw"
+          sizes={compact ? '180px' : '(min-width: 480px) 240px, 68vw'}
           className="object-cover"
         />
       ) : (
@@ -108,13 +108,19 @@ function ArchFrame({ person, c, bodyClassName }: { person: PortraitPerson; c: Co
   );
 }
 
-function PersonCard({
+/**
+ * One person's card: the picture in its arch, the label pill, the name under its small title, the family box.
+ * `compact` is the narrow one (about 170px across), for a card that sits in the gap beside something else — a river —
+ * instead of across the page: smaller type and padding, the picture wider in its card.
+ */
+export function PersonCard({
   person,
   label,
   side,
   c,
   displayClassName,
   bodyClassName,
+  compact = false,
 }: {
   person: PortraitPerson;
   label: string;
@@ -123,6 +129,7 @@ function PersonCard({
   c: CouplePortraitsColors;
   displayClassName: string;
   bodyClassName: string;
+  compact?: boolean;
 }) {
   return (
     <m.article
@@ -130,37 +137,37 @@ function PersonCard({
       initial="hidden"
       whileInView="shown"
       viewport={{ once: true, amount: 0.25 }}
-      className="mx-auto w-full max-w-[400px] rounded-[28px] border-2 px-4 pb-6 pt-[28px] shadow-[0_10px_34px_rgba(40,90,140,0.12)]"
+      className={`mx-auto w-full max-w-[400px] border-2 ${compact ? 'rounded-[20px] px-[10px] pb-4 pt-[16px] shadow-[0_8px_24px_rgba(60,40,10,0.18)]' : 'rounded-[28px] px-4 pb-6 pt-[28px] shadow-[0_10px_34px_rgba(40,90,140,0.12)]'}`}
       style={{ background: c.card, borderColor: c.line }}
     >
-      <ArchFrame person={person} c={c} bodyClassName={bodyClassName} />
+      <ArchFrame person={person} c={c} bodyClassName={bodyClassName} compact={compact} />
 
-      <div className="mt-5 flex justify-center">
+      <div className={`${compact ? 'mt-3' : 'mt-5'} flex justify-center`}>
         <span
-          className={`${bodyClassName} rounded-pill px-4 py-[5px] text-[12px] font-semibold tracking-[0.16em] text-[#ffffff] shadow-sm`}
+          className={`${bodyClassName} rounded-pill font-semibold text-[#ffffff] shadow-sm ${compact ? 'px-3 py-[3px] text-[12px] tracking-[0.1em]' : 'px-4 py-[5px] text-[12px] tracking-[0.16em]'}`}
           style={{ background: c.accent }}
         >
           {label}
         </span>
       </div>
 
-      <div className="mt-3 text-center">
+      <div className={`${compact ? 'mt-2' : 'mt-3'} text-center`}>
         {person.title && (
-          <p className={`${bodyClassName} text-[14px] font-medium`} style={{ color: c.gold }}>
+          <p className={`${bodyClassName} font-medium ${compact ? 'text-[13px]' : 'text-[14px]'}`} style={{ color: c.gold }}>
             {person.title}
           </p>
         )}
-        <h3 className={`${displayClassName} text-[30px] font-semibold leading-[1.3]`} style={{ color: c.ink }}>
+        <h3 className={`${displayClassName} font-semibold leading-[1.3] ${compact ? 'text-[26px]' : 'text-[30px]'}`} style={{ color: c.ink }}>
           {person.name}
         </h3>
       </div>
 
       {person.family && person.family.length > 0 && (
         <div
-          className={`${bodyClassName} mx-1 mt-4 rounded-[14px] bg-white px-4 py-3 text-center text-[14.5px] leading-[1.7] shadow-[0_2px_10px_rgba(30,60,100,0.1)]`}
+          className={`${bodyClassName} bg-white text-center shadow-[0_2px_10px_rgba(30,60,100,0.1)] ${compact ? 'mt-3 rounded-[12px] px-[10px] py-2 text-[13px] leading-[1.6]' : 'mx-1 mt-4 rounded-[14px] px-4 py-3 text-[14.5px] leading-[1.7]'}`}
           style={{
             color: c.body,
-            [side === 'left' ? 'borderLeft' : 'borderRight']: `4px solid ${c.accent}`,
+            [side === 'left' ? 'borderLeft' : 'borderRight']: `${compact ? 3 : 4}px solid ${c.accent}`,
           }}
         >
           {person.family.map((line) => (

@@ -7,6 +7,7 @@ import { HangingBells } from '../HangingBells';
 import { HangingSprite } from '../HangingSprite';
 import { Kalash } from '../Kalash';
 import { Petals } from '../Petals';
+import { SwingArt } from '../SwingArt';
 import { AbhishekWater, Diya } from './rudraScene';
 
 /**
@@ -138,22 +139,32 @@ export function rudraEventScenes(petals: { haldi: string[]; dev: string[]; vivah
       background: 'linear-gradient(to bottom, #d7edf8 0%, #9fd4f0 35%, #7cc4ee 100%)',
       wash: 'linear-gradient(to bottom, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.6) 38%, rgba(255,255,255,0) 100%)',
       behind: (
-        <>
-          <Image
-            src={`${R}swing.webp`}
-            alt="शिव और पार्वती वृक्ष के नीचे झूले पर"
-            fill
-            sizes="380px"
-            className="object-cover"
-            style={{
-              objectPosition: '50% 100%',
-              transform: 'translateY(15%) scale(1.04)',
-              transformOrigin: '50% 100%',
-              maskImage: 'linear-gradient(to bottom, transparent 10%, #000 30%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, transparent 10%, #000 30%)',
-            }}
-          />
-        </>
+        // The painting is cut in two: the tree, the sky and the bush (`swing-plate.webp`), and the swing with its ropes,
+        // seat and the couple (`swing-group.webp`). The second hangs from the branch where the ropes come out of the
+        // leaves and rocks forward and back (`SwingArt`, the loop `amb-swing-depth`) while the first stands still.
+        // Both are laid out in one box the shape of the painting, so they stay in register.
+        <div
+          className="pointer-events-none absolute inset-x-[0] bottom-[0]"
+          style={{
+            aspectRatio: '900 / 1606',
+            transform: 'translateY(15%) scale(1.04)',
+            transformOrigin: '50% 100%',
+            maskImage: 'linear-gradient(to bottom, transparent 10%, #000 30%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent 10%, #000 30%)',
+          }}
+        >
+          <Image src={`${R}swing-plate.webp`} alt="" fill sizes="380px" className="object-cover" />
+          <div
+            role="img"
+            aria-label="शिव और पार्वती वृक्ष के नीचे झूले पर"
+            className="absolute inset-[0]"
+            style={{ ['--swing-pivot' as string]: '50.3% 14.8%', ['--swing-angle' as string]: '5deg', ['--swing-dur' as string]: '2.4s' }}
+          >
+            <SwingArt>
+              <Image src={`${R}swing-group.webp`} alt="" fill sizes="380px" className="object-cover" />
+            </SwingArt>
+          </div>
+        </div>
       ),
       front: <Petals color={petals.vivah} count={8} size={[8, 13]} speed={0.4} />,
     },

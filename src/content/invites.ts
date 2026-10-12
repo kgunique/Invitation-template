@@ -373,6 +373,52 @@ export const INVITES: InviteRecord[] = [
       ],
     },
   },
+  {
+    // The Kailash–Ganga sample (being built scene by scene; not in the gallery yet).
+    slug: 'kailash-weds-ganga',
+    bride: 'Ganga',
+    groom: 'Kailash',
+    // Written in Hindi, as every scene after the gate is.
+    venue: 'ऋषिकेश, गंगा के तट पर',
+    tier: 'platinum',
+    tradition: 'contemporary',
+    templateId: 'kailash-ganga',
+    greeting: 'With the blessings of Mahadev,\nwe invite you to celebrate our wedding.',
+    weddingDate: '2027-03-07T19:00:00+05:30',
+    // Placeholder portraits and family lines (the owner's stock pictures), until a real order brings its own.
+    couple: {
+      groom: {
+        name: 'कैलाश',
+        blessing: 'आयुष्मान्',
+        image: '/art/platinum/groom-portrait.webp',
+        family: 'सुपुत्र: श्रीमती गौरी देवी एवं श्री शंकर प्रसाद\nहरिद्वार, उत्तराखंड',
+      },
+      bride: {
+        name: 'गंगा',
+        blessing: 'आयुष्मती',
+        image: '/art/platinum/bride-portrait.webp',
+        family: 'सुपुत्री: श्रीमती यमुना देवी एवं श्री भागीरथ प्रसाद\nऋषिकेश, उत्तराखंड',
+      },
+    },
+    rsvp: { whatsapp: '919876543210', replyBy: '2027-02-25T23:59:00+05:30', maxPlusMembers: 5 },
+    thankYou: 'इस मांगलिक अवसर पर पधारकर अपना स्नेह एवं शुभाशीष देने के लिए आपका हार्दिक आभार।',
+    // A made-up programme (the times and places are placeholders).
+    events: [
+      { title: 'गंगा पूजन एवं हल्दी', description: 'माँ गंगा का आह्वान और हल्दी की मंगल रस्म', startsAt: '2027-03-05T10:00:00+05:30', place: 'वर निवास', address: 'हरिद्वार, उत्तराखंड', icon: '🌼' },
+      { title: 'रुद्राभिषेक', description: 'महादेव को जल अर्पण कर आशीर्वाद की कामना', startsAt: '2027-03-06T09:00:00+05:30', place: 'श्री नीलकंठ महादेव मंदिर', address: 'ऋषिकेश, उत्तराखंड', icon: '🔱' },
+      { title: 'बारात प्रस्थान एवं शुभ विवाह', description: 'गंगा तट पर सप्तपदी और फेरे', startsAt: '2027-03-07T19:00:00+05:30', place: 'परमार्थ निकेतन घाट', address: 'ऋषिकेश, उत्तराखंड', icon: '🪔' },
+      { title: 'आशीर्वाद समारोह', description: 'स्वागत एवं प्रीतिभोज', startsAt: '2027-03-08T19:30:00+05:30', place: 'शिवानंद सभागार', address: 'मुनि की रेती, ऋषिकेश', icon: '🎉' },
+    ],
+    // A made-up story, as a placeholder.
+    story: {
+      milestones: [
+        { year: '2021', label: 'अध्याय १', title: 'पहली भेंट', subtitle: 'हरिद्वार की गंगा आरती', text: 'संध्या की आरती में दीपों की लौ के बीच दो नज़रें मिलीं, और बात बिना कहे ही शुरू हो गई।', tag: 'पहली झलक', note: 'पावन घाट' },
+        { year: '2023', label: 'अध्याय २', title: 'मन का संगम', subtitle: 'ऋषिकेश के घाट पर', text: 'गंगा किनारे बैठकर घंटों बातें हुईं; दो अलग धाराएँ धीरे-धीरे एक होती चली गईं।', tag: 'संगम', note: 'गंगा तट' },
+        { year: '2025', label: 'अध्याय ३', title: 'प्रेम का वचन', subtitle: 'कैलाश के सामने', text: 'बर्फ़ीली चोटियों के सामने कैलाश ने पूछा और गंगा ने कहा — हाँ!', tag: 'प्रस्ताव', note: 'हिमालय' },
+        { year: '2027', label: 'अध्याय ४', title: 'सात वचन', subtitle: 'महादेव के आशीर्वाद से', text: 'अब हम अग्नि और गंगा को साक्षी मानकर जीवनभर साथ चलने का संकल्प लेते हैं।', tag: 'विवाह', note: 'शुभ घड़ी' },
+      ],
+    },
+  },
 ];
 
 export function getInvite(slug: string): InviteRecord | undefined {

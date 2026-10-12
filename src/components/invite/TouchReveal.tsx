@@ -41,6 +41,10 @@ export interface TouchRevealProps {
   colors?: Partial<TouchRevealColors>;
   /** Called once, at the touch. */
   onReveal?: () => void;
+  /** How big the medallion is, px (92 by default). A bigger one carries a bigger picture: pass the picture at about 0.8 of this. */
+  medallionSize?: number;
+  /** The narrow card (about 190px across): less padding, smaller words, a shorter locked face. For a gap beside something else, such as a river. */
+  compact?: boolean;
 }
 
 // Where the sparks fly to on the touch (px from the medallion's centre): a ring of twelve, deterministic.
@@ -67,6 +71,8 @@ export function TouchReveal({
   lang,
   colors,
   onReveal,
+  medallionSize = 92,
+  compact = false,
 }: TouchRevealProps) {
   const c = { ...DEFAULT_COLORS, ...colors };
   const [shown, setShown] = useState(false);
@@ -79,7 +85,7 @@ export function TouchReveal({
   return (
     <div
       lang={lang}
-      className="relative overflow-hidden rounded-[26px] border-2 px-5 py-8 shadow-[0_18px_44px_rgba(8,30,70,0.35)]"
+      className={`relative overflow-hidden border-2 shadow-[0_18px_44px_rgba(8,30,70,0.35)] ${compact ? 'rounded-[20px] px-3 py-6' : 'rounded-[26px] px-5 py-8'}`}
       style={{ background: c.card, borderColor: c.line, ['--glow' as string]: c.gold }}
     >
       {/* Faint rings, as if the night were a pool. */}
@@ -108,13 +114,14 @@ export function TouchReveal({
             key="locked"
             exit={{ opacity: 0, scale: 0.94 }}
             transition={{ duration: 0.45, ease: EASE.exit }}
-            className="relative flex min-h-[210px] flex-col items-center justify-center"
+            className={`relative flex flex-col items-center justify-center ${compact ? 'min-h-[190px]' : 'min-h-[210px]'}`}
           >
             <button
               type="button"
               onClick={reveal}
               aria-label={prompt}
-              className="relative flex h-[92px] w-[92px] items-center justify-center rounded-pill"
+              className="relative flex items-center justify-center rounded-pill"
+              style={{ width: medallionSize, height: medallionSize }}
             >
               <span aria-hidden className="amb-halo pointer-events-none absolute inset-[0] rounded-pill border-2" style={{ borderColor: c.gold }} />
               <span
@@ -126,13 +133,13 @@ export function TouchReveal({
                 {medallion}
               </span>
             </button>
-            <p className={`${displayClassName} mt-5 text-center text-[22px] font-semibold leading-[1.4]`} style={{ color: c.text }}>
+            <p className={`${displayClassName} mt-5 text-center font-semibold leading-[1.4] ${compact ? 'text-[18px]' : 'text-[22px]'}`} style={{ color: c.text }}>
               {prompt}
             </p>
             <button
               type="button"
               onClick={reveal}
-              className={`${bodyClassName} mt-4 inline-flex items-center gap-2 rounded-pill px-6 py-[10px] text-[13px] font-semibold tracking-[0.06em] shadow-md`}
+              className={`${bodyClassName} mt-4 inline-flex items-center gap-2 rounded-pill font-semibold shadow-md ${compact ? 'px-4 py-2 text-[13px]' : 'px-6 py-[10px] text-[13px] tracking-[0.06em]'}`}
               style={{ background: c.button, color: '#ffffff' }}
             >
               <span aria-hidden>✦</span>

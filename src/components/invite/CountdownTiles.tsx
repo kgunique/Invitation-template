@@ -17,6 +17,8 @@ export interface CountdownTilesProps {
   labelColor?: string;
   tile?: string;
   line?: string;
+  /** Four in a row (default), or two and two for a narrow place. */
+  columns?: 2 | 4;
 }
 
 /**
@@ -34,13 +36,14 @@ export function CountdownTiles({
   labelColor = '#a9d4f5',
   tile = 'rgba(255, 255, 255, 0.07)',
   line = 'rgba(233, 178, 60, 0.45)',
+  columns = 4,
 }: CountdownTilesProps) {
   const left = useCountdown(weddingDate);
   const values = [left.days, left.hours, left.minutes, left.seconds];
 
   return (
     <div className="text-center">
-      <div className="grid grid-cols-4 gap-2" role="timer" aria-label={values.map((v, i) => `${v} ${labels[i]}`).join(', ')}>
+      <div className={`grid gap-2 ${columns === 2 ? 'grid-cols-2' : 'grid-cols-4'}`} role="timer" aria-label={values.map((v, i) => `${v} ${labels[i]}`).join(', ')}>
         {values.map((v, i) => (
           <div key={i} className="rounded-[14px] border px-1 py-3" style={{ background: tile, borderColor: line }}>
             <p className={`${displayClassName} tabular text-[30px] font-semibold leading-none`} style={{ color: numberColor }}>
@@ -53,7 +56,7 @@ export function CountdownTiles({
         ))}
       </div>
       {caption && (
-        <p className={`${bodyClassName} mt-5 text-[14px] leading-[1.7]`} style={{ color: labelColor }}>
+        <p className={`${bodyClassName} text-[14px] leading-[1.7] ${columns === 2 ? 'mt-3' : 'mt-5'}`} style={{ color: labelColor }}>
           {caption}
         </p>
       )}
