@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { m } from 'motion/react';
 import type { InviteEvent } from '@/content/invites';
 import { DURATION, EASE } from '@/styles/motion';
+import { CelestialBodiesBackground } from './CelestialBodiesBackground';
 import { formatTime, formatWeekdayDate } from './dates';
 import { CalendarIcon, ClockIcon, NavigationIcon, PinIcon } from './icons';
 
@@ -38,7 +39,7 @@ const DEFAULT_COLORS: EventPosterColors = { accent: '#0f77b5', ink: '#1c2540', b
 
 export interface EventPosterProps {
   event: InviteEvent;
-  /** Position in the list, from 0: it prints as "EVENT 01". */
+  /** Position in the list, from 0: it prints as "समारोह #1". */
   index: number;
   /** IANA zone the date and time are shown in. */
   timeZone?: string;
@@ -57,6 +58,12 @@ export interface EventPosterProps {
   colors?: Partial<EventPosterColors>;
   /** The narrow card (about 170px across, no minimum height): smaller type and padding, the day and the clock one under the other, a button that wraps. For a gap beside something else, such as a river. */
   compact?: boolean;
+  /** High-contrast dark celestial styling with gold accents and readable text. */
+  dark?: boolean;
+  /** Animated celestial bodies (glowing moon, orbiting planet, twinkling stars) in the background. */
+  celestialBackground?: boolean;
+  /** Custom min-height. By default, auto/fitted height is used so cards are not overly tall. */
+  minHeight?: string;
 }
 
 const rise = {
@@ -91,7 +98,7 @@ export function EventPoster({
   index,
   timeZone = 'Asia/Kolkata',
   scene = {},
-  labels = { event: 'EVENT', onwards: 'Onwards', map: 'View Location Map' },
+  labels = { event: 'समारोह', onwards: 'से', map: 'स्थान देखें' },
   formatDate = (iso, tz) => formatWeekdayDate(iso, tz),
   formatClock = (iso, tz) => formatTime(iso, tz, true),
   badge,
@@ -100,9 +107,50 @@ export function EventPoster({
   lang,
   colors,
   compact = false,
+  dark,
+  celestialBackground,
+  minHeight,
 }: EventPosterProps) {
   const c = { ...DEFAULT_COLORS, ...colors };
-  const { background = '#eaf3fa', behind, wash, front, ink = c.ink, sub = c.body } = scene;
+
+  const isDark =
+    dark !== undefined
+      ? dark
+      : !!(
+          celestialBackground ||
+          (colors?.ink && colors.ink.startsWith('#f')) ||
+          (scene.background &&
+            (scene.background.includes('#0') ||
+              scene.background.includes('rgb(0') ||
+              scene.background.includes('gradient')))
+        );
+
+  const {
+    background = isDark ? 'linear-gradient(180deg, #071738 0%, #030a1c 100%)' : '#eaf3fa',
+    behind,
+    wash,
+    front,
+    ink = isDark ? '#ffd875' : c.ink,
+    sub = isDark ? '#e8d5b5' : c.body,
+  } = scene;
+
+  // Clean label numbering to ensure "समारोह #1", "समारोह #2"
+  const rawEventLabel = labels.event || 'समारोह';
+  const cleanedEventName = rawEventLabel.replace(/[\s०\d]+$/, '').trim() || rawEventLabel;
+  const eventLabelNumber =
+    rawEventLabel.includes('#')
+      ? rawEventLabel
+      : `${cleanedEventName} #${index + 1}`;
+
+  const pillThemeClass = isDark
+    ? 'bg-[#06142f]/90 border border-[#e6be60]/40 text-[#ffffff] shadow-[0_2px_10px_rgba(0,0,0,0.5)]'
+    : 'bg-[rgba(255,255,255,0.93)] shadow-[0_2px_8px_rgba(20,50,90,0.12)]';
+
+  const heightStyle = minHeight
+    ? { minHeight }
+    : scene.behind && !isDark
+    ? { minHeight: '560px' }
+    : {};
 
   return (
     <m.article
@@ -111,47 +159,112 @@ export function EventPoster({
       initial="hidden"
       whileInView="shown"
       viewport={{ once: true, amount: 0.2 }}
-      className={`relative mx-auto w-full overflow-hidden border ${compact ? 'rounded-[20px] shadow-[0_8px_24px_rgba(60,40,10,0.18)]' : 'min-h-[660px] max-w-[380px] rounded-[28px] shadow-[0_14px_36px_rgba(30,70,120,0.22)]'}`}
-      style={{ background, borderColor: c.line }}
+      className={`relative mx-auto w-full overflow-hidden border ${
+        compact
+          ? 'rounded-[20px] shadow-[0_8px_24px_rgba(60,40,10,0.18)]'
+          : 'max-w-[400px] rounded-[24px] sm:rounded-[28px] shadow-[0_14px_40px_rgba(0,0,0,0.65)]'
+      }`}
+      style={{
+        background,
+        borderColor: isDark ? (c.line || 'rgba(230, 190, 96, 0.45)') : c.line,
+        ...heightStyle,
+      }}
     >
-      {behind}
-      {wash && <span aria-hidden className="pointer-events-none absolute inset-x-[0] top-[0] h-[62%]" style={{ background: wash }} />}
+      {/* Optional Celestial Bodies Animation */}
+      {celestialBackground && <CelestialBodiesBackground />}
 
-      <m.div variants={parts} className={`relative z-[2] text-center ${compact ? 'px-3 pb-4 pt-3' : 'px-4 pt-4'}`}>
+      {behind}
+      {wash && (
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-[0] top-[0] h-[62%]"
+          style={{ background: wash }}
+        />
+      )}
+
+      <m.div
+        variants={parts}
+        className={`relative z-[2] text-center ${
+          compact ? 'px-3 pb-4 pt-3' : 'px-4 sm:px-5 pt-4 pb-5 sm:pb-6'
+        }`}
+      >
         <m.div variants={part} className="flex items-center justify-between">
           <span
-            className={`${bodyClassName} rounded-pill bg-[rgba(255,255,255,0.93)] font-bold shadow-[0_2px_8px_rgba(20,50,90,0.12)] ${compact ? 'px-2 py-[4px] text-[11px]' : 'px-3 py-[6px] text-[12px] tracking-[0.14em]'}`}
-            style={{ color: c.accent }}
+            className={`${bodyClassName} rounded-pill font-bold shadow-sm ${
+              isDark
+                ? 'bg-[#06142e]/90 border border-[#e6be60]/50 text-[#ffd875]'
+                : 'bg-[rgba(255,255,255,0.93)] shadow-[0_2px_8px_rgba(20,50,90,0.12)]'
+            } ${compact ? 'px-2 py-[4px] text-[11px]' : 'px-3 py-[6px] text-[12px] tracking-[0.1em]'}`}
+            style={{ color: isDark ? '#ffd875' : c.accent }}
           >
-            {labels.event} {String(index + 1).padStart(2, '0')}
+            {eventLabelNumber}
           </span>
           <span
             aria-hidden
-            className={`flex items-center justify-center rounded-pill bg-[rgba(255,255,255,0.93)] shadow-[0_2px_8px_rgba(20,50,90,0.12)] ${compact ? 'h-[30px] w-[30px] text-[15px]' : 'h-[38px] w-[38px] text-[18px]'}`}
+            className={`flex items-center justify-center rounded-pill shadow-sm ${
+              isDark
+                ? 'bg-[#06142e]/90 border border-[#e6be60]/50 text-[#ffd875]'
+                : 'bg-[rgba(255,255,255,0.93)] shadow-[0_2px_8px_rgba(20,50,90,0.12)]'
+            } ${compact ? 'h-[30px] w-[30px] text-[15px]' : 'h-[38px] w-[38px] text-[18px]'}`}
           >
             {badge ?? event.icon}
           </span>
         </m.div>
 
-        <m.h3 variants={part} className={`${displayClassName} font-semibold leading-[1.3] ${compact ? 'mt-3 text-[20px]' : 'mt-4 text-[30px]'}`} style={{ color: ink }}>
+        <m.h3
+          variants={part}
+          className={`${displayClassName} font-semibold leading-[1.3] ${
+            compact ? 'mt-3 text-[20px]' : 'mt-4 text-[26px] sm:text-[28px]'
+          }`}
+          style={{
+            color: ink,
+            textShadow: isDark ? '0 2px 14px rgba(230,190,96,0.45)' : undefined,
+          }}
+        >
           {event.title}
         </m.h3>
-        <m.span variants={part} aria-hidden className="mx-auto mt-2 block h-[2px] w-[64px] rounded-pill" style={{ background: `linear-gradient(to right, transparent, ${c.accent}, transparent)` }} />
+        <m.span
+          variants={part}
+          aria-hidden
+          className="mx-auto mt-2 block h-[2px] w-[64px] rounded-pill"
+          style={{
+            background: `linear-gradient(to right, transparent, ${c.accent}, transparent)`,
+          }}
+        />
         {event.description && (
-          <m.p variants={part} className={`${bodyClassName} mx-auto mt-1 ${compact ? 'text-[12.5px] leading-[1.6]' : 'max-w-[28ch] text-[14px] leading-[1.5]'}`} style={{ color: sub }}>
+          <m.p
+            variants={part}
+            className={`${bodyClassName} mx-auto mt-1 ${
+              compact
+                ? 'text-[12.5px] leading-[1.6]'
+                : 'max-w-[28ch] text-[14px] leading-[1.5]'
+            }`}
+            style={{ color: sub }}
+          >
             {event.description}
           </m.p>
         )}
 
-        <m.div variants={part} className={`mt-3 flex items-stretch justify-center gap-2 ${compact ? 'flex-col' : 'flex-wrap items-center'}`}>
-          <span className={`${compact ? PILL_COMPACT : PILL} ${bodyClassName}`} style={{ color: c.body }}>
-            <span style={{ color: c.accent }} className="flex">
+        <m.div
+          variants={part}
+          className={`mt-3 flex items-stretch justify-center gap-2 ${
+            compact ? 'flex-col' : 'flex-wrap items-center'
+          }`}
+        >
+          <span
+            className={`${compact ? PILL_COMPACT : PILL} ${bodyClassName} ${pillThemeClass}`}
+            style={{ color: isDark ? '#ffffff' : c.body }}
+          >
+            <span style={{ color: isDark ? '#ffd875' : c.accent }} className="flex">
               <CalendarIcon className="h-[15px] w-[15px]" />
             </span>
             {formatDate(event.startsAt, timeZone)}
           </span>
-          <span className={`${compact ? PILL_COMPACT : PILL} ${bodyClassName}`} style={{ color: c.body }}>
-            <span style={{ color: c.accent }} className="flex">
+          <span
+            className={`${compact ? PILL_COMPACT : PILL} ${bodyClassName} ${pillThemeClass}`}
+            style={{ color: isDark ? '#ffffff' : c.body }}
+          >
+            <span style={{ color: isDark ? '#ffd875' : c.accent }} className="flex">
               <ClockIcon className="h-[15px] w-[15px]" />
             </span>
             {formatClock(event.startsAt, timeZone)} {labels.onwards}
@@ -160,14 +273,35 @@ export function EventPoster({
 
         <m.div
           variants={part}
-          className={`mx-auto mt-3 w-full bg-[rgba(255,255,255,0.95)] shadow-[0_3px_12px_rgba(20,50,90,0.14)] ${compact ? 'rounded-[14px] px-2 py-2' : 'rounded-[16px] px-4 py-[10px]'}`}
+          className={`mx-auto mt-3 w-full shadow-md ${
+            isDark
+              ? 'bg-[#071633]/90 border border-[#e6be60]/40 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.6)]'
+              : 'bg-[rgba(255,255,255,0.95)] shadow-[0_3px_12px_rgba(20,50,90,0.14)]'
+          } ${compact ? 'rounded-[14px] px-2 py-2' : 'rounded-[16px] px-4 py-[10px]'}`}
         >
-          <p className={`${bodyClassName} flex items-center justify-center gap-[6px] font-bold ${compact ? 'text-[13.5px] leading-[1.4]' : 'text-[15px]'}`} style={{ color: c.ink }}>
-            <PinIcon className="h-[16px] w-[16px] shrink-0 text-[#d9453d]" />
+          <p
+            className={`${bodyClassName} flex items-center justify-center gap-[6px] font-bold ${
+              compact ? 'text-[13.5px] leading-[1.4]' : 'text-[15px]'
+            }`}
+            style={{ color: isDark ? '#ffffff' : c.ink }}
+          >
+            <PinIcon
+              className={`h-[16px] w-[16px] shrink-0 ${
+                isDark ? 'text-[#ffd875]' : 'text-[#d9453d]'
+              }`}
+            />
             {event.place}
           </p>
           {event.address && (
-            <p className={`${bodyClassName} mt-[2px] leading-[1.5] ${compact ? 'text-[11.5px]' : 'text-[12.5px]'}`} style={{ color: c.body, opacity: 0.8 }}>
+            <p
+              className={`${bodyClassName} mt-[2px] leading-[1.5] ${
+                compact ? 'text-[11.5px]' : 'text-[12.5px]'
+              }`}
+              style={{
+                color: isDark ? '#d4c3a3' : c.body,
+                opacity: isDark ? 0.95 : 0.8,
+              }}
+            >
               {event.address}
             </p>
           )}
@@ -178,8 +312,18 @@ export function EventPoster({
           href={mapsUrl(event)}
           target="_blank"
           rel="noopener noreferrer"
-          className={`${bodyClassName} mx-auto flex w-full items-center justify-center font-bold no-underline ${compact ? 'mt-3 gap-[6px] rounded-[14px] px-2 py-2 text-[12px] leading-[1.4] shadow-[0_5px_12px_rgba(60,40,10,0.28)]' : 'mt-[10px] gap-2 rounded-pill px-5 py-[10px] text-[13px] uppercase tracking-[0.1em] shadow-[0_6px_16px_rgba(15,100,160,0.35)]'}`}
-          style={{ background: `linear-gradient(to right, ${c.accent}, ${c.buttonEnd})`, color: '#ffffff' }}
+          className={`${bodyClassName} mx-auto flex w-full items-center justify-center font-bold no-underline ${
+            compact
+              ? 'mt-3 gap-[6px] rounded-[14px] px-2 py-2 text-[12px] leading-[1.4] shadow-[0_5px_12px_rgba(60,40,10,0.28)]'
+              : 'mt-[12px] gap-2 rounded-pill px-5 py-[10px] text-[13px] uppercase tracking-[0.1em] shadow-[0_6px_18px_rgba(230,190,96,0.25)]'
+          }`}
+          style={{
+            background: isDark
+              ? `linear-gradient(to right, #d49b28, ${c.buttonEnd || '#1e3a8a'})`
+              : `linear-gradient(to right, ${c.accent}, ${c.buttonEnd})`,
+            color: '#ffffff',
+            border: isDark ? '1px solid rgba(230, 190, 96, 0.4)' : undefined,
+          }}
         >
           <NavigationIcon className="h-[14px] w-[14px] shrink-0" />
           {labels.map}

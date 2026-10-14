@@ -415,12 +415,103 @@ export const INVITES: InviteRecord[] = [
         { year: '2021', label: 'अध्याय १', title: 'पहली भेंट', subtitle: 'हरिद्वार की गंगा आरती', text: 'संध्या की आरती में दीपों की लौ के बीच दो नज़रें मिलीं, और बात बिना कहे ही शुरू हो गई।', tag: 'पहली झलक', note: 'पावन घाट' },
         { year: '2023', label: 'अध्याय २', title: 'मन का संगम', subtitle: 'ऋषिकेश के घाट पर', text: 'गंगा किनारे बैठकर घंटों बातें हुईं; दो अलग धाराएँ धीरे-धीरे एक होती चली गईं।', tag: 'संगम', note: 'गंगा तट' },
         { year: '2025', label: 'अध्याय ३', title: 'प्रेम का वचन', subtitle: 'कैलाश के सामने', text: 'बर्फ़ीली चोटियों के सामने कैलाश ने पूछा और गंगा ने कहा — हाँ!', tag: 'प्रस्ताव', note: 'हिमालय' },
-        { year: '2027', label: 'अध्याय ४', title: 'सात वचन', subtitle: 'महादेव के आशीर्वाद से', text: 'अब हम अग्नि और गंगा को साक्षी मानकर जीवनभर साथ चलने का संकल्प लेते हैं।', tag: 'विवाह', note: 'शुभ घड़ी' },
+        { year: '2027', label: 'અધ્યાય ૪', title: 'सात वचन', subtitle: 'महादेव के आशीर्वाद से', text: 'अब हम अग्नि और गंगा को साक्षी मानकर जीवनभर साथ चलने का संकल्प लेते हैं।', tag: 'विवाह', note: 'शुभ घड़ी' },
+      ],
+    },
+  },
+  {
+    slug: 'aarav-weds-kavya',
+    bride: 'काव्या',
+    groom: 'आरव',
+    venue: 'अहमदाबाद, गुजरात',
+    tier: 'platinum',
+    tradition: 'contemporary',
+    templateId: 'ganesha-blessings',
+    greeting: 'With the divine blessings of Lord Ganesha, we invite you to celebrate our wedding.',
+    weddingDate: '2027-02-28T18:30:00+05:30',
+    couple: {
+      groom: {
+        name: 'आरव शाह',
+        blessing: 'आयुष्मान्',
+        image: '/art/platinum/groom-portrait.webp',
+        family: 'सुपुत्र: श्रीमती भावना देवी एवं श्री राजेश शाह\nअहमदाबाद, गुजरात',
+      },
+      bride: {
+        name: 'काव्या पटेल',
+        blessing: 'आयुष्मती',
+        image: '/art/platinum/bride-portrait.webp',
+        family: 'सुपुत्री: श्रीमती नीता देवी एवं श्री मुकेश पटेल\nवडोदरा, गुजरात',
+      },
+    },
+    rsvp: { whatsapp: '918083499618', replyBy: '2027-02-15T23:59:00+05:30', maxPlusMembers: 5 },
+    thankYou: 'हमारे इस पावन अवसर पर पधारकर नवदंपति को अपना स्नेह एवं शुभाशीष प्रदान करें।',
+    gallery: [
+      { src: '/art/gallery/mandap-ceremony.jpg', alt: 'The Perfect Match' },
+      { src: '/art/gallery/desert-sunset.jpg', alt: 'Desert Romance' },
+      { src: '/art/gallery/palace-courtyard.jpg', alt: 'Heritage Royalty' },
+      { src: '/art/gallery/palace-hall.jpg', alt: 'Grand Celebration' },
+      { src: '/art/gallery/balcony-sunset.jpg', alt: 'Sunset Promise' },
+    ],
+    events: [
+      {
+        title: 'श्री गणेश स्थापना एवं मेहंदी',
+        description: 'प्रथम पूज्य श्री गणेश आराधना एवं मेहंदी की रस्म',
+        startsAt: '2027-02-26T10:00:00+05:30',
+        place: 'वर निवास',
+        address: 'बोपल, अहमदाबाद',
+        icon: '🌺',
+      },
+      {
+        title: 'हल्दी समारोह एवं संगीत',
+        description: 'मंगलमय हल्दी और संगीत संध्या',
+        startsAt: '2027-02-27T17:30:00+05:30',
+        place: 'द ग्रैंड बाग पार्टी प्लॉट',
+        address: 'एस.जी. हाईवे, अहमदाबाद',
+        icon: '🌼',
+      },
+      {
+        title: 'बारात प्रस्थान एवं शुभ विवाह',
+        description: 'वरघोड़ा, हस्तमिलाप और पावन सप्तपदी',
+        startsAt: '2027-02-28T18:30:00+05:30',
+        place: 'विला एवेन्यू बैंक्वेट',
+        address: 'सिंधु भवन रोड, अहमदाबाद',
+        icon: '🪔',
+      },
+    ],
+    story: {
+      milestones: [
+        {
+          year: '2022',
+          label: 'अध्याय १',
+          title: 'प्रथम मिलन',
+          subtitle: 'कांकरिया झील, अहमदाबाद',
+          text: 'संध्या की सुनहरी किरणों के बीच दो नज़रें मिलीं और बातों का सिलसिला शुरू हुआ।',
+          tag: 'पहली झलक',
+        },
+        {
+          year: '2024',
+          label: 'अध्याय २',
+          title: 'स्नेह का संकल्प',
+          subtitle: 'परिवार की सहमति',
+          text: 'दोनों परिवारों के स्नेहभरे आशीर्वाद के साथ हमारा रिश्ता तय हुआ।',
+          tag: 'सगाई',
+        },
+        {
+          year: '2027',
+          label: 'अध्याय ३',
+          title: 'शुभ विवाह',
+          subtitle: 'श्री गणेश जी की कृपा से',
+          text: 'अग्नि को साक्षी मानकर जीवनभर साथ चलने का पावन संकल्प लेंगे।',
+          tag: 'शुभ घड़ी',
+        },
       ],
     },
   },
 ];
 
 export function getInvite(slug: string): InviteRecord | undefined {
+  if (slug === 'aarav-diya') {
+    return INVITES.find((i) => i.slug === 'aarav-weds-kavya');
+  }
   return INVITES.find((i) => i.slug === slug);
 }

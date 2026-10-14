@@ -402,6 +402,52 @@
   50%      { transform: translateY(-8px); }
 }
 
+/* Continuous smooth sky zoom-in, breathing slowly back and forth without seams. */
+.amb-zoom-in {
+  animation: amb-zoom-in var(--zoom-dur, 35s) ease-in-out infinite alternate;
+  transform-origin: var(--zoom-origin, 50% 45%);
+  will-change: transform;
+}
+@keyframes amb-zoom-in {
+  0%   { transform: scale(1); }
+  100% { transform: scale(1.24); }
+}
+
+/* A divine figure floating weightlessly in celestial space with gentle vertical bob and subtle breath. */
+.amb-divine-float {
+  animation: amb-divine-float var(--float-dur, 4.6s) ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes amb-divine-float {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(calc(var(--float-y, -14px) * 0.45)) scale(1.015);
+  }
+  100% {
+    transform: translateY(var(--float-y, -14px)) scale(1);
+  }
+}
+
+/* Radiant divine golden aura pulsing and breathing behind a deity. */
+.amb-divine-aura {
+  animation: amb-divine-aura var(--aura-dur, 3.8s) ease-in-out infinite alternate;
+  will-change: transform, opacity, filter;
+}
+@keyframes amb-divine-aura {
+  0% {
+    transform: scale(0.92);
+    opacity: var(--aura-min, 0.65);
+    filter: blur(28px);
+  }
+  100% {
+    transform: scale(1.18);
+    opacity: var(--aura-max, 1);
+    filter: blur(40px);
+  }
+}
+
 /* One switch for every ambient loop. Framer Motion is handled separately by
    MotionConfig reducedMotion="user" — both layers need covering. */
 @media (prefers-reduced-motion: reduce) {
@@ -428,6 +474,9 @@
   .amb-wheel,
   .amb-drift,
   .amb-approach,
+  .amb-zoom-in,
+  .amb-divine-float,
+  .amb-divine-aura,
   .amb-cloud,
   .amb-orbit,
   .amb-stream,
