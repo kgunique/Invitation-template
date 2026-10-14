@@ -54,6 +54,10 @@ const LISTINGS: Record<
     featured: true,
     screens: { cover: '/templates/karan-neha-rudra-invite.webp', preview: '/templates/karan-neha-rudra-gate.webp' },
   },
+  'ganesha-blessings': {
+    tag: 'Ganesha Blessings',
+    featured: true,
+  },
 };
 
 /**

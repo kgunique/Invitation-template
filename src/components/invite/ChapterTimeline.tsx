@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { m } from 'motion/react';
 import { DURATION, EASE } from '@/styles/motion';
 import { fadeUp, lineGroup } from './RevealLines';
+import { Starfield } from './Starfield';
 
 export interface TimelineChapter {
   /** The year shown on the card's pill and on its tab, e.g. "2022". */
@@ -61,7 +62,20 @@ export interface ChapterTimelineProps {
   tabsLabel?: string;
   background?: string;
   colors?: Partial<ChapterTimelineColors>;
+  /** Add twinkling stars animation across the whole timeline. */
+  withStars?: boolean;
 }
+
+const TIMELINE_SPARKLES = [
+  { x: 3, y: 8, size: 14, dur: 2.8, delay: -0.4, color: '#ffd666' },
+  { x: 92, y: 18, size: 16, dur: 3.4, delay: -1.2, color: '#ffe58f' },
+  { x: 4, y: 32, size: 12, dur: 2.6, delay: -0.8, color: '#fff1b8' },
+  { x: 90, y: 46, size: 15, dur: 3.6, delay: -1.9, color: '#ffd591' },
+  { x: 2, y: 62, size: 14, dur: 3.0, delay: -0.6, color: '#ffd666' },
+  { x: 94, y: 76, size: 16, dur: 3.2, delay: -1.5, color: '#ffe58f' },
+  { x: 5, y: 88, size: 13, dur: 2.9, delay: -1.0, color: '#fff1b8' },
+  { x: 91, y: 96, size: 14, dur: 3.5, delay: -2.1, color: '#ffd666' },
+];
 
 const group = lineGroup(0.1);
 const cardIn = (from: 'left' | 'right') => ({
@@ -196,6 +210,7 @@ export function ChapterTimeline({
   tabsLabel = 'Chapters',
   background = 'transparent',
   colors,
+  withStars = false,
 }: ChapterTimelineProps) {
   const c = { ...DEFAULT_COLORS, ...colors };
   const [active, setActive] = useState(0);
@@ -223,7 +238,31 @@ export function ChapterTimeline({
 
   return (
     <section lang={lang} style={{ background }} className="relative overflow-hidden px-4 pb-4 pt-[56px]">
-      <div className="mx-auto w-full max-w-[480px]">
+      {withStars && (
+        <div aria-hidden className="pointer-events-none absolute inset-[0] overflow-hidden">
+          <Starfield count={80} color={c.gold || '#ffd666'} constellations />
+          {TIMELINE_SPARKLES.map((st, idx) => (
+            <span
+              key={idx}
+              className="amb-twinkle pointer-events-none absolute flex items-center justify-center select-none"
+              style={
+                {
+                  left: `${st.x}%`,
+                  top: `${st.y}%`,
+                  color: st.color,
+                  fontSize: `${st.size}px`,
+                  ['--tw-dur' as string]: `${st.dur}s`,
+                  ['--tw-delay' as string]: `${st.delay}s`,
+                  ['--tw-base' as string]: 0.35,
+                } as CSSProperties
+              }
+            >
+              ✦
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="relative z-10 mx-auto w-full max-w-[480px]">
         <m.div
           variants={group}
           initial="hidden"
@@ -234,8 +273,8 @@ export function ChapterTimeline({
           {eyebrow && (
             <m.span
               variants={fadeUp}
-              className={`${bodyClassName} inline-flex items-center gap-2 rounded-pill border bg-white px-5 py-[7px] text-[13px] font-semibold tracking-[0.1em] shadow-sm`}
-              style={{ color: c.accent, borderColor: c.line }}
+              className={`${bodyClassName} inline-flex items-center gap-2 rounded-pill border px-5 py-[7px] text-[13px] font-semibold tracking-[0.1em] shadow-sm backdrop-blur-sm`}
+              style={{ color: c.accent, borderColor: c.line, background: c.card || '#ffffff' }}
             >
               {eyebrowIcon}
               {eyebrow}
@@ -254,8 +293,8 @@ export function ChapterTimeline({
         <div
           role="tablist"
           aria-label={tabsLabel}
-          className="mx-auto mt-6 flex w-fit items-center gap-1 rounded-pill border bg-white p-[5px] shadow-md"
-          style={{ borderColor: c.line }}
+          className="mx-auto mt-6 flex w-fit items-center gap-1 rounded-pill border p-[5px] shadow-md backdrop-blur-sm"
+          style={{ borderColor: c.line, background: c.card || '#ffffff' }}
         >
           {chapters.map((ch, i) => (
             <button
