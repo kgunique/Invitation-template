@@ -36,6 +36,8 @@ export interface ChapterTimelineColors {
   line: string;
   /** What the cards are filled with: any CSS background. */
   card: string;
+  /** The cool light paired with the gold neon accents. */
+  glow: string;
 }
 
 const DEFAULT_COLORS: ChapterTimelineColors = {
@@ -45,6 +47,7 @@ const DEFAULT_COLORS: ChapterTimelineColors = {
   body: '#3d4966',
   line: '#cfe6f5',
   card: '#ffffff',
+  glow: '#38bdf8',
 };
 
 export interface ChapterTimelineProps {
@@ -64,6 +67,8 @@ export interface ChapterTimelineProps {
   colors?: Partial<ChapterTimelineColors>;
   /** Add twinkling stars animation across the whole timeline. */
   withStars?: boolean;
+  /** Add a neon glow to the timeline rail, nodes and chapter cards. */
+  neon?: boolean;
 }
 
 const TIMELINE_SPARKLES = [
@@ -90,7 +95,19 @@ const nodeIn = {
 };
 
 /** The numbered, gold-ringed node that marks a chapter on its rail (or, in a template with no rail, on the bank of its river). Position it with `className`. */
-export function ChapterNode({ index, c, bodyClassName = '', className = '' }: { index: number; c: ChapterTimelineColors; bodyClassName?: string; className?: string }) {
+export function ChapterNode({
+  index,
+  c,
+  bodyClassName = '',
+  className = '',
+  neon = false,
+}: {
+  index: number;
+  c: ChapterTimelineColors;
+  bodyClassName?: string;
+  className?: string;
+  neon?: boolean;
+}) {
   return (
     <m.span
       variants={nodeIn}
@@ -99,7 +116,13 @@ export function ChapterNode({ index, c, bodyClassName = '', className = '' }: { 
       viewport={{ once: true, amount: 0.6 }}
       aria-hidden
       className={`${bodyClassName} absolute flex h-[28px] w-[28px] items-center justify-center rounded-pill text-[10px] font-bold ${className}`}
-      style={{ background: c.accent, color: '#ffffff', boxShadow: `0 0 0 3px ${c.gold}, 0 2px 8px rgba(15,60,100,0.25)` }}
+      style={{
+        background: c.accent,
+        color: '#ffffff',
+        boxShadow: neon
+          ? `0 0 0 3px ${c.gold}, 0 0 12px ${c.gold}, 0 0 24px ${c.gold}, 0 0 34px ${c.glow}`
+          : `0 0 0 3px ${c.gold}, 0 2px 8px rgba(15,60,100,0.25)`,
+      }}
     >
       {String(index + 1).padStart(2, '0')}
     </m.span>
@@ -121,6 +144,7 @@ export function ChapterCard({
   from = 'right',
   index,
   articleRef,
+  neon = false,
 }: {
   chapter: TimelineChapter;
   c: ChapterTimelineColors;
@@ -131,6 +155,7 @@ export function ChapterCard({
   /** Put on the card as `data-i`, for whatever observes the cards. */
   index?: number;
   articleRef?: (el: HTMLElement | null) => void;
+  neon?: boolean;
 }) {
   return (
     <m.article
@@ -141,12 +166,34 @@ export function ChapterCard({
       whileInView="shown"
       viewport={{ once: true, amount: 0.25 }}
       className={`relative overflow-hidden border ${compact ? 'rounded-[16px] px-3 pb-3 pt-5 shadow-[0_8px_22px_rgba(60,40,10,0.16)]' : 'rounded-[18px] px-5 pb-4 pt-6 shadow-[0_10px_30px_rgba(40,90,140,0.12)]'}`}
-      style={{ borderColor: c.line, background: c.card }}
+      style={{
+        borderColor: neon ? c.gold : c.line,
+        background: c.card,
+        boxShadow: neon
+          ? `0 0 0 1px ${c.gold}, 0 0 6px ${c.gold}, 0 0 16px ${c.gold}, 0 0 32px ${c.glow}, 0 0 48px ${c.glow}, inset 0 0 18px rgba(56, 189, 248, 0.16)`
+          : undefined,
+      }}
     >
-      <span aria-hidden className="absolute inset-x-[0] top-[0] h-[4px]" style={{ background: `linear-gradient(to right, ${c.accent}, ${c.gold})` }} />
+      <span
+        aria-hidden
+        className="absolute inset-x-[0] top-[0] h-[4px]"
+        style={{
+          background: `linear-gradient(to right, ${c.accent}, ${c.gold})`,
+          filter: neon
+            ? `drop-shadow(0 0 5px ${c.gold}) drop-shadow(0 0 12px ${c.gold}) drop-shadow(0 0 18px ${c.glow})`
+            : undefined,
+        }}
+      />
       <div className="flex items-center justify-between gap-3">
         <div className={`flex items-center ${compact ? 'flex-wrap gap-x-2 gap-y-1' : 'gap-2'}`}>
-          <span className={`${bodyClassName} rounded-pill px-3 py-[3px] text-[12px] font-bold tracking-[0.04em]`} style={{ background: c.accent, color: '#ffffff' }}>
+          <span
+            className={`${bodyClassName} rounded-pill px-3 py-[3px] text-[12px] font-bold tracking-[0.04em]`}
+            style={{
+              background: c.accent,
+              color: '#ffffff',
+              boxShadow: neon ? `0 0 8px ${c.gold}, 0 0 18px ${c.gold}, 0 0 24px ${c.glow}` : undefined,
+            }}
+          >
             {ch.year}
           </span>
           <span className={`${bodyClassName} text-[12px] font-semibold tracking-[0.1em]`} style={{ color: c.accent }}>
@@ -211,6 +258,7 @@ export function ChapterTimeline({
   background = 'transparent',
   colors,
   withStars = false,
+  neon = false,
 }: ChapterTimelineProps) {
   const c = { ...DEFAULT_COLORS, ...colors };
   const [active, setActive] = useState(0);
@@ -306,8 +354,14 @@ export function ChapterTimeline({
               className={`${bodyClassName} rounded-pill px-5 py-[8px] text-[14px] font-semibold transition-colors`}
               style={
                 active === i
-                  ? { background: c.accent, color: '#ffffff', boxShadow: `0 0 0 2px ${c.gold}` }
-                  : { color: c.body }
+                    ? {
+                        background: c.accent,
+                        color: '#ffffff',
+                        boxShadow: neon
+                          ? `0 0 0 2px ${c.gold}, 0 0 8px ${c.gold}, 0 0 18px ${c.gold}, 0 0 26px ${c.glow}`
+                          : `0 0 0 2px ${c.gold}`,
+                      }
+                    : { color: c.body }
               }
             >
               {ch.year}
@@ -324,19 +378,23 @@ export function ChapterTimeline({
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 2.2, ease: 'easeOut' }}
             className="absolute bottom-[10px] left-[13px] top-[6px] w-[3px] origin-top rounded-pill"
-            style={{ background: `linear-gradient(to bottom, ${c.accent}, ${c.line})` }}
+            style={{
+              background: `linear-gradient(to bottom, ${c.accent}, ${c.line})`,
+              boxShadow: neon ? `0 0 8px ${c.gold}, 0 0 18px ${c.gold}, 0 0 24px ${c.glow}` : undefined,
+            }}
           />
 
           <ol className="flex flex-col gap-8">
             {chapters.map((ch, i) => (
               <li key={ch.year} className="relative pl-[46px]">
-                <ChapterNode index={i} c={c} bodyClassName={bodyClassName} className="left-[0] top-[18px]" />
+                <ChapterNode index={i} c={c} bodyClassName={bodyClassName} className="left-[0] top-[18px]" neon={neon} />
                 <ChapterCard
                   chapter={ch}
                   c={c}
                   displayClassName={displayClassName}
                   bodyClassName={bodyClassName}
                   index={i}
+                  neon={neon}
                   articleRef={(el) => {
                     cards.current[i] = el;
                   }}

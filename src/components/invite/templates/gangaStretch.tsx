@@ -67,7 +67,7 @@ const PALETTE = {
   card: 'linear-gradient(to bottom, rgba(255,251,240,0.97), rgba(250,240,218,0.97))',
 };
 const CARD_COLORS: CouplePortraitsColors = PALETTE;
-const CHAPTER_COLORS: ChapterTimelineColors = PALETTE;
+const CHAPTER_COLORS: ChapterTimelineColors = { ...PALETTE, glow: '#38bdf8' };
 
 const WORDS = {
   couple: { eyebrow: 'शुभ परिणय', title: 'वर-वधू', groom: 'वर', bride: 'वधू' },

@@ -57,6 +57,7 @@ const LISTINGS: Record<
   'ganesha-blessings': {
     tag: 'Ganesha Blessings',
     featured: true,
+    screens: { cover: '/templates/ganesha-blessings-invite.webp', preview: '/templates/ganesha-blessings-gate.webp' },
   },
 };
 

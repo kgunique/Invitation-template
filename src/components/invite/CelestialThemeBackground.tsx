@@ -23,11 +23,11 @@ export function CelestialThemeBackground({
   return (
     <div
       aria-hidden="true"
-      className={`fixed inset-0 pointer-events-none overflow-hidden select-none z-0 ${className}`}
+      className={`fixed inset-[0] pointer-events-none overflow-hidden select-none z-0 ${className}`}
     >
       {/* 1. Deep Cosmic Sky Gradient Base */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-[0]"
         style={{
           background:
             'radial-gradient(ellipse 90% 60% at 50% 0%, rgba(20, 55, 125, 0.65) 0%, transparent 70%), radial-gradient(ellipse 70% 50% at 85% 65%, rgba(24, 48, 105, 0.5) 0%, transparent 65%), radial-gradient(ellipse 60% 40% at 15% 85%, rgba(16, 38, 90, 0.45) 0%, transparent 60%), linear-gradient(180deg, #020614 0%, #05102a 30%, #081a42 55%, #040d26 80%, #020612 100%)',
@@ -61,7 +61,7 @@ export function CelestialThemeBackground({
 
       {/* 3. Celestial Orbit Rings in Background */}
       <svg
-        className="absolute inset-0 w-full h-full opacity-60"
+        className="absolute inset-[0] w-full h-full opacity-60"
         xmlns="http://www.w3.org/2000/svg"
       >
         <ellipse
@@ -88,12 +88,12 @@ export function CelestialThemeBackground({
         />
       </svg>
 
-      {/* 4. Glowing Celestial Crescent Moon (Top Right Horizon) */}
+      {/* 4. A small crescent keeps the sky celestial without dominating the page. */}
       <div
-        className="absolute top-5 right-4 sm:right-12 w-20 h-20 sm:w-24 sm:h-24 opacity-90"
+        className="absolute top-5 right-4 h-12 w-12 opacity-55 sm:right-12 sm:h-14 sm:w-14"
         style={{
-          filter: 'drop-shadow(0 0 20px rgba(255, 216, 117, 0.85)) drop-shadow(0 0 35px rgba(230, 190, 96, 0.5))',
-          animation: 'celestialThemeMoonFloat 7s ease-in-out infinite alternate',
+          filter: 'drop-shadow(0 0 10px rgba(255, 216, 117, 0.45))',
+          animation: 'celestialThemeMoonFloat 10s ease-in-out infinite alternate',
         }}
       >
         <svg viewBox="0 0 100 100" className="w-full h-full fill-none">
@@ -111,21 +111,17 @@ export function CelestialThemeBackground({
         </svg>
       </div>
 
-      {/* Secondary Distant Moon Crescent (Lower Left) */}
+      {/* Jupiter, kept soft so the event copy remains the focal point. */}
       <div
-        className="absolute bottom-16 left-4 sm:left-10 w-12 h-12 opacity-50"
+        className="absolute top-[62%] right-[8%] h-10 w-10 overflow-hidden rounded-full opacity-40 sm:h-12 sm:w-12"
         style={{
-          filter: 'drop-shadow(0 0 12px rgba(56, 189, 248, 0.7))',
-          animation: 'celestialThemeMoonFloat 9s ease-in-out infinite alternate',
+          background:
+            'radial-gradient(circle at 30% 25%, rgba(255,244,212,0.85), transparent 34%), repeating-linear-gradient(0deg, #9b5b37 0 3px, #e6c28e 3px 6px, #bd8056 6px 8px)',
+          boxShadow: '0 0 16px rgba(230,190,96,0.3), inset -6px -3px 10px rgba(0,0,0,0.55)',
+          borderRadius: '50%',
+          clipPath: 'circle(50%)',
         }}
-      >
-        <svg viewBox="0 0 100 100" className="w-full h-full fill-none">
-          <path
-            d="M 60,15 A 38,38 0 1 0 85,75 A 42,42 0 0 1 60,15 Z"
-            fill="#7dd3fc"
-          />
-        </svg>
-      </div>
+      />
 
       {/* 5. Orbiting Celestial Bodies (Golden Planet & Pearl Satellite) */}
       <div
@@ -154,7 +150,7 @@ export function CelestialThemeBackground({
       </div>
 
       {/* 6. Dense Bright Twinkling Stars Across Whole Sky */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-[0]">
         <span
           className="absolute top-[6%] left-[10%] text-[#ffd875] text-[15px] animate-pulse"
           style={{ animationDuration: '2.2s' }}
