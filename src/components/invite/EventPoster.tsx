@@ -253,7 +253,12 @@ export function EventPoster({
         >
           <span
             className={`${compact ? PILL_COMPACT : PILL} ${bodyClassName} ${pillThemeClass}`}
-            style={{ color: isDark ? '#ffffff' : c.body }}
+            style={{
+              color: isDark ? '#fff4d4' : c.body,
+              background: isDark ? 'rgba(6, 20, 47, 0.96)' : 'rgba(255, 255, 255, 0.93)',
+              border: isDark ? '1px solid rgba(255, 216, 117, 0.75)' : undefined,
+              boxShadow: isDark ? '0 0 12px rgba(255, 216, 117, 0.3)' : undefined,
+            }}
           >
             <span style={{ color: isDark ? '#ffd875' : c.accent }} className="flex">
               <CalendarIcon className="h-[15px] w-[15px]" />
@@ -262,7 +267,12 @@ export function EventPoster({
           </span>
           <span
             className={`${compact ? PILL_COMPACT : PILL} ${bodyClassName} ${pillThemeClass}`}
-            style={{ color: isDark ? '#ffffff' : c.body }}
+            style={{
+              color: isDark ? '#fff4d4' : c.body,
+              background: isDark ? 'rgba(6, 20, 47, 0.96)' : 'rgba(255, 255, 255, 0.93)',
+              border: isDark ? '1px solid rgba(255, 216, 117, 0.75)' : undefined,
+              boxShadow: isDark ? '0 0 12px rgba(255, 216, 117, 0.3)' : undefined,
+            }}
           >
             <span style={{ color: isDark ? '#ffd875' : c.accent }} className="flex">
               <ClockIcon className="h-[15px] w-[15px]" />

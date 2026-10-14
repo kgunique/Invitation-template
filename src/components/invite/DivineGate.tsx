@@ -325,7 +325,7 @@ export function DivineGate({
               />
 
               {/* Ambient golden sheen on hover */}
-              <span className="absolute inset-0 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-[#d4af37]/20 to-transparent pointer-events-none" />
+              <span className="absolute inset-[0] rounded-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-transparent via-[#d4af37]/20 to-transparent pointer-events-none" />
 
               {/* Button content */}
               <span className="relative z-10 flex items-center justify-center gap-3 sm:gap-4 text-sm sm:text-base font-semibold tracking-[0.24em] uppercase">

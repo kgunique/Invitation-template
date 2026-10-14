@@ -189,7 +189,7 @@ export function GaneshaBlessingsInvite({
           </m.div>
 
           {/* Center: Groom & Bride Names + Divider + Residence */}
-          <m.div variants={fadeUp} className="flex flex-col items-center mt-6 sm:mt-10 mb-4 z-10">
+          <m.div variants={fadeUp} className="flex flex-col items-center mt-4 sm:mt-7 mb-4 z-10">
             <h1 className={`${hindiDisplay.className} text-[56px] sm:text-[68px] font-bold tracking-normal text-[#fff9eb] drop-shadow-[0_4px_28px_rgba(0,0,0,0.95)] leading-[1.15]`}>
               {groomDisplayName}
             </h1>
@@ -200,9 +200,9 @@ export function GaneshaBlessingsInvite({
               {brideDisplayName}
             </h1>
 
-            <StarDivider className="mt-6 mb-4" />
+            <StarDivider className="mt-4 mb-2" />
 
-            <p className={`${hindiBody.className} text-[22px] sm:text-[26px] font-semibold text-[#e6be60] tracking-normal drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] leading-normal`}>
+            <p className={`${hindiBody.className} text-[28px] sm:text-[32px] font-semibold text-white tracking-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.95)] leading-normal`}>
               {residenceText}
             </p>
           </m.div>
@@ -314,7 +314,9 @@ export function GaneshaBlessingsInvite({
                   body: '#d6c7a9',
                   line: t.line,
                   card: t.card,
+                  glow: '#38bdf8',
                 }}
+                neon
               />
             </section>
           )}
@@ -349,7 +351,7 @@ export function GaneshaBlessingsInvite({
                     colors={{
                       accent: t.accent,
                       ink: '#ffd875',
-                      body: '#e8d5b5',
+                      body: '#fff0bd',
                       line: 'rgba(230, 190, 96, 0.45)',
                       buttonEnd: '#1e3a8a',
                     }}
@@ -400,6 +402,15 @@ export function GaneshaBlessingsInvite({
                   groom={groom}
                   events={events || []}
                   locale="hi"
+                  colors={{
+                    ink: '#fff9eb',
+                    body: '#e8d5b5',
+                    muted: '#d4c3a3',
+                    accent: t.accent,
+                    raised: t.card,
+                    line: t.line,
+                    danger: '#ff9f89',
+                  }}
                 />
               </div>
             </section>

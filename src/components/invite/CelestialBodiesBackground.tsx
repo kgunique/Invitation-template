@@ -2,8 +2,9 @@
 
 /**
  * CelestialBodiesBackground — An animated celestial background featuring:
- * - A glowing crescent moon with soft aura
+ * - A small crescent moon with a soft aura
  * - An orbital elliptical path with an orbiting golden planet/satellite
+ * - A subtle Jupiter and ringed planet
  * - Twinkling celestial stars and constellations
  * - Drifting stardust particles & subtle cosmic nebula glow
  */
@@ -11,36 +12,36 @@ export function CelestialBodiesBackground({ className = '' }: { className?: stri
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none absolute inset-0 overflow-hidden select-none ${className}`}
+      className={`pointer-events-none absolute inset-[0] overflow-hidden select-none ${className}`}
     >
       {/* 1. Deep Celestial Gradient Base */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-[0]"
         style={{
           background:
-            'radial-gradient(circle at 80% 20%, rgba(20, 50, 110, 0.45) 0%, transparent 60%), radial-gradient(circle at 20% 85%, rgba(15, 35, 80, 0.4) 0%, transparent 55%), linear-gradient(180deg, #071738 0%, #040e24 50%, #020713 100%)',
+            'radial-gradient(circle at 80% 20%, rgba(20, 50, 110, 0.28) 0%, transparent 60%), radial-gradient(circle at 20% 85%, rgba(15, 35, 80, 0.3) 0%, transparent 55%), linear-gradient(180deg, #071738 0%, #040e24 50%, #020713 100%)',
         }}
       />
 
       {/* 2. Soft Cosmic Nebula Shimmer */}
       <div
-        className="absolute top-1/4 -right-16 w-56 h-56 rounded-full blur-3xl opacity-25 animate-pulse"
+        className="absolute top-[22%] right-[6%] h-28 w-28 rounded-full blur-2xl opacity-10 animate-pulse"
         style={{
-          background: 'radial-gradient(circle, #e6be60 0%, #1e40af 70%, transparent 100%)',
-          animationDuration: '6s',
+          background: 'radial-gradient(circle, #e6be60 0%, #1e40af 58%, transparent 100%)',
+          animationDuration: '9s',
         }}
       />
       <div
-        className="absolute bottom-10 -left-12 w-48 h-48 rounded-full blur-3xl opacity-20 animate-pulse"
+        className="absolute bottom-[12%] left-[4%] h-24 w-24 rounded-full blur-2xl opacity-10 animate-pulse"
         style={{
           background: 'radial-gradient(circle, #38bdf8 0%, #1e1b4b 70%, transparent 100%)',
-          animationDuration: '8s',
+          animationDuration: '11s',
         }}
       />
 
       {/* 3. SVG Celestial Orbit & Orbiting Planet */}
       <svg
-        className="absolute inset-0 w-full h-full opacity-60"
+        className="absolute inset-[0] w-full h-full opacity-60"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
@@ -83,17 +84,17 @@ export function CelestialBodiesBackground({ className = '' }: { className?: stri
         />
       </svg>
 
-      {/* 4. Glowing Celestial Crescent Moon (Top Right) */}
+      {/* 4. Small crescent moon, kept away from the event text */}
       <div
-        className="absolute top-4 right-5 w-14 h-14 opacity-80"
+        className="absolute top-[8%] right-[10%] h-10 w-10 opacity-60"
         style={{
-          filter: 'drop-shadow(0 0 12px rgba(230, 190, 96, 0.55))',
-          animation: 'celestialFloat 6s ease-in-out infinite alternate',
+          filter: 'drop-shadow(0 0 8px rgba(230, 190, 96, 0.35))',
+          animation: 'celestialFloat 10s ease-in-out infinite alternate',
         }}
       >
         <svg viewBox="0 0 100 100" className="w-full h-full fill-none">
           <path
-            d="M 60,15 A 38,38 0 1 0 85,75 A 42,42 0 0 1 60,15 Z"
+            d="M 66,12 A 40,40 0 1 0 88,76 A 32,32 0 0 1 66,12 Z"
             fill="url(#moonGrad)"
           />
           <defs>
@@ -122,19 +123,34 @@ export function CelestialBodiesBackground({ className = '' }: { className?: stri
         </div>
       </div>
 
-      {/* Secondary Orbiting Pearl Moon (Lower left) */}
+      {/* Jupiter: muted, banded artwork in the lower corner */}
       <div
-        className="absolute bottom-[20%] left-[22%] w-3 h-3"
+        className="absolute bottom-[15%] left-[12%] h-10 w-10 overflow-hidden rounded-full opacity-55"
         style={{
-          animation: 'celestialOrbitReverse 18s linear infinite',
-          transformOrigin: '50px -30px',
+          background:
+            'radial-gradient(circle at 30% 25%, rgba(255,244,212,0.8), transparent 34%), repeating-linear-gradient(0deg, #9b5b37 0 3px, #e6c28e 3px 6px, #bd8056 6px 8px)',
+          boxShadow: '0 0 12px rgba(230,190,96,0.25), inset -5px -2px 9px rgba(0,0,0,0.55)',
+          borderRadius: '50%',
+          clipPath: 'circle(50%)',
+        }}
+      />
+
+      {/* A small ringed planet balances Jupiter without competing with the text. */}
+      <div
+        className="absolute bottom-[24%] right-[12%] h-6 w-6 rounded-full opacity-55"
+        style={{
+          background: 'radial-gradient(circle at 30% 25%, #fff1c2, #d49b42 48%, #70451f 100%)',
+          boxShadow: '0 0 9px rgba(255,216,117,0.3)',
         }}
       >
-        <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-[#38bdf8] to-[#e0f2fe] shadow-[0_0_6px_rgba(56,189,248,0.7)]" />
+        <span
+          className="absolute left-[-7px] top-[9px] h-[8px] w-[40px] rounded-full border border-[#ffd875]/55"
+          style={{ transform: 'rotate(-24deg)' }}
+        />
       </div>
 
       {/* 6. Twinkling Stars & Constellation Clusters */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-[0]">
         {/* Star 1 - Bright Gold */}
         <span
           className="absolute top-[12%] left-[18%] text-[#ffd875] text-[10px] animate-pulse"

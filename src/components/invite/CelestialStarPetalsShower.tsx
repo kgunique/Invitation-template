@@ -10,11 +10,12 @@ export interface StarPetalItem {
   duration: number; // seconds to fall
   delay: number; // animation delay in seconds
   drift: number; // horizontal sway in px (-40 to 40)
+  restTop: number;
   color: string;
 }
 
 const STAR_COLORS = ['#ffd875', '#fff4d4', '#fde047', '#fed7aa', '#ffffff'];
-const PETAL_COLORS = ['#e6be60', '#ffd875', '#e11d48', '#f43f5e', '#fbbf24', '#f59e0b'];
+const PETAL_COLORS = ['#e6be60', '#ffd875', '#fb7185', '#fda4af', '#fbbf24', '#f59e0b'];
 
 /**
  * CelestialStarPetalsShower — Falling twinkling stars and golden petals
@@ -38,7 +39,8 @@ export function CelestialStarPetalsShower({
 
       const type = i % 3 === 0 ? 'petal' : i % 3 === 1 ? 'star' : 'sparkle';
       const size = type === 'petal' ? 16 + norm2 * 12 : 12 + norm2 * 10;
-      const duration = 9 + norm3 * 10; // 9s to 19s smooth fall
+      const duration =
+        type === 'petal' ? 18 + norm3 * 10 : 9 + norm3 * 10; // Petals drift more slowly than the stars
       const delay = -(norm * duration); // Spread evenly across the cycle so screen is never empty
       const drift = Math.round((norm2 - 0.5) * 80); // -40px to +40px horizontal sway
 
@@ -55,6 +57,7 @@ export function CelestialStarPetalsShower({
         duration: Math.round(duration * 10) / 10,
         delay: Math.round(delay * 10) / 10,
         drift,
+        restTop: Math.round(norm3 * 95),
         color,
       });
     }
@@ -64,12 +67,12 @@ export function CelestialStarPetalsShower({
   return (
     <div
       aria-hidden="true"
-      className={`fixed inset-0 pointer-events-none overflow-hidden select-none z-[45] ${className}`}
+      className={`fixed inset-[0] pointer-events-none overflow-hidden select-none z-effects ${className}`}
     >
       {items.map((item) => (
         <div
           key={item.id}
-          className="celestial-fall-particle absolute top-0"
+          className="celestial-fall-particle absolute top-[0]"
           style={
             {
               left: `${item.left}%`,
@@ -78,6 +81,7 @@ export function CelestialStarPetalsShower({
               animationDuration: `${item.duration}s`,
               animationDelay: `${item.delay}s`,
               '--drift': `${item.drift}px`,
+              '--rest-top': `${item.restTop}%`,
             } as React.CSSProperties
           }
         >
@@ -120,13 +124,13 @@ export function CelestialStarPetalsShower({
               <svg viewBox="0 0 30 30" className="w-full h-full">
                 {/* Organic curved wedding rose/marigold petal */}
                 <path
-                  d="M15 2 C22 2, 28 8, 28 17 C28 24, 21 28, 15 28 C9 28, 2 24, 2 17 C2 8, 8 2, 15 2 Z"
+                  d="M16 2 C22 6 26 12 23 20 C21 26 18 29 16 30 C14 29 11 26 9 20 C6 12 10 6 16 2 Z"
                   fill={item.color}
                   fillOpacity="0.82"
                 />
                 {/* Inner petal vein highlight */}
                 <path
-                  d="M15 5 Q16 16 15 25"
+                  d="M16 5 C13 12 19 19 16 27"
                   stroke="rgba(255,255,255,0.45)"
                   strokeWidth="1"
                   fill="none"
@@ -150,7 +154,7 @@ export function CelestialStarPetalsShower({
         }
 
         .petal-tumble-element {
-          animation: petalTumble 4.5s ease-in-out infinite alternate;
+          animation: petalTumble 7.5s ease-in-out infinite alternate;
         }
 
         @keyframes celestialParticleFall {
@@ -198,7 +202,13 @@ export function CelestialStarPetalsShower({
         @media (prefers-reduced-motion: reduce) {
           .celestial-fall-particle {
             animation: none !important;
-            display: none !important;
+            top: var(--rest-top);
+            opacity: 0.8;
+          }
+
+          .star-twinkle-element,
+          .petal-tumble-element {
+            animation: none !important;
           }
         }
       `}</style>

@@ -1,8 +1,7 @@
 import type { TierId, TraditionId } from '@/content/traditions';
 
-/** The hero's live-preview slider: one slide per tier, each a screenshot of its
- * real invite (see `screen`). Still hand-listed here; swap for data from
- * content/invites.ts if the slides should ever follow the registry. */
+/** The hero's live-preview slider: hand-picked samples from the invite catalog.
+ * A slide without a screenshot uses the phone's placeholder design. */
 export interface HeroSlide {
   bride: string;
   groom: string;
@@ -58,6 +57,15 @@ export const HERO_SLIDES: HeroSlide[] = [
     tradition: 'contemporary',
     screen: '/templates/kailash-ganga-gate.webp',
     slug: 'kailash-weds-ganga',
+  },
+  {
+    bride: 'काव्या',
+    groom: 'आरव',
+    venue: 'Ahmedabad, Gujarat',
+    tier: 'platinum',
+    tradition: 'contemporary',
+    screen: '/templates/ganesha-blessings-gate.webp',
+    slug: 'aarav-weds-kavya',
   },
 ];
 

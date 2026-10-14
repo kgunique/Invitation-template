@@ -120,7 +120,7 @@ export function MoonDateRevealer({
                   }
             }
             transition={{ duration: 0.65, ease: 'easeInOut' }}
-            className="group relative w-[220px] sm:w-[260px] h-[220px] sm:h-[260px] rounded-full cursor-pointer focus:outline-none transition-transform active:scale-95"
+            className="relative w-[220px] sm:w-[260px] h-[220px] sm:h-[260px] rounded-full cursor-pointer focus:outline-none transition-transform active:scale-95"
           >
             {/* The rotating Moon image */}
             <div className="amb-turn-slow relative w-full h-full rounded-full overflow-hidden">
@@ -134,11 +134,6 @@ export function MoonDateRevealer({
               />
             </div>
 
-            {/* Glowing rim border */}
-            <span
-              aria-hidden
-              className="absolute inset-[0] rounded-full border border-[#ffe58f]/40 pointer-events-none group-hover:border-[#ffe58f]/80 transition-colors"
-            />
           </m.button>
 
           {/* Radial Sparks Burst on Blast */}
