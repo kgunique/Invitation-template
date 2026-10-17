@@ -27,6 +27,8 @@ export interface SlideLockProps {
   label?: string;
   /** Screen-reader label for the handle. */
   lockLabel?: string;
+  /** Anything that sits just above the track and can be tapped (a call screen's Remind me / Message buttons). */
+  above?: ReactNode;
   /** A line under the track (a blessing). */
   footer?: ReactNode;
   /** Diameter of the handle in px. */
@@ -38,6 +40,8 @@ export interface SlideLockProps {
   /** A CSS selector for an element in the page underneath (it must exist from the start, hidden): when the slide unlocks, the handle does not swell away but flies, still turning, to that element's place and size, and `onLanded` fires as it arrives. */
   flyTo?: string;
   onLanded?: () => void;
+  /** The colour the label's glow breathes in (default: the accent). */
+  labelGlow?: string;
   /** The faces for the label and the footer, if not the site's (see `hindiFonts.ts`). */
   labelClassName?: string;
   colors?: Partial<SlideLockColors>;
@@ -76,11 +80,13 @@ export function SlideLock({
   handle,
   label = 'Slide to open',
   lockLabel = 'Slide to open the invitation',
+  above,
   footer,
   handleSize = 56,
   threshold = 0.82,
   bottom = '13%',
   labelClassName = '',
+  labelGlow,
   flyTo,
   onLanded,
   colors,
@@ -227,6 +233,7 @@ export function SlideLock({
             animate={opening ? { opacity: 0, y: 16 } : { opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: EASE.exit }}
           >
+            {above && <div className="mb-10 w-full">{above}</div>}
             <div
               ref={track}
               className="relative w-full max-w-[330px] rounded-pill border backdrop-blur-md"
@@ -235,7 +242,7 @@ export function SlideLock({
               <m.span
                 aria-hidden
                 className={`${labelClassName} amb-glow-text pointer-events-none absolute inset-y-[0] right-[0] flex items-center pr-6 text-[11px] font-semibold uppercase tracking-[0.26em]`}
-                style={{ left: handleSize + PAD * 2, color: c.text, opacity: labelOpacity, ['--glow' as string]: c.accent }}
+                style={{ left: handleSize + PAD * 2, color: c.text, opacity: labelOpacity, ['--glow' as string]: labelGlow ?? c.accent }}
               >
                 {label}
               </m.span>

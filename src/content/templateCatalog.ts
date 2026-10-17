@@ -59,6 +59,10 @@ const LISTINGS: Record<
     featured: true,
     screens: { cover: '/templates/ganesha-blessings-invite.webp', preview: '/templates/ganesha-blessings-gate.webp' },
   },
+  // Being built scene by scene: kept out of the gallery until it is finished. Then drop `hidden`, add a tag and its two screenshots.
+  'krishna-radha': { hidden: true },
+  // Being built scene by scene: kept out of the gallery until it is finished.
+  'jeevan-jyoti': { hidden: true },
 };
 
 /**

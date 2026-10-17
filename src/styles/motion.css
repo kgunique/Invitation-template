@@ -203,6 +203,29 @@
   100% { transform: translate(var(--smoke-drift, 10px), calc(var(--smoke-rise, 70px) * -1)) scale(1.7); opacity: 0; }
 }
 
+/* A musical note rising from a flute: lifts, sways a little either way, swells and fades, then begins again.
+   --note-rise (60px), --note-dur (4s), --note-delay (negative, to stagger), --note-drift (sideways, 12px). */
+.amb-note { animation: amb-note var(--note-dur, 4s) ease-out var(--note-delay, 0s) infinite; opacity: 0; }
+@keyframes amb-note {
+  0%   { transform: translate(0, 0) rotate(-8deg) scale(0.6); opacity: 0; }
+  20%  { opacity: 0.95; }
+  50%  { transform: translate(calc(var(--note-drift, 12px) * -0.5), calc(var(--note-rise, 60px) * -0.5)) rotate(6deg) scale(1); }
+  100% { transform: translate(var(--note-drift, 12px), calc(var(--note-rise, 60px) * -1)) rotate(-4deg) scale(1.1); opacity: 0; }
+}
+
+/* A phone ringing on vibrate: a burst of quick small turns, then a rest, over and over. --ring-angle (9deg),
+   --ring-dur (1.8s, a burst and its rest). */
+.amb-ring-shake { animation: amb-ring-shake var(--ring-dur, 1.8s) ease-in-out infinite; }
+@keyframes amb-ring-shake {
+  0%, 40%, 100% { transform: rotate(0); }
+  5%  { transform: rotate(var(--ring-angle, 9deg)); }
+  10% { transform: rotate(calc(var(--ring-angle, 9deg) * -1)); }
+  15% { transform: rotate(var(--ring-angle, 9deg)); }
+  20% { transform: rotate(calc(var(--ring-angle, 9deg) * -1)); }
+  25% { transform: rotate(calc(var(--ring-angle, 9deg) * 0.6)); }
+  30% { transform: rotate(calc(var(--ring-angle, 9deg) * -0.6)); }
+}
+
 /* Falling petals. --drift and the duration are set per element. */
 .amb-fall { animation: amb-fall linear infinite; opacity: 0; }
 @keyframes amb-fall {
@@ -454,6 +477,8 @@
   .amb-sway,
   .amb-flicker,
   .amb-smoke,
+  .amb-note,
+  .amb-ring-shake,
   .amb-fall,
   .amb-petal,
   .amb-turn,

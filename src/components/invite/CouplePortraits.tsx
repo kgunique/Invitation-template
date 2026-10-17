@@ -245,7 +245,8 @@ export function CouplePortraits({
           variants={pop}
           initial="hidden"
           whileInView="shown"
-          viewport={{ once: true, amount: 1 }}
+          // Not `amount: 1`: scaled to a fractional size, the box never reports exactly fully in view and it stayed hidden.
+          viewport={{ once: true, amount: 0.6 }}
           className="my-6 flex w-full max-w-[300px] items-center gap-3"
         >
           <span aria-hidden className="h-[2px] flex-1 rounded-pill" style={{ background: `linear-gradient(to right, transparent, ${c.gold})` }} />

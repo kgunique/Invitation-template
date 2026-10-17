@@ -1,22 +1,62 @@
 'use client';
 
-import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, m } from 'motion/react';
-import { formatDayMonthYear, formatTimeHi, formatWeekdayDate } from './dates';
+import { formatTime, formatTimeHi, formatWeekdayDate } from './dates';
 import { hindiBody, hindiDisplay } from './hindiFonts';
+import { NIGHT_GLASS, nightGlassVars, type NightGlassColors } from './nightGlass';
 import { Starfield } from './Starfield';
 
+export interface MoonDateWords {
+  /** The moon button's accessible name. */
+  tapLabel: string;
+  /** The emoji bobbing over the prompt. */
+  pointer: string;
+  prompt: string;
+  /** The small tracked line under the prompt. */
+  hint: string;
+  /** The pill at the top of the revealed card. */
+  pill: string;
+  /** Put after the time. */
+  timeNote: string;
+  /** Put before the venue. */
+  venueLabel: string;
+  /** The button at the foot of the card that bursts the moon again. */
+  again: string;
+}
+
+const HINDI_WORDS: MoonDateWords = {
+  tapLabel: 'चंद्रमा पर क्लिक करके शुभ तिथि देखें',
+  pointer: '👆',
+  prompt: 'चंद्रमा पर स्पर्श करें',
+  hint: 'CLICK TO BLAST & REVEAL',
+  pill: 'शुभ विवाह मुहूर्त',
+  timeNote: '(शुभ लग्न एवं फेरे)',
+  venueLabel: 'स्थान:',
+  again: 'पुनः ब्लास्ट करने के लिए चाँद पर स्पर्श करें',
+};
+
 export interface MoonDateRevealerProps {
-  weddingDate?: string;
+  weddingDate: string;
   venue?: string;
   timeZone?: string;
   lang?: string;
+  /** Locale of the written-out day; a Hindi one (`hi-…`) also writes the time the Hindi way ("शाम 7:00 बजे"). */
+  locale?: string;
+  /** The round picture that turns and is tapped. */
+  image?: string;
+  imageAlt?: string;
+  words?: Partial<MoonDateWords>;
+  displayClassName?: string;
+  bodyClassName?: string;
+  colors?: Partial<NightGlassColors>;
   className?: string;
 }
 
-// 18 deterministic radial sparks for the cosmic blast
+const mix = (color: string, pct: number) => `color-mix(in srgb, ${color} ${pct}%, transparent)`;
+
+// 18 deterministic radial sparks for the cosmic blast; `tone` picks ink / bright / gold.
 const BLAST_SPARKS = Array.from({ length: 18 }, (_, i) => {
   const angle = (i / 18) * Math.PI * 2;
   const distance = 130 + (i % 3) * 35;
@@ -25,7 +65,7 @@ const BLAST_SPARKS = Array.from({ length: 18 }, (_, i) => {
     y: Math.round(Math.sin(angle) * distance),
     size: 14 + (i % 3) * 4,
     isStar: i % 2 === 0,
-    color: i % 3 === 0 ? '#ffffff' : i % 3 === 1 ? '#ffe58f' : '#ffd591',
+    tone: (['ink', 'bright', 'gold'] as const)[i % 3],
   };
 });
 
@@ -33,22 +73,30 @@ const BLAST_SPARKS = Array.from({ length: 18 }, (_, i) => {
  * MoonDateRevealer — An interactive celestial date revealer section.
  * Features a continuously rotating Moon in a cosmic starfield.
  * On tap/click: triggers a vigorous shake animation, a burst of golden sparks,
- * and reveals the auspicious wedding date and muhurat details in Hindi.
+ * and reveals the auspicious wedding date and muhurat details.
  */
 export function MoonDateRevealer({
-  weddingDate = '2027-02-28T18:30:00+05:30',
-  venue = 'अहमदाबाद, गुजरात',
+  weddingDate,
+  venue,
   timeZone = 'Asia/Kolkata',
   lang = 'hi',
+  locale = 'hi-IN',
+  image = '/art/ganga/moon.webp',
+  imageAlt = 'Sacred Moon',
+  words,
+  displayClassName = hindiDisplay.className,
+  bodyClassName = hindiBody.className,
+  colors,
   className = '',
 }: MoonDateRevealerProps) {
   const [shaking, setShaking] = useState(false);
   const [blasting, setBlasting] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const c = { ...NIGHT_GLASS, ...colors };
+  const w = { ...HINDI_WORDS, ...words };
 
-  const weekdayDate = weddingDate ? formatWeekdayDate(weddingDate, timeZone, 'hi-IN') : 'रविवार, 28 फ़रवरी 2027';
-  const timeText = weddingDate ? formatTimeHi(weddingDate, timeZone) : 'शाम 6:30 बजे';
-  const fullDate = weddingDate ? formatDayMonthYear(weddingDate, timeZone, 'hi-IN') : '28 फ़रवरी 2027';
+  const weekdayDate = formatWeekdayDate(weddingDate, timeZone, locale);
+  const timeText = locale.startsWith('hi') ? formatTimeHi(weddingDate, timeZone) : formatTime(weddingDate, timeZone, true);
 
   const handleMoonClick = () => {
     // Trigger shake and blast
@@ -71,11 +119,12 @@ export function MoonDateRevealer({
   return (
     <section
       lang={lang}
+      style={nightGlassVars(c)}
       className={`relative z-10 w-full min-h-[75vh] flex flex-col items-center justify-center text-center overflow-hidden px-4 py-12 sm:py-16 mb-16 ${className}`}
     >
       {/* Subtle cosmic background starfield */}
       <div aria-hidden className="pointer-events-none absolute inset-[0] overflow-hidden opacity-50">
-        <Starfield count={60} color="#ffd666" constellations />
+        <Starfield count={60} color={c.bright} constellations />
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-[440px] flex flex-col items-center">
@@ -84,18 +133,19 @@ export function MoonDateRevealer({
           {/* Radial celestial halo behind moon */}
           <div
             aria-hidden
-            className={`pointer-events-none absolute inset-[-30px] rounded-full transition-all duration-700 ${
-              revealed
-                ? 'bg-[radial-gradient(circle_at_center,_rgba(255,235,180,0.5)_0%,_rgba(240,190,80,0.22)_45%,_transparent_72%)] scale-110'
-                : 'bg-[radial-gradient(circle_at_center,_rgba(255,235,180,0.32)_0%,_rgba(215,180,100,0.12)_45%,_transparent_72%)]'
-            }`}
+            className={`pointer-events-none absolute inset-[-30px] rounded-pill transition-all duration-700 ${revealed ? 'scale-110' : ''}`}
+            style={{
+              background: revealed
+                ? `radial-gradient(circle at center, ${mix(c.bright, 50)} 0%, ${mix(c.gold, 22)} 45%, transparent 72%)`
+                : `radial-gradient(circle at center, ${mix(c.bright, 32)} 0%, ${mix(c.gold, 12)} 45%, transparent 72%)`,
+            }}
           />
 
           {/* Interactive Moon with Continuous Rotation & On-Click Shake */}
           <m.button
             type="button"
             onClick={handleMoonClick}
-            aria-label="चंद्रमा पर क्लिक करके शुभ तिथि देखें"
+            aria-label={w.tapLabel}
             animate={
               shaking
                 ? {
@@ -104,9 +154,9 @@ export function MoonDateRevealer({
                     rotate: [-6, 6, -5, 5, -2, 2, 0],
                     scale: [1, 1.12, 0.94, 1.06, 1],
                     filter: [
-                      'drop-shadow(0 0 25px rgba(255,235,180,0.5))',
-                      'drop-shadow(0 0 55px rgba(255,215,100,0.95))',
-                      'drop-shadow(0 0 30px rgba(255,235,180,0.6))',
+                      `drop-shadow(0 0 25px ${mix(c.bright, 50)})`,
+                      `drop-shadow(0 0 55px ${mix(c.bright, 95)})`,
+                      `drop-shadow(0 0 30px ${mix(c.bright, 60)})`,
                     ],
                   }
                 : {
@@ -115,25 +165,24 @@ export function MoonDateRevealer({
                     y: 0,
                     rotate: 0,
                     filter: revealed
-                      ? 'drop-shadow(0 0 35px rgba(255,215,100,0.65))'
-                      : 'drop-shadow(0 0 20px rgba(255,235,180,0.4))',
+                      ? `drop-shadow(0 0 35px ${mix(c.bright, 65)})`
+                      : `drop-shadow(0 0 20px ${mix(c.bright, 40)})`,
                   }
             }
             transition={{ duration: 0.65, ease: 'easeInOut' }}
-            className="relative w-[220px] sm:w-[260px] h-[220px] sm:h-[260px] rounded-full cursor-pointer focus:outline-none transition-transform active:scale-95"
+            className="relative w-[220px] sm:w-[260px] h-[220px] sm:h-[260px] rounded-pill cursor-pointer focus:outline-none transition-transform active:scale-95"
           >
             {/* The rotating Moon image */}
-            <div className="amb-turn-slow relative w-full h-full rounded-full overflow-hidden">
+            <div className="amb-turn-slow relative w-full h-full rounded-pill overflow-hidden">
               <Image
-                src="/art/ganga/moon.webp"
-                alt="Sacred Moon"
+                src={image}
+                alt={imageAlt}
                 fill
                 sizes="(max-width: 480px) 260px, 280px"
                 priority
-                className="object-cover rounded-full select-none pointer-events-none"
+                className="object-cover rounded-pill select-none pointer-events-none"
               />
             </div>
-
           </m.button>
 
           {/* Radial Sparks Burst on Blast */}
@@ -147,9 +196,9 @@ export function MoonDateRevealer({
                     animate={{ x: sp.x, y: sp.y, opacity: [1, 1, 0], scale: [0.4, 1.4, 0.2] }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.75, ease: 'easeOut' }}
-                    className="absolute leading-none font-bold select-none drop-shadow-[0_0_8px_rgba(255,215,100,0.9)]"
+                    className="absolute leading-none font-bold select-none drop-shadow-[0_0_8px_color-mix(in_srgb,var(--ng-bright)_90%,transparent)]"
                     style={{
-                      color: sp.color,
+                      color: c[sp.tone],
                       fontSize: `${sp.size}px`,
                     }}
                   >
@@ -169,21 +218,18 @@ export function MoonDateRevealer({
             className="flex flex-col items-center space-y-3 cursor-pointer"
             onClick={handleMoonClick}
           >
-            {/* Bobbing Pointing Hand Emoji */}
             <span aria-hidden className="amb-bounce text-[32px] sm:text-[36px] leading-none select-none drop-shadow-md">
-              👆
+              {w.pointer}
             </span>
 
-            {/* Heading: चंद्रमा पर स्पर्श करें */}
             <h3
-              className={`${hindiDisplay.className} text-[24px] sm:text-[28px] font-semibold text-[#e6be60] drop-shadow-[0_2px_12px_rgba(230,190,96,0.6)]`}
+              className={`${displayClassName} text-[24px] sm:text-[28px] font-semibold text-[color:var(--ng-gold)] drop-shadow-[0_2px_12px_color-mix(in_srgb,var(--ng-gold)_60%,transparent)]`}
             >
-              चंद्रमा पर स्पर्श करें
+              {w.prompt}
             </h3>
 
-            {/* Subtitle: CLICK TO BLAST & REVEAL */}
-            <p className="text-[12px] sm:text-[13px] tracking-[0.25em] font-medium uppercase text-[#ffd875]/80 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
-              CLICK TO BLAST &amp; REVEAL
+            <p className="text-[12px] sm:text-[13px] tracking-[0.25em] font-medium uppercase text-[color:color-mix(in_srgb,var(--ng-bright)_80%,transparent)] drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]">
+              {w.hint}
             </p>
           </m.div>
         )}
@@ -197,41 +243,36 @@ export function MoonDateRevealer({
               transition={{ duration: 0.6, ease: 'easeOut' }}
               className="w-full relative z-10"
             >
-              <div className="relative rounded-[22px] border border-[#e6be60]/60 bg-[#061229]/90 backdrop-blur-md p-6 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.7)] text-center">
-                {/* Top Auspicious Pill */}
-                <div className="inline-flex items-center gap-2 rounded-pill px-4 py-1.5 border border-[#e6be60]/40 bg-[#071736] text-[13px] text-[#ffd875] font-semibold mb-4 shadow-sm">
+              <div className="relative rounded-[22px] border border-[color-mix(in_srgb,var(--ng-gold)_60%,transparent)] bg-[color-mix(in_srgb,var(--ng-card)_90%,transparent)] backdrop-blur-md p-6 sm:p-7 shadow-[0_12px_40px_rgba(0,0,0,0.7)] text-center">
+                <div className="inline-flex items-center gap-2 rounded-pill px-4 py-1.5 border border-[color-mix(in_srgb,var(--ng-gold)_40%,transparent)] bg-[var(--ng-card)] text-[13px] text-[color:var(--ng-bright)] font-semibold mb-4 shadow-sm">
                   <span>✦</span>
-                  <span className={hindiDisplay.className}>शुभ विवाह मुहूर्त</span>
+                  <span className={displayClassName}>{w.pill}</span>
                   <span>✦</span>
                 </div>
 
-                {/* Auspicious Full Date in Hindi */}
                 <h4
-                  className={`${hindiDisplay.className} text-[26px] sm:text-[32px] font-bold text-[#fff9eb] drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)] leading-tight mb-2`}
+                  className={`${displayClassName} text-[26px] sm:text-[32px] font-bold text-[color:var(--ng-ink)] drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)] leading-tight mb-2`}
                 >
                   {weekdayDate}
                 </h4>
 
-                {/* Auspicious Time & Muhurat */}
-                <p className={`${hindiBody.className} text-[18px] sm:text-[20px] font-semibold text-[#e6be60] mb-3`}>
-                  {timeText} (शुभ लग्न एवं फेरे)
+                <p className={`${bodyClassName} text-[18px] sm:text-[20px] font-semibold text-[color:var(--ng-gold)] mb-3`}>
+                  {timeText} {w.timeNote}
                 </p>
 
-                {/* Venue */}
                 {venue && (
-                  <p className={`${hindiBody.className} text-[15px] sm:text-[16px] text-[#d4c3a3] max-w-xs mx-auto mb-5`}>
-                    स्थान: {venue}
+                  <p className={`${bodyClassName} text-[15px] sm:text-[16px] text-[color:var(--ng-muted)] max-w-xs mx-auto mb-5`}>
+                    {w.venueLabel} {venue}
                   </p>
                 )}
 
-                {/* Re-blast Button / Instruction */}
                 <button
                   type="button"
                   onClick={handleMoonClick}
-                  className="inline-flex items-center gap-2 text-[13px] text-[#ffd875]/80 hover:text-[#fff] transition-colors pt-2 border-t border-[#e6be60]/20 w-full justify-center"
+                  className="inline-flex items-center gap-2 text-[13px] text-[color:color-mix(in_srgb,var(--ng-bright)_80%,transparent)] hover:text-[color:var(--ng-ink)] transition-colors pt-2 border-t border-[color-mix(in_srgb,var(--ng-gold)_20%,transparent)] w-full justify-center"
                 >
                   <span>✦</span>
-                  <span className={hindiBody.className}>पुनः ब्लास्ट करने के लिए चाँद पर स्पर्श करें</span>
+                  <span className={bodyClassName}>{w.again}</span>
                   <span>✦</span>
                 </button>
               </div>

@@ -113,17 +113,10 @@ export function EventPoster({
 }: EventPosterProps) {
   const c = { ...DEFAULT_COLORS, ...colors };
 
-  const isDark =
-    dark !== undefined
-      ? dark
-      : !!(
-          celestialBackground ||
-          (colors?.ink && colors.ink.startsWith('#f')) ||
-          (scene.background &&
-            (scene.background.includes('#0') ||
-              scene.background.includes('rgb(0') ||
-              scene.background.includes('gradient')))
-        );
+  // Only when asked: guessing from the scene's background (any gradient counted as dark) turned every light,
+  // gradient-skied card (a gold haldi morning) into pale gold words on a pale ground. A dark scene that is not
+  // celestial passes `dark`, or just its own `ink`/`sub`.
+  const isDark = dark ?? !!celestialBackground;
 
   const {
     background = isDark ? 'linear-gradient(180deg, #071738 0%, #030a1c 100%)' : '#eaf3fa',

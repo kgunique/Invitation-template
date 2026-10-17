@@ -2,6 +2,7 @@
 
 import { m } from 'motion/react';
 import { hindiBody, hindiDisplay } from './hindiFonts';
+import { NIGHT_GLASS, nightGlassVars, type NightGlassColors } from './nightGlass';
 
 export interface FamilyMember {
   relation: string;
@@ -35,6 +36,10 @@ export const DEFAULT_HINDI_SNEHABHILASHI: FamilySide[] = [
 export interface SnehabhilashiSectionProps {
   title?: string;
   sides?: FamilySide[];
+  lang?: string;
+  displayClassName?: string;
+  bodyClassName?: string;
+  colors?: Partial<NightGlassColors>;
   className?: string;
 }
 
@@ -56,23 +61,24 @@ const riseCard = {
 export function SnehabhilashiSection({
   title = '|| स्नेहाभिलाषी ||',
   sides = DEFAULT_HINDI_SNEHABHILASHI,
+  lang = 'hi',
+  displayClassName = hindiDisplay.className,
+  bodyClassName = hindiBody.className,
+  colors,
   className = '',
 }: SnehabhilashiSectionProps) {
+  const c = { ...NIGHT_GLASS, ...colors };
+
   return (
-    <section
-      lang="hi"
-      className={`relative z-10 w-full mb-16 px-4 ${className}`}
-    >
-      {/* 1. Main Heading: || स्नेहाभिलाषी || */}
+    <section lang={lang} style={nightGlassVars(c)} className={`relative z-10 w-full mb-16 px-4 ${className}`}>
       <div className="text-center mb-8">
         <h2
-          className={`${hindiDisplay.className} text-[28px] sm:text-[34px] font-bold text-[#ffffff] tracking-wider drop-shadow-[0_2px_14px_rgba(230,190,96,0.55)]`}
+          className={`${displayClassName} text-[28px] sm:text-[34px] font-bold text-[color:var(--ng-ink)] tracking-wider drop-shadow-[0_2px_14px_color-mix(in_srgb,var(--ng-gold)_55%,transparent)]`}
         >
           {title}
         </h2>
       </div>
 
-      {/* 2. Side Cards Container */}
       <div className="max-w-[440px] mx-auto space-y-6">
         {sides.map((side, sIdx) => (
           <m.div
@@ -81,45 +87,36 @@ export function SnehabhilashiSection({
             initial="hidden"
             whileInView="shown"
             viewport={{ once: true, amount: 0.2 }}
-            className="relative rounded-2xl sm:rounded-3xl border border-[#e6be60]/35 bg-[#061129]/85 backdrop-blur-md p-5 sm:p-6 shadow-[0_12px_36px_rgba(0,0,0,0.7)] overflow-hidden"
+            className="relative rounded-[16px] sm:rounded-[24px] border border-[color-mix(in_srgb,var(--ng-gold)_35%,transparent)] bg-[color-mix(in_srgb,var(--ng-card)_85%,transparent)] backdrop-blur-md p-5 sm:p-6 shadow-[0_12px_36px_rgba(0,0,0,0.7)] overflow-hidden"
           >
             {/* Subtle inner top glow */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-purple-500/15 to-transparent"
+              className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,color-mix(in_srgb,var(--ng-glow)_15%,transparent),transparent)]"
             />
 
-            {/* Category Title: व र   प क्ष / क न्य़ा   प क्ष */}
             <div className="relative text-center mb-4 z-10">
               <h3
-                className={`${hindiDisplay.className} text-[20px] sm:text-[22px] font-semibold text-[#ffd875] tracking-[0.25em] drop-shadow-[0_1px_8px_rgba(255,216,117,0.4)]`}
+                className={`${displayClassName} text-[20px] sm:text-[22px] font-semibold text-[color:var(--ng-bright)] tracking-[0.25em] drop-shadow-[0_1px_8px_color-mix(in_srgb,var(--ng-bright)_40%,transparent)]`}
               >
                 {side.sideTitle}
               </h3>
-              {/* Short Golden Accent Bar */}
               <span
                 aria-hidden
-                className="block mx-auto mt-2 h-[2px] w-[38px] rounded-pill bg-[#e6be60] shadow-[0_0_8px_#ffd875]"
+                className="block mx-auto mt-2 h-[2px] w-[38px] rounded-pill bg-[var(--ng-gold)] shadow-[0_0_8px_var(--ng-bright)]"
               />
             </div>
 
-            {/* Stacked Member Boxes */}
             <div className="relative z-10 space-y-3">
               {side.members.map((member, mIdx) => (
                 <div
                   key={mIdx}
-                  className="rounded-xl sm:rounded-2xl bg-[#040c1e]/90 border border-purple-500/25 hover:border-[#e6be60]/60 transition-colors duration-300 py-3.5 px-4 text-center shadow-md group"
+                  className="rounded-xl sm:rounded-[16px] bg-[color-mix(in_srgb,var(--ng-deep)_90%,transparent)] border border-[color-mix(in_srgb,var(--ng-glow)_25%,transparent)] hover:border-[color-mix(in_srgb,var(--ng-gold)_60%,transparent)] transition-colors duration-300 py-3.5 px-4 text-center shadow-md"
                 >
-                  {/* Relation Label: पिता / माता / भाई */}
-                  <p
-                    className={`${hindiBody.className} text-[14px] sm:text-[15px] font-medium text-[#ffd875] tracking-wide mb-0.5`}
-                  >
+                  <p className={`${bodyClassName} text-[14px] sm:text-[15px] font-medium text-[color:var(--ng-bright)] tracking-wide mb-0.5`}>
                     {member.relation}
                   </p>
-                  {/* Member Name: श्री किरणभाई कनाणी */}
-                  <p
-                    className={`${hindiDisplay.className} text-[18px] sm:text-[20px] font-medium text-[#ffffff] tracking-normal drop-shadow-sm group-hover:text-[#fff9eb] transition-colors`}
-                  >
+                  <p className={`${displayClassName} text-[18px] sm:text-[20px] font-medium text-[color:var(--ng-ink)] tracking-normal drop-shadow-sm`}>
                     {member.name}
                   </p>
                 </div>

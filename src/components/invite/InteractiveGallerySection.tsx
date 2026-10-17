@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { m, AnimatePresence } from 'motion/react';
 import { hindiBody, hindiDisplay } from './hindiFonts';
+import { NIGHT_GLASS, nightGlassVars, type NightGlassColors } from './nightGlass';
 
 export interface InteractiveGalleryItem {
   id: string;
@@ -51,13 +52,49 @@ export const DEFAULT_GALLERY_ITEMS: InteractiveGalleryItem[] = [
   },
 ];
 
+export interface InteractiveGalleryWords {
+  /** The badge on the featured picture while its caption is hidden… */
+  hintIdle: string;
+  /** …and while it shows. */
+  hintActive: string;
+  /** Accessible name of a picture, before its caption. */
+  view: string;
+  expand: string;
+  close: string;
+  prev: string;
+  next: string;
+}
+
+const HINDI_WORDS: InteractiveGalleryWords = {
+  hintIdle: 'क्लिक करें',
+  hintActive: 'टैप करें',
+  view: 'View photo',
+  expand: 'Full Screen View',
+  close: 'Close',
+  prev: '← पिछला',
+  next: 'अगला →',
+};
+
 export interface InteractiveGallerySectionProps {
+  /** Exactly five are shown; fewer and the sample set is shown instead. */
   items?: InteractiveGalleryItem[];
   title?: string;
   subtitle?: string;
   eyebrow?: string;
+  words?: Partial<InteractiveGalleryWords>;
+  displayClassName?: string;
+  bodyClassName?: string;
+  /** The captions' font-family. */
+  captionFont?: string;
+  colors?: Partial<NightGlassColors>;
   className?: string;
 }
+
+/** Round icon buttons over a picture (full screen, close). */
+const ICON_BUTTON =
+  'rounded-pill bg-black/60 backdrop-blur-md border border-[color-mix(in_srgb,var(--ng-gold)_50%,transparent)] text-[color:var(--ng-bright)] hover:bg-[var(--ng-gold)] hover:text-[color:var(--ng-card)]';
+const NAV_BUTTON =
+  'px-4 py-1.5 rounded-pill border border-[color-mix(in_srgb,var(--ng-gold)_40%,transparent)] text-[color:var(--ng-bright)] text-[13px] hover:bg-[color-mix(in_srgb,var(--ng-gold)_10%,transparent)]';
 
 /**
  * InteractiveGallerySection — Luxury Wedding Photo Gallery
@@ -73,16 +110,21 @@ export function InteractiveGallerySection({
   title = 'पावन स्मृतियाँ',
   subtitle = 'फोटो पर क्लिक करके खूबसूरत पलों को देखें',
   eyebrow = 'Captured Moments',
+  words,
+  displayClassName = hindiDisplay.className,
+  bodyClassName = hindiBody.className,
+  captionFont = 'Georgia, Cambria, "Times New Roman", serif',
+  colors,
   className = '',
 }: InteractiveGallerySectionProps) {
   const galleryItems = items && items.length >= 5 ? items : DEFAULT_GALLERY_ITEMS;
+  const w = { ...HINDI_WORDS, ...words };
+  const c = { ...NIGHT_GLASS, ...colors };
 
   // Selected photo for the main top card
   const [featuredIndex, setFeaturedIndex] = useState(0);
 
-  // Set of clicked/active card IDs where zoom + bottom shadow + caption is visible
-  // By default, top card is active so it displays with the exact look in user's image,
-  // or user can tap any card to toggle its zoom & caption.
+  // Cards whose zoom + bottom shadow + caption is showing; the top card starts shown.
   const [activeCards, setActiveCards] = useState<Record<string, boolean>>({
     [galleryItems[0].id]: true,
   });
@@ -106,22 +148,22 @@ export function InteractiveGallerySection({
   const gridItems = galleryItems.slice(1, 5);
 
   return (
-    <section className={`relative z-10 w-full mb-16 px-4 ${className}`}>
+    <section style={nightGlassVars(c)} className={`relative z-10 w-full mb-16 px-4 ${className}`}>
       {/* Section Header */}
       <div className="text-center mb-6">
         {eyebrow && (
-          <div className="inline-flex items-center gap-2 rounded-pill px-3.5 py-1 border border-[#e6be60]/30 bg-[#071736]/80 text-[11px] sm:text-[12px] font-semibold text-[#ffd875] tracking-widest uppercase mb-2 shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-pill px-3.5 py-1 border border-[color-mix(in_srgb,var(--ng-gold)_30%,transparent)] bg-[color-mix(in_srgb,var(--ng-card)_80%,transparent)] text-[11px] sm:text-[12px] font-semibold text-[color:var(--ng-bright)] tracking-widest uppercase mb-2 shadow-sm">
             <span>✦</span>
             <span>{eyebrow}</span>
             <span>✦</span>
           </div>
         )}
         <h3
-          className={`${hindiDisplay.className} text-[24px] sm:text-[28px] font-bold text-[#fff9eb] drop-shadow-[0_2px_12px_rgba(230,190,96,0.35)]`}
+          className={`${displayClassName} text-[24px] sm:text-[28px] font-bold text-[color:var(--ng-ink)] drop-shadow-[0_2px_12px_color-mix(in_srgb,var(--ng-gold)_35%,transparent)]`}
         >
           {title}
         </h3>
-        <p className={`${hindiBody.className} text-[13px] sm:text-[14px] text-[#d4c3a3]/80 mt-1`}>
+        <p className={`${bodyClassName} text-[13px] sm:text-[14px] text-[color:color-mix(in_srgb,var(--ng-muted)_80%,transparent)] mt-1`}>
           {subtitle}
         </p>
       </div>
@@ -132,7 +174,7 @@ export function InteractiveGallerySection({
         <div
           role="button"
           tabIndex={0}
-          aria-label={`Toggle caption for ${featuredItem.caption}`}
+          aria-label={`${w.view}: ${featuredItem.caption}`}
           onClick={() => toggleCardActive(featuredItem.id)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -140,10 +182,10 @@ export function InteractiveGallerySection({
               toggleCardActive(featuredItem.id);
             }
           }}
-          className={`group relative w-full aspect-[4/4.5] sm:aspect-[4/3.8] rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer select-none transition-all duration-500 shadow-[0_12px_36px_rgba(0,0,0,0.7)] ${
+          className={`group relative w-full aspect-[4/4.5] sm:aspect-[4/3.8] rounded-[16px] sm:rounded-[24px] overflow-hidden cursor-pointer select-none transition-all duration-500 shadow-[0_12px_36px_rgba(0,0,0,0.7)] ${
             isFeaturedActive
-              ? 'border-2 border-[#e6be60]/80 shadow-[0_0_24px_rgba(230,190,96,0.35)]'
-              : 'border border-[#e6be60]/35 hover:border-[#e6be60]/60'
+              ? 'border-2 border-[color-mix(in_srgb,var(--ng-gold)_80%,transparent)] shadow-[0_0_24px_color-mix(in_srgb,var(--ng-gold)_35%,transparent)]'
+              : 'border border-[color-mix(in_srgb,var(--ng-gold)_35%,transparent)] hover:border-[color-mix(in_srgb,var(--ng-gold)_60%,transparent)]'
           }`}
         >
           {/* Inner Image with Smooth Zoom */}
@@ -161,9 +203,9 @@ export function InteractiveGallerySection({
           </div>
 
           {/* Interactive Tap Hint Badge (Top Right) */}
-          <div className="absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-md border border-[#e6be60]/40 text-[#ffd875] text-[11px] font-medium tracking-wide shadow-md transition-opacity duration-300">
+          <div className="absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-black/55 backdrop-blur-md border border-[color-mix(in_srgb,var(--ng-gold)_40%,transparent)] text-[color:var(--ng-bright)] text-[11px] font-medium tracking-wide shadow-md transition-opacity duration-300">
             <span className="text-[12px] animate-pulse">✦</span>
-            <span>{isFeaturedActive ? 'टैप करें' : 'क्लिक करें'}</span>
+            <span>{isFeaturedActive ? w.hintActive : w.hintIdle}</span>
           </div>
 
           {/* Bottom Dark Gradient Shadow */}
@@ -182,14 +224,14 @@ export function InteractiveGallerySection({
             }`}
           >
             <h4
-              style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", serif' }}
-              className="text-[#f5d77f] text-[20px] sm:text-[23px] font-semibold tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
+              style={{ fontFamily: captionFont }}
+              className="text-[color:var(--ng-bright)] text-[20px] sm:text-[23px] font-semibold tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]"
             >
               {featuredItem.caption}
             </h4>
             {featuredItem.subtitle && (
               <p
-                className={`${hindiBody.className} text-[13px] sm:text-[14px] text-[#e8d5b5]/90 mt-0.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]`}
+                className={`${bodyClassName} text-[13px] sm:text-[14px] text-[color:color-mix(in_srgb,var(--ng-body)_90%,transparent)] mt-0.5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]`}
               >
                 {featuredItem.subtitle}
               </p>
@@ -204,8 +246,9 @@ export function InteractiveGallerySection({
                 e.stopPropagation();
                 setLightboxIndex(featuredIndex);
               }}
-              title="Full Screen View"
-              className="absolute bottom-4 right-4 z-30 p-2 rounded-full bg-black/60 backdrop-blur-md border border-[#e6be60]/50 text-[#ffd875] hover:bg-[#e6be60] hover:text-[#061229] transition-all duration-300 shadow-md"
+              title={w.expand}
+              aria-label={w.expand}
+              className={`absolute bottom-4 right-4 z-30 p-2 transition-all duration-300 shadow-md ${ICON_BUTTON}`}
             >
               <svg
                 className="w-4 h-4"
@@ -236,7 +279,7 @@ export function InteractiveGallerySection({
                 key={item.id}
                 role="button"
                 tabIndex={0}
-                aria-label={`View photo ${item.caption}`}
+                aria-label={`${w.view}: ${item.caption}`}
                 onClick={() => {
                   toggleCardActive(item.id, actualIndex);
                 }}
@@ -246,12 +289,12 @@ export function InteractiveGallerySection({
                     toggleCardActive(item.id, actualIndex);
                   }
                 }}
-                className={`group relative aspect-[4/4.5] sm:aspect-square rounded-2xl overflow-hidden cursor-pointer select-none transition-all duration-500 shadow-lg ${
+                className={`group relative aspect-[4/4.5] sm:aspect-square rounded-[16px] overflow-hidden cursor-pointer select-none transition-all duration-500 shadow-lg ${
                   isSelectedAsFeatured
-                    ? 'border-2 border-[#e6be60] shadow-[0_0_18px_rgba(230,190,96,0.4)]'
+                    ? 'border-2 border-[color:var(--ng-gold)] shadow-[0_0_18px_color-mix(in_srgb,var(--ng-gold)_40%,transparent)]'
                     : isCardActive
-                    ? 'border border-[#e6be60]/80 shadow-[0_0_12px_rgba(230,190,96,0.25)]'
-                    : 'border border-[#e6be60]/30 hover:border-[#e6be60]/60'
+                    ? 'border border-[color-mix(in_srgb,var(--ng-gold)_80%,transparent)] shadow-[0_0_12px_color-mix(in_srgb,var(--ng-gold)_25%,transparent)]'
+                    : 'border border-[color-mix(in_srgb,var(--ng-gold)_30%,transparent)] hover:border-[color-mix(in_srgb,var(--ng-gold)_60%,transparent)]'
                 }`}
               >
                 {/* Grid Image */}
@@ -287,14 +330,14 @@ export function InteractiveGallerySection({
                   }`}
                 >
                   <p
-                    style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", serif' }}
-                    className="text-[#f5d77f] text-[14px] sm:text-[15px] font-semibold tracking-wide drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] leading-snug line-clamp-1"
+                    style={{ fontFamily: captionFont }}
+                    className="text-[color:var(--ng-bright)] text-[14px] sm:text-[15px] font-semibold tracking-wide drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] leading-snug line-clamp-1"
                   >
                     {item.caption}
                   </p>
                   {item.subtitle && (
                     <p
-                      className={`${hindiBody.className} text-[11px] text-[#e8d5b5]/90 mt-0.5 line-clamp-1 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]`}
+                      className={`${bodyClassName} text-[11px] text-[color:color-mix(in_srgb,var(--ng-body)_90%,transparent)] mt-0.5 line-clamp-1 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]`}
                     >
                       {item.subtitle}
                     </p>
@@ -303,7 +346,7 @@ export function InteractiveGallerySection({
 
                 {/* Subtle active indicator dot */}
                 {isSelectedAsFeatured && (
-                  <div className="absolute top-2.5 left-2.5 z-20 w-2 h-2 rounded-full bg-[#ffd875] shadow-[0_0_8px_#ffd875]" />
+                  <div className="absolute top-2.5 left-2.5 z-20 w-2 h-2 rounded-pill bg-[var(--ng-bright)] shadow-[0_0_8px_var(--ng-bright)]" />
                 )}
               </div>
             );
@@ -324,14 +367,13 @@ export function InteractiveGallerySection({
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-xl w-full max-h-[85vh] rounded-3xl overflow-hidden border border-[#e6be60]/50 bg-[#061129] shadow-2xl flex flex-col"
+              className="relative max-w-xl w-full max-h-[85vh] rounded-[24px] overflow-hidden border border-[color-mix(in_srgb,var(--ng-gold)_50%,transparent)] bg-[var(--ng-card)] shadow-2xl flex flex-col"
             >
-              {/* Close Button */}
               <button
                 type="button"
                 onClick={() => setLightboxIndex(null)}
-                aria-label="Close"
-                className="absolute top-4 right-4 z-30 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-[#e6be60]/50 text-[#ffd875] flex items-center justify-center hover:bg-[#e6be60] hover:text-[#061229] transition-colors"
+                aria-label={w.close}
+                className={`absolute top-4 right-4 z-30 w-10 h-10 flex items-center justify-center transition-colors ${ICON_BUTTON}`}
               >
                 ✕
               </button>
@@ -345,19 +387,17 @@ export function InteractiveGallerySection({
                   priority
                   className="object-cover object-center"
                 />
-                {/* Bottom Shadow in Lightbox */}
                 <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/95 via-black/50 to-transparent z-10" />
 
-                {/* Lightbox Caption */}
                 <div className="absolute bottom-5 left-5 right-16 z-20">
                   <h3
-                    style={{ fontFamily: 'Georgia, Cambria, "Times New Roman", serif' }}
-                    className="text-[#f5d77f] text-[24px] sm:text-[28px] font-bold tracking-wide drop-shadow-lg"
+                    style={{ fontFamily: captionFont }}
+                    className="text-[color:var(--ng-bright)] text-[24px] sm:text-[28px] font-bold tracking-wide drop-shadow-lg"
                   >
                     {galleryItems[lightboxIndex].caption}
                   </h3>
                   {galleryItems[lightboxIndex].subtitle && (
-                    <p className={`${hindiBody.className} text-[15px] text-[#e8d5b5] mt-1`}>
+                    <p className={`${bodyClassName} text-[15px] text-[color:var(--ng-body)] mt-1`}>
                       {galleryItems[lightboxIndex].subtitle}
                     </p>
                   )}
@@ -365,7 +405,7 @@ export function InteractiveGallerySection({
               </div>
 
               {/* Lightbox Navigation Footer */}
-              <div className="p-4 bg-[#040c1e] border-t border-[#e6be60]/20 flex items-center justify-between">
+              <div className="p-4 bg-[var(--ng-deep)] border-t border-[color-mix(in_srgb,var(--ng-gold)_20%,transparent)] flex items-center justify-between">
                 <button
                   type="button"
                   onClick={() =>
@@ -375,11 +415,11 @@ export function InteractiveGallerySection({
                         : 0
                     )
                   }
-                  className="px-4 py-1.5 rounded-pill border border-[#e6be60]/40 text-[#ffd875] text-[13px] hover:bg-[#e6be60]/10"
+                  className={NAV_BUTTON}
                 >
-                  ← पिछला
+                  {w.prev}
                 </button>
-                <span className="text-[12px] text-[#ffd875]/70 font-mono">
+                <span className="text-[12px] text-[color:color-mix(in_srgb,var(--ng-bright)_70%,transparent)] font-mono">
                   {lightboxIndex + 1} / {galleryItems.length}
                 </span>
                 <button
@@ -389,9 +429,9 @@ export function InteractiveGallerySection({
                       prev !== null ? (prev + 1) % galleryItems.length : 0
                     )
                   }
-                  className="px-4 py-1.5 rounded-pill border border-[#e6be60]/40 text-[#ffd875] text-[13px] hover:bg-[#e6be60]/10"
+                  className={NAV_BUTTON}
                 >
-                  अगला →
+                  {w.next}
                 </button>
               </div>
             </div>

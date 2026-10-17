@@ -13,6 +13,8 @@ export const TEMPLATE_NAMES = {
   rudra: 'Rudra',
   'kailash-ganga': 'Kailash Ganga',
   'ganesha-blessings': 'Shree Ganesha',
+  'krishna-radha': 'Krishna Radha',
+  'jeevan-jyoti': 'Call of a Lifetime',
 } as const;
 
 /** Digits only, with the country code (91 = India), as wa.me wants it. */

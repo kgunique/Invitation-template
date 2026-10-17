@@ -161,7 +161,8 @@ export function MeetTheCouple({
           variants={pop}
           initial="hidden"
           whileInView="shown"
-          viewport={{ once: true, amount: 1 }}
+          // Not `amount: 1`: scaled to a fractional size, the box may never report exactly fully in view.
+          viewport={{ once: true, amount: 0.6 }}
           aria-hidden
           className="text-invite-metal"
         >
