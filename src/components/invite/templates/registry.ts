@@ -3,6 +3,8 @@ import { GoldEnvelopeInvite } from './GoldEnvelopeInvite';
 import { GujaratiKankotriInvite } from './GujaratiKankotriInvite';
 import { GujaratiKankotriYellowInvite } from './GujaratiKankotriYellowInvite';
 import { KailashGangaInvite } from './KailashGangaInvite';
+import { JeevanJyotiInvite } from './JeevanJyotiInvite';
+import { KrishnaRadhaInvite } from './KrishnaRadhaInvite';
 import { PlatinumTempleInvite } from './PlatinumTempleInvite';
 import { RudraInvite } from './RudraInvite';
 
@@ -19,6 +21,8 @@ export const TEMPLATES = {
   rudra: RudraInvite,
   'kailash-ganga': KailashGangaInvite,
   'ganesha-blessings': GaneshaBlessingsInvite,
+  'krishna-radha': KrishnaRadhaInvite,
+  'jeevan-jyoti': JeevanJyotiInvite,
 } as const;
 
 

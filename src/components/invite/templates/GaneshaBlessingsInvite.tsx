@@ -267,13 +267,14 @@ export function GaneshaBlessingsInvite({
           )}
 
           {/* Auspicious Poetic Invitation Section (Inspired by user mockup - Tahuko in Hindi) */}
-          <PoeticInviteSection />
+          <PoeticInviteSection colors={{ gold: t.accent }} />
 
           {/* Celestial Moon Date Revealer (Rotating Moon, Shake on Click & Blast to Reveal Date) */}
-          <MoonDateRevealer weddingDate={weddingDate} venue={venue} />
+          <MoonDateRevealer weddingDate={weddingDate} venue={venue} colors={{ gold: t.accent }} />
 
           {/* Interactive Photo Gallery (Click to Zoom, Bottom Shadow & Caption Reveal) */}
           <InteractiveGallerySection
+            colors={{ gold: t.accent }}
             items={
               gallery && gallery.length >= 5
                 ? gallery.map((g, i) => ({
@@ -417,7 +418,7 @@ export function GaneshaBlessingsInvite({
           )}
 
           {/* Family Well-Wishers Section (|| સ્નેહાભિલાષી ||) - Before Thank You */}
-          <SnehabhilashiSection />
+          <SnehabhilashiSection colors={{ gold: t.accent }} />
 
           {/* Thank You & Brand Credit */}
           <footer className="relative z-10 w-full pt-8 pb-12 text-center space-y-6">

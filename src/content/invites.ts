@@ -99,6 +99,9 @@ export interface InviteMilestone {
   subtitle?: string;
   tag?: string;
   note?: string;
+  /** For a story told as a chat: who sends this one (their side of the chat), and the clock time on its bubble. */
+  from?: 'groom' | 'bride';
+  time?: string;
 }
 
 /** The "How we met" section: the couple's illustration and their milestones. */
@@ -506,6 +509,102 @@ export const INVITES: InviteRecord[] = [
         },
       ],
     },
+  },
+  {
+    // The Krishna–Radha sample (being built scene by scene; not in the gallery yet).
+    slug: 'krishna-weds-radha',
+    bride: 'Radha',
+    groom: 'Krishna',
+    // Written in Hindi, as every scene after the gate is.
+    venue: 'वृन्दावन, उत्तर प्रदेश',
+    tier: 'platinum',
+    tradition: 'contemporary',
+    templateId: 'krishna-radha',
+    greeting: 'With the blessings of Shri Krishna,\nwe invite you to celebrate our wedding.',
+    weddingDate: '2027-04-18T19:00:00+05:30',
+    // Placeholder portraits and family lines (the owner's stock pictures), until a real order brings its own.
+    couple: {
+      groom: {
+        name: 'कृष्ण',
+        blessing: 'आयुष्मान्',
+        image: '/art/platinum/groom-portrait.webp',
+        family: 'सुपुत्र: श्रीमती यशोदा देवी एवं श्री नन्द लाल\nगोकुल, उत्तर प्रदेश',
+      },
+      bride: {
+        name: 'राधा',
+        blessing: 'आयुष्मती',
+        image: '/art/platinum/bride-portrait.webp',
+        family: 'सुपुत्री: श्रीमती कीर्ति देवी एवं श्री वृषभानु\nबरसाना, उत्तर प्रदेश',
+      },
+    },
+    // A made-up story, programme and gallery, as placeholders.
+    story: {
+      milestones: [
+        { year: '2021', label: 'अध्याय १', title: 'पहली मुलाक़ात', subtitle: 'वृन्दावन की होली', text: 'रंगों और गुलाल के बीच दो नज़रें मिलीं, और उस दिन से हर रंग कुछ और ही गहरा लगने लगा।', tag: 'पहली झलक', note: 'बाँके बिहारी' },
+        { year: '2023', label: 'अध्याय २', title: 'मन की बात', subtitle: 'यमुना के घाट पर', text: 'संध्या आरती के दीपों के बीच घंटों बातें हुईं; बाँसुरी की धुन सी एक मीठी दोस्ती प्रेम बन गई।', tag: 'संगम', note: 'केशी घाट' },
+        { year: '2025', label: 'अध्याय ३', title: 'प्रेम का वचन', subtitle: 'गुलाबों के बीच', text: 'एक गुलाब के साथ कृष्ण ने पूछा, और राधा ने मुस्कुराकर कहा — हाँ!', tag: 'प्रस्ताव', note: 'निधिवन' },
+        { year: '2027', label: 'अध्याय ४', title: 'सात फेरे', subtitle: 'श्री राधे-कृष्ण के आशीर्वाद से', text: 'अब अग्नि को साक्षी मानकर हम जीवन भर साथ चलने का संकल्प लेंगे।', tag: 'विवाह', note: 'शुभ घड़ी' },
+      ],
+    },
+    events: [
+      { title: 'हल्दी उत्सव', description: 'हल्दी, हँसी और परिवार के संग मंगल रस्में', startsAt: '2027-04-16T10:00:00+05:30', place: 'वर निवास', address: 'गोकुल, उत्तर प्रदेश', icon: '🌼', art: 'haldi' },
+      { title: 'मेहंदी एवं संगीत', description: 'मेहंदी के रंग और भजन-संगीत की शाम', startsAt: '2027-04-17T17:00:00+05:30', place: 'राधा बाग', address: 'बरसाना, उत्तर प्रदेश', icon: '🌿', art: 'mehendi' },
+      { title: 'शुभ विवाह', description: 'वरमाला, सप्तपदी और सात फेरे', startsAt: '2027-04-18T19:00:00+05:30', place: 'श्री कृष्ण विवाह मंडप', address: 'वृन्दावन, उत्तर प्रदेश', icon: '🌹', art: 'vivah' },
+      { title: 'आशीर्वाद समारोह', description: 'स्वागत, आशीर्वाद एवं प्रीतिभोज', startsAt: '2027-04-19T19:30:00+05:30', place: 'यमुना पैलेस', address: 'मथुरा, उत्तर प्रदेश', icon: '🪈', art: 'reception' },
+    ],
+    gallery: [
+      { src: '/art/gallery/mandap-ceremony.jpg', alt: 'फूलों से सजे मंडप में फेरे' },
+      { src: '/art/gallery/palace-courtyard.jpg', alt: 'महल के आँगन में युगल' },
+      { src: '/art/gallery/balcony-sunset.jpg', alt: 'संध्या के समय झरोखे पर' },
+      { src: '/art/gallery/palace-hall.jpg', alt: 'झूमरों से सजे हॉल में' },
+      { src: '/art/gallery/desert-sunset.jpg', alt: 'सुनहरी रेत पर ढलता सूरज' },
+    ],
+    rsvp: { whatsapp: '919876543210', replyBy: '2027-04-05T23:59:00+05:30', maxPlusMembers: 5 },
+    thankYou: 'इस मंगल अवसर पर पधारकर अपना स्नेह एवं आशीर्वाद देने के लिए आपका हार्दिक आभार।',
+  },
+  {
+    // The Jeevan–Jyoti sample ("the call of a lifetime"; being built scene by scene, not in the gallery yet).
+    slug: 'jeevan-weds-jyoti',
+    bride: 'Jyoti',
+    groom: 'Jeevan',
+    venue: 'Jaipur, Rajasthan',
+    tier: 'platinum',
+    tradition: 'contemporary',
+    templateId: 'jeevan-jyoti',
+    greeting: 'Jeevan & Jyoti are calling you to their wedding.',
+    weddingDate: '2027-05-22T19:00:00+05:30',
+    coupleImage: '/art/platinum/couple-vector.webp',
+    // Placeholder number: the gate's "Message" button writes to it.
+    rsvp: { whatsapp: '919876543210', replyBy: '2027-05-08T23:59:00+05:30', maxPlusMembers: 5 },
+    // Placeholder people, story, programme and photos, until a real order brings its own.
+    couple: {
+      groom: { name: 'Jeevan Sharma', image: '/art/platinum/groom-portrait.webp', blessing: 'Coffee lover · terrible at texting back · always on time', family: 'Son of Mrs. Kavita & Mr. Rajesh Sharma\nJaipur, Rajasthan' },
+      bride: { name: 'Jyoti Mehta', image: '/art/platinum/bride-portrait.webp', blessing: 'Chai person · sends voice notes · always 10 minutes late', family: 'Daughter of Mrs. Sunita & Mr. Anil Mehta\nUdaipur, Rajasthan' },
+    },
+    story: {
+      milestones: [
+        { year: '2019', title: 'Wrong number', text: 'Hi, is this Rahul? 😅', from: 'bride', time: '11:42 PM' },
+        { year: '2019', title: 'Wrong number', text: "Nope, it's Jeevan. But I'm a much better listener than Rahul 😄", from: 'groom', time: '11:43 PM' },
+        { year: '2021', title: 'First date', text: 'Okay, Mr. Better Listener. Coffee tomorrow? ☕', from: 'bride', time: '8:15 PM' },
+        { year: '2024', title: 'The question', text: 'Will you pick up my calls for the rest of my life? 💍', from: 'groom', time: '7:00 PM' },
+        { year: '2024', title: 'The answer', text: 'YES!!! A million times yes ❤️📞', from: 'bride', time: '7:00 PM' },
+      ],
+    },
+    events: [
+      { title: 'Mehendi', description: 'Henna, music and a lot of dancing', startsAt: '2027-05-20T16:00:00+05:30', place: 'Mehta Haveli', address: 'Udaipur, Rajasthan', icon: '🌿' },
+      { title: 'Haldi', description: 'Turmeric, laughter and water fights', startsAt: '2027-05-21T10:00:00+05:30', place: 'Sharma Residence', address: 'C-Scheme, Jaipur', icon: '🌼' },
+      { title: 'Sangeet', description: 'Both families on the dance floor', startsAt: '2027-05-21T19:30:00+05:30', place: 'The Raj Palace', address: 'Jorawar Singh Gate, Jaipur', icon: '🎶' },
+      { title: 'Wedding', description: 'Varmala, pheras and a lifetime ahead', startsAt: '2027-05-22T19:00:00+05:30', place: 'Rambagh Palace', address: 'Bhawani Singh Road, Jaipur', icon: '💍' },
+    ],
+    gallery: [
+      { src: '/art/gallery/mandap-ceremony.jpg', alt: 'Under the mandap' },
+      { src: '/art/gallery/palace-courtyard.jpg', alt: 'In the palace courtyard' },
+      { src: '/art/gallery/balcony-sunset.jpg', alt: 'Sunset from the balcony' },
+      { src: '/art/gallery/palace-hall.jpg', alt: 'Under the chandeliers' },
+      { src: '/art/gallery/desert-sunset.jpg', alt: 'Golden hour in the dunes' },
+      { src: '/art/couple/ishani-advait.webp', alt: 'Just the two of us' },
+    ],
+    thankYou: 'Thank you for picking up. Your love and blessings mean the world to us — see you at the wedding! ❤️',
   },
 ];
 

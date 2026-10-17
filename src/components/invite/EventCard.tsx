@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { m } from 'motion/react';
 import type { InviteEvent } from '@/content/invites';
 import { DURATION, EASE } from '@/styles/motion';
+import { calendarHref, where } from './calendar';
 import { formatTime, formatWeekdayDate } from './dates';
 import { CalendarPlusIcon, ClockIcon, NavigationIcon, PinIcon } from './icons';
 import { LineArtBackdrop } from './LineArtBackdrop';
@@ -21,34 +22,8 @@ const part = {
   shown: { opacity: 1, y: 0, transition: { duration: DURATION.slow, ease: EASE.entrance } },
 };
 
-const where = (event: InviteEvent) => [event.place, event.address].filter(Boolean).join(', ');
-
 const mapsUrl = (event: InviteEvent) =>
   event.mapsUrl ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(where(event))}`;
-
-// An .ics file as a link, so "add to calendar" needs no server: three hours from the start.
-function calendarHref(event: InviteEvent) {
-  const start = new Date(event.startsAt);
-  const end = new Date(start.getTime() + 3 * 3_600_000);
-  const stamp = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  const text = (s: string) => s.replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
-  const lines = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Get Invites//Invitation//EN',
-    'BEGIN:VEVENT',
-    `UID:${stamp(start)}-${event.title.replace(/\W+/g, '-').toLowerCase()}@getinvites`,
-    `DTSTAMP:${stamp(start)}`,
-    `DTSTART:${stamp(start)}`,
-    `DTEND:${stamp(end)}`,
-    `SUMMARY:${text(event.title)}`,
-    `LOCATION:${text(where(event))}`,
-    `DESCRIPTION:${text(event.description)}`,
-    'END:VEVENT',
-    'END:VCALENDAR',
-  ];
-  return `data:text/calendar;charset=utf-8,${encodeURIComponent(lines.join('\r\n'))}`;
-}
 
 export interface EventScene {
   /** Art the whole card is built around, drawn first so everything else is in front of it: a big arch the text stands inside, say. Absolutely placed children of the card, which is `relative` and clips to its rounded shape. */

@@ -13,7 +13,27 @@ npm install
 npm run dev
 ```
 
-Open `/` for the scaffold and `/kitchen-sink` for every token and component on one page.
+Open `/` for the site, `/templates` for the gallery, `/<slug>` for an invite (e.g. `/kailash-weds-ganga`), and `/kitchen-sink` for every token and component on one page.
+
+## How an invite is rendered
+
+- `src/content/invites.ts` — `INVITES`, one row per couple (stand-in for a future database). A new customer on an existing design is a new row, never a new page.
+- `src/components/invite/templates/registry.ts` — `TEMPLATES`, `templateId → component`. A new design is a new entry.
+- `src/app/(invite)/[slug]/page.tsx` — the one invite route: looks up the row, renders its template.
+- `src/content/templateCatalog.ts` — `LISTINGS` puts each template on `/templates` (and `featured` on the home page).
+
+Templates are compositions of shared parts in `src/components/invite/`. Before building or changing one, read [`ai-doc/rule.md`](ai-doc/rule.md): the rules plus a catalog of every shared component, animation and section.
+
+| Template | Tier | Id |
+| --- | --- | --- |
+| Gujarati Kankotri (+ yellow variation) | Silver | `gujarati-kankotri`, `gujarati-kankotri-yellow` |
+| Gold Envelope | Gold | `gold-envelope` |
+| Platinum Temple | Platinum | `platinum-temple` |
+| Rudra | Platinum | `rudra` |
+| Kailash–Ganga | Platinum | `kailash-ganga` |
+| Ganesha Blessings | Platinum | `ganesha-blessings` |
+
+No backend: Order, Contact and RSVP open a prefilled WhatsApp message.
 
 ## Design tokens
 
@@ -39,6 +59,12 @@ Keep them apart. Mixing them is the decision that costs the most to undo.
 
 Three states, handled in `tokens.css`: bare `:root` is light, `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` covers the unstamped default, and `:root[data-theme="dark"]` lets an explicit toggle win.
 
+## Motion
+
+Ambient loops are CSS classes in `src/styles/motion.css`; interactive motion is Framer Motion (`m.*` only), loaded in `(invite)/layout.tsx`. See [`src/components/motion/README.md`](src/components/motion/README.md).
+
 ## Next up
 
-Phase 1 in the build plan: the invite config schema, the template registry, and the theme token contract.
+- A real backend: invites in a database instead of `invites.ts`, RSVP replies stored (`GuestRsvp` has an `onSubmit` with nothing behind it).
+- A validated invite config schema (`zod` is installed but unused).
+- Licensed artwork: several stock images under `public/art/platinum/` carry watermarks (see `ai-doc/rule.md`, section 2.7).

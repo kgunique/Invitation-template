@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Get Invites — interactive digital wedding invitations for Indian weddings, built on Next.js App Router (React 19, Next 15). Weddings only: the only templates are wedding templates. The occasion tabs on `/templates` (Engagement, Baby Shower, Other ▸ Birthday Party, …) are "coming soon" placeholders, not categories being built. Templates vary by *tradition* (Gujarati, South Indian, Punjabi, Marwari, Bengali, Contemporary), never by occasion. This is Phase 0 (scaffold) — see the "Next up" section in [README.md](README.md) for what Phase 1 adds (invite config schema, template registry, theme token contract).
+Get Invites — interactive digital wedding invitations for Indian weddings, built on Next.js App Router (React 19, Next 15). Weddings only: the only templates are wedding templates. The occasion tabs on `/templates` (Engagement, Baby Shower, Other ▸ Birthday Party, …) are "coming soon" placeholders, not categories being built. Templates vary by *tradition* (Gujarati, South Indian, Punjabi, Marwari, Bengali, Contemporary), never by occasion. Seven templates are built (registry in `src/components/invite/templates/registry.ts`, sample rows in `src/content/invites.ts`, one route `src/app/(invite)/[slug]/page.tsx`); see "Next up" in [README.md](README.md) for what is missing (backend, config schema).
 
 ## Commands
 
