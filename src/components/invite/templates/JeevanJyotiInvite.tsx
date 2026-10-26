@@ -505,7 +505,7 @@ export function JeevanJyotiInvite({
         />
       </SlideLock>
 
-      {revealed && <FloatingOrderBar templateName={templateName} music={music} delay={1.2} />}
+      {revealed && <FloatingOrderBar templateName={templateName} music={music} delay={1.2} musicTop={46} />}
     </div>
   );
 }
