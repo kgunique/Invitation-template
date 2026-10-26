@@ -1,4 +1,5 @@
-import { Cormorant_Garamond, Great_Vibes } from 'next/font/google';
+import { Great_Vibes } from 'next/font/google';
+import localFont from 'next/font/local';
 
 /**
  * The two faces of the Kailash–Ganga template, loaded for it alone: a flowing script for the names, and a
@@ -7,9 +8,11 @@ import { Cormorant_Garamond, Great_Vibes } from 'next/font/google';
  */
 export const gangaScript = Great_Vibes({ subsets: ['latin'], weight: '400', display: 'swap' });
 
-export const gangaSerif = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
-  style: ['normal', 'italic'],
+// Self-hosted: Google sometimes serves this family from the build server under a URL next/font/google can't parse, failing the build.
+export const gangaSerif = localFont({
+  src: [
+    { path: '../../../fonts/cormorant-garamond-latin.woff2', weight: '400 600', style: 'normal' },
+    { path: '../../../fonts/cormorant-garamond-latin-italic.woff2', weight: '400 600', style: 'italic' },
+  ],
   display: 'swap',
 });
