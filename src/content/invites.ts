@@ -563,7 +563,7 @@ export const INVITES: InviteRecord[] = [
     thankYou: 'इस मंगल अवसर पर पधारकर अपना स्नेह एवं आशीर्वाद देने के लिए आपका हार्दिक आभार।',
   },
   {
-    // The Jeevan–Jyoti sample ("the call of a lifetime"; being built scene by scene, not in the gallery yet).
+    // The Jeevan–Jyoti sample ("the call of a lifetime").
     slug: 'jeevan-weds-jyoti',
     bride: 'Jyoti',
     groom: 'Jeevan',

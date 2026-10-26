@@ -61,10 +61,10 @@ export function MusicButton({ playing, onToggle }: { playing: boolean; onToggle:
 }
 
 /**
- * Order Now (left) and, if asked for, the music button (right), pinned to the
- * bottom of the screen while the invite scrolls — z-control is the design
- * system's layer for exactly these two. The outer bar ignores pointer events (it
- * spans the full width); only the buttons take them, and the inner row is held
+ * Order Now pinned bottom-left and, if asked for, the music button pinned
+ * top-right while the invite scrolls — z-control is the design system's layer
+ * for exactly these two. The outer bars ignore pointer events (they span the
+ * full width); only the buttons take them, and the inner rows are held
  * to the same phone-width column as the content. `style` is for a page that pins
  * its own colour variables (the music button reads --surface-raised, --ink-strong
  * and --line-firm). Mount it when the buttons should be reachable: Silver waits
@@ -78,29 +78,47 @@ export function FloatingOrderBar({
   templateName,
   music = false,
   delay = 0.8,
+  musicTop = 20,
   style,
 }: {
   templateName: string;
   music?: boolean | BackgroundMusic;
   /** Seconds before the bar fades in. */
   delay?: number;
+  /** Px from the top for the music button, level with the page's Back link; a page with chrome above that link passes more. */
+  musicTop?: number;
   style?: CSSProperties;
 }) {
   const own = useBackgroundMusic();
   const control = typeof music === 'object' ? music : music ? own : null;
+  const transition = { duration: DURATION.slow, delay, ease: EASE.entrance };
 
   return (
-    <m.div
-      style={{ ...style, paddingBottom: 'max(20px, env(safe-area-inset-bottom))' }}
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: DURATION.slow, delay, ease: EASE.entrance }}
-      className="pointer-events-none fixed inset-x-[0] bottom-[0] z-control"
-    >
-      <div className="mx-auto flex w-full max-w-[480px] items-center justify-between px-6">
-        <OrderButton templateName={templateName} className="pointer-events-auto shadow-lg" />
-        {control && <MusicButton playing={control.playing} onToggle={control.toggle} />}
-      </div>
-    </m.div>
+    <>
+      <m.div
+        style={{ ...style, paddingBottom: 'max(20px, env(safe-area-inset-bottom))' }}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={transition}
+        className="pointer-events-none fixed inset-x-[0] bottom-[0] z-control"
+      >
+        <div className="mx-auto flex w-full max-w-[480px] items-center px-6">
+          <OrderButton templateName={templateName} className="pointer-events-auto shadow-lg" />
+        </div>
+      </m.div>
+      {control && (
+        <m.div
+          style={{ ...style, paddingTop: `max(${musicTop}px, env(safe-area-inset-top))` }}
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={transition}
+          className="pointer-events-none fixed inset-x-[0] top-[0] z-control"
+        >
+          <div className="mx-auto flex w-full max-w-[480px] justify-end px-5">
+            <MusicButton playing={control.playing} onToggle={control.toggle} />
+          </div>
+        </m.div>
+      )}
+    </>
   );
 }

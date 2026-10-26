@@ -61,8 +61,11 @@ const LISTINGS: Record<
   },
   // Being built scene by scene: kept out of the gallery until it is finished. Then drop `hidden`, add a tag and its two screenshots.
   'krishna-radha': { hidden: true },
-  // Being built scene by scene: kept out of the gallery until it is finished.
-  'jeevan-jyoti': { hidden: true },
+  'jeevan-jyoti': {
+    tag: 'Phone Call',
+    featured: true,
+    screens: { cover: '/templates/jeevan-jyoti-invite.webp', preview: '/templates/jeevan-jyoti-gate.webp' },
+  },
 };
 
 /**
